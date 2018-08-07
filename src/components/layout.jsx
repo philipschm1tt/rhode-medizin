@@ -2,8 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
+import { injectGlobal } from 'styled-components'
+import styledNormalize from 'styled-normalize'
 
-import './layout.css'
+injectGlobal`
+  ${styledNormalize}
+
+  body {
+    background-color: black;
+  }
+`
 
 const Layout = ({ children }) => (
   <StaticQuery
