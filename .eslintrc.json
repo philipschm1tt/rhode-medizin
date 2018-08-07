@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "plugins": ["react", "jsx-a11y", "import"],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "react/jsx-one-expression-per-line": "off",
+    "no-unused-expressions": ["error", { "allowTaggedTemplates": true }]
+  }
+}
