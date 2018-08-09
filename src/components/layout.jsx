@@ -4,12 +4,13 @@ import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 import { injectGlobal } from 'styled-components'
 import styledNormalize from 'styled-normalize'
+import Logo from './header'
 
 injectGlobal`
   ${styledNormalize}
 
   body {
-    background-color: black;
+    background-color: white;
   }
 `
 
@@ -35,6 +36,7 @@ const Layout = ({ children }) => (
         >
           <html lang="de" />
         </Helmet>
+        <Logo />
         {children}
       </>
     )}
