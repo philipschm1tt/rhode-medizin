@@ -2,15 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
-import { injectGlobal } from 'styled-components'
+import { injectGlobal, ThemeProvider } from 'styled-components'
 import styledNormalize from 'styled-normalize'
 import Logo from './header'
+import theme from '../theme'
 
 injectGlobal`
   ${styledNormalize}
 
   body {
-    background-color: white;
+    background-color: ${theme.colors.backgroundMain};
+    font-family: sans-serif;
   }
 `
 
@@ -36,8 +38,12 @@ const Layout = ({ children }) => (
         >
           <html lang="de" />
         </Helmet>
-        <Logo />
-        {children}
+        <ThemeProvider theme={theme}>
+          <>
+            <Logo />
+            {children}
+          </>
+        </ThemeProvider>
       </>
     )}
   />
