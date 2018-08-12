@@ -8,7 +8,7 @@
   },
   "rules": {
     "react/jsx-one-expression-per-line": "off",
-    "react/destructuring-assignment": "never",
+    "react/destructuring-assignment": "off",
     "no-unused-expressions": ["error", { "allowTaggedTemplates": true }]
   }
 }

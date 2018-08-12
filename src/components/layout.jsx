@@ -2,18 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
-import { injectGlobal, ThemeProvider } from 'styled-components'
-import styledNormalize from 'styled-normalize'
+import styled, { ThemeProvider } from 'styled-components'
+
+import theme from '../styles/theme'
+import globalStyles from '../styles/globalStyles'
+
 import Logo from './header'
-import theme from '../theme'
 
-injectGlobal`
-  ${styledNormalize}
-
-  body {
-    background-color: ${theme.colors.backgroundMain};
-    font-family: sans-serif;
-  }
+const GlobalWrapper = styled.div`
+  ${globalStyles(theme)};
 `
 
 const Layout = ({ children }) => (
@@ -39,10 +36,10 @@ const Layout = ({ children }) => (
           <html lang="de" />
         </Helmet>
         <ThemeProvider theme={theme}>
-          <>
+          <GlobalWrapper>
             <Logo />
             {children}
-          </>
+          </GlobalWrapper>
         </ThemeProvider>
       </>
     )}
