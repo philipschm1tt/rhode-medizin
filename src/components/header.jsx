@@ -5,14 +5,17 @@ import logo2x from '../images/logo@2x.png'
 
 const HeaderArea = styled.div`
   color: ${props => props.theme.colors.companyBlue};
+  margin: 20px;
 `
 
 const Logo = styled.img`
-  max-width: 460px;
+  max-width: 100%;
 `
 
 const CompanyType = styled.div`
   text-transform: uppercase;
+  font-size: ${props => props.theme.fontSizes.XL};
+  line-height: ${props => props.theme.lineHeights.XL};
 `
 
 const Header = () => (

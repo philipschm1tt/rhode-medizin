@@ -21,4 +21,7 @@ export default {
     M: 26 / 18,
     S: 17.3 / 14,
   },
+  sizes: {
+    baseLineHeight: '26px',
+  },
 }
