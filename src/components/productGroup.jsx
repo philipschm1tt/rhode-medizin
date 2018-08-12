@@ -7,7 +7,6 @@ const ProductGroupTile = styled.div`
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
   margin: 20px;
   max-width: 500px;
-  min-width: 400px;
 `
 
 const ProductGroupImage = styled.img`
@@ -22,14 +21,13 @@ const ProductGroupHeading = styled.h3`
   color: ${props => props.theme.colors.companyBlue};
   font-size: ${props => props.theme.fontSizes.L};
   line-height: ${props => props.theme.lineHeights.L};
-  margin: 0;
 `
 
 const ProductGroupText = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `
 const ProductGroupDescription = styled.p`
-  padding: 0;
   font-size: ${props => props.theme.fontSizes.M};
   line-height: ${props => props.theme.lineHeights.M};
 `

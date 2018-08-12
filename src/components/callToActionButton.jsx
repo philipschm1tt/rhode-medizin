@@ -12,6 +12,7 @@ const CallToActionButton = styled.button`
   margin: 0 20px;
   font-size: ${props => props.theme.fontSizes.L};
   line-height: ${props => props.theme.lineHeights.L};
+  font-weight: bold;
 `
 
 export default CallToActionButton

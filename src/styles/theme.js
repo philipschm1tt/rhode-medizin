@@ -22,6 +22,8 @@ export default {
     S: 17.3 / 14,
   },
   sizes: {
+    halfBaseLineHeight: '13px',
     baseLineHeight: '26px',
+    doubleBaseLineHeight: '52px',
   },
 }

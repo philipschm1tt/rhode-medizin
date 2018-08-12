@@ -1,9 +1,9 @@
 import { injectGlobal } from 'styled-components'
-import styledNormalize from 'styled-normalize'
+import styledReset from 'styled-reset'
 
 const globalStyles = theme => () =>
   injectGlobal`
-  ${styledNormalize}
+  ${styledReset}
 
   body {
     background-color: ${theme.colors.lightYellow};
@@ -12,17 +12,33 @@ const globalStyles = theme => () =>
 
   h1 {
     font-size: ${theme.fontSizes.XXL};
-    line-height: ${theme.lineHeights.XXL}
+    line-height: ${theme.lineHeights.XXL};
+    font-weight: bold;
+    margin-bottom: ${theme.sizes.halfBaseLineHeight};
   }
 
   h2 {
     font-size: ${theme.fontSizes.XL};
-    line-height: ${theme.lineHeights.XL}
+    line-height: ${theme.lineHeights.XL};
+    margin-bottom: ${theme.sizes.halfBaseLineHeight};
   }
 
-  h3, h4, h5, h6, p {
+  h3, h4, h5, h6 {
     font-size: ${theme.fontSizes.L};
-    line-height: ${theme.lineHeights.L}
+    line-height: ${theme.lineHeights.L};
+    font-weight: bold;
+    margin: ${theme.sizes.halfBaseLineHeight} 0;
+  }
+
+  p {
+    font-size: ${theme.fontSizes.L};
+    line-height: ${theme.lineHeights.L};
+    margin-bottom: ${theme.sizes.baseLineHeight};
+  }
+
+  ol, ul {
+    list-style: inside;
+    margin: ${theme.sizes.halfBaseLineHeight} 0;
   }
 `
 
