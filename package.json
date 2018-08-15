@@ -4,10 +4,12 @@
   "author": "Philip Schmitt",
   "version": "0.0.0",
   "dependencies": {
+    "babel-plugin-styled-components": "^1.5.1",
     "gatsby": "^2.0.0-beta.61",
     "gatsby-plugin-manifest": "^2.0.2-beta.3",
     "gatsby-plugin-offline": "^2.0.0-beta.6",
     "gatsby-plugin-react-helmet": "^3.0.0-beta.4",
+    "gatsby-plugin-styled-components": "^3.0.0-beta.3",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
