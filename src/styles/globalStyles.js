@@ -66,6 +66,10 @@ const globalStyles = theme => () =>
     hyphens: auto;
   }
 
+  p, li {
+    max-width: 30em;
+  }
+
   ol, ul {
     list-style: inside;
     margin: ${theme.sizes.halfBaseLineHeight} 0;
