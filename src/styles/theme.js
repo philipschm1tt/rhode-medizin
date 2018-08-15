@@ -16,7 +16,7 @@ export default {
   },
   lineHeights: {
     XXL: 52 / 43,
-    XL: 52 / 32,
+    XL: 39 / 32,
     L: 26 / 24,
     M: 26 / 18,
     S: 17.3 / 14,
