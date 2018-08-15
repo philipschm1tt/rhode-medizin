@@ -1,5 +1,6 @@
 export default {
   colors: {
+    base: '#555555',
     lightYellow: '#FFFDF3',
     lightBlue: '#F7F7FF',
     companyBlue: '#4038A0',

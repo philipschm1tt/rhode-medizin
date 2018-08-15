@@ -6,7 +6,7 @@ const globalStyles = theme => () =>
   ${styledReset}
 
   body {
-    background-color: ${theme.colors.lightYellow};
+    background-color: ${theme.colors.base};
     font-family: sans-serif;
   }
 

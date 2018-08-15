@@ -11,6 +11,10 @@ import Logo from './header'
 
 const GlobalWrapper = styled.div`
   ${globalStyles(theme)};
+
+  max-width: 960px;
+  margin: 0 auto;
+  background-color: ${theme.colors.lightYellow};
 `
 
 const Layout = ({ children }) => (
