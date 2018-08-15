@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-const EmployeeTile = styled.div`
-  width: 220px;
-  height: 208px;
+const Tile = styled.div`
+  min-width: 182px;
+  min-height: 182px;
   background: top right url(${props => props.photo});
   display: flex;
   flex-direction: column-reverse;
@@ -20,8 +20,8 @@ const CaptionArea = styled.div`
   padding: 5px 10px;
 `
 
-const Employee = props => (
-  <EmployeeTile photo={props.photo}>
+const EmployeeTile = props => (
+  <Tile photo={props.photo}>
     <CaptionArea>
       {props.name}
       <br />
@@ -29,14 +29,14 @@ const Employee = props => (
       <br />
       {props.since}
     </CaptionArea>
-  </EmployeeTile>
+  </Tile>
 )
 
-Employee.propTypes = {
+EmployeeTile.propTypes = {
   name: PropTypes.string.isRequired,
   department: PropTypes.string.isRequired,
   since: PropTypes.string.isRequired,
   photo: PropTypes.string.isRequired,
 }
 
-export default Employee
+export default EmployeeTile

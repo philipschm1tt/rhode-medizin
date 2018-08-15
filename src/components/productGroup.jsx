@@ -5,7 +5,6 @@ import styled from 'styled-components'
 const ProductGroupTile = styled.div`
   background-color: ${props => props.theme.colors.lightYellow};
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
-  margin: 20px;
   max-width: 500px;
 `
 

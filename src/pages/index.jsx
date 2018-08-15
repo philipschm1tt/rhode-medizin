@@ -2,7 +2,9 @@ import React from 'react'
 
 import Layout from '../components/layout'
 import Quote from '../components/quote'
-import Employee from '../components/employee'
+import TileGrid from '../components/tileGrid'
+import EmployeeTile from '../components/employeeTile'
+import TileList from '../components/tileList'
 import ProductGroup from '../components/productGroup'
 import HeroBlock from '../components/heroBlock'
 import MainSection from '../components/mainSection'
@@ -58,54 +60,56 @@ const IndexPage = () => (
 
     <MainSection>
       <h2>Wer wir sind</h2>
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
-      <Employee
-        name="Max Mustermann"
-        department="Außendienst"
-        since="seit 1996"
-        photo={EmployeePhoto}
-      />
+      <TileGrid>
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+        <EmployeeTile
+          name="Max Mustermann"
+          department="Außendienst"
+          since="seit 1996"
+          photo={EmployeePhoto}
+        />
+      </TileGrid>
     </MainSection>
 
     <AsideSection>
@@ -142,66 +146,68 @@ const IndexPage = () => (
 
     <MainSection darkBackground="true">
       <h2>Unser Warensortiment</h2>
-      <ProductGroup
-        name="Medizinische Geräte"
-        description="Unser Sortiment umfasst medizinische Geräte für unterschiedliche Anwendungsbereiche."
-        examples={[
-          'Absaugungen',
-          'Blutdruckmessung',
-          'Inhalation',
-          'Sterilisation',
-        ]}
-        photo={ProductGroupPhotoMedizinischeGeraete}
-      />
-      <ProductGroup
-        name="Medizinisches Mobilar"
-        description="Wir liefern qualitativ hochwertiges medizinisches Mobilar."
-        examples={[
-          'Einbauten',
-          'Funktionswägen',
-          'Liegen',
-          'OP-Tische',
-          'Patiententransport',
-          'Stühle und Hocker',
-        ]}
-        photo={ProductGroupPhotoMedizinischesMobilar}
-      />
-      <ProductGroup
-        name="Chirurgische Instrumente"
-        description="Wir führen chirurgische Instrumente in 1a-Qualität von Aesculap sowie auch in Stationsqualität."
-        examples={[
-          'Klemmen',
-          'Nadelhalter',
-          'Pinzetten',
-          'Scheren',
-          'Skalpelle',
-          'Wundhaken',
-          'Zangen',
-        ]}
-        photo={ProductGroupPhotoChirurgischeInstrumente}
-      />
-      <ProductGroup
-        name="Motorensysteme"
-        description="Wir vertreiben Motorensysteme für die Makro- und Mikrochirurgie."
-        examples={[
-          'Akkubetrieben',
-          'Druckluftbetrieben',
-          'Elektrisch betrieben',
-        ]}
-        photo={ProductGroupPhotoMotorensysteme}
-      />
-      <ProductGroup
-        name="Rehabereich"
-        description="Unser Sortiment umfasst eine große Auswahl von Produkten für den Rehabereich."
-        examples={[
-          'Rollstühle',
-          'Toilettenstühle',
-          'Patientenlifter',
-          'Badehilfen',
-          'Gehhilfen',
-        ]}
-        photo={ProductGroupPhotoRehabereich}
-      />
+      <TileList>
+        <ProductGroup
+          name="Medizinische Geräte"
+          description="Unser Sortiment umfasst medizinische Geräte für unterschiedliche Anwendungsbereiche."
+          examples={[
+            'Absaugungen',
+            'Blutdruckmessung',
+            'Inhalation',
+            'Sterilisation',
+          ]}
+          photo={ProductGroupPhotoMedizinischeGeraete}
+        />
+        <ProductGroup
+          name="Medizinisches Mobilar"
+          description="Wir liefern qualitativ hochwertiges medizinisches Mobilar."
+          examples={[
+            'Einbauten',
+            'Funktionswägen',
+            'Liegen',
+            'OP-Tische',
+            'Patiententransport',
+            'Stühle und Hocker',
+          ]}
+          photo={ProductGroupPhotoMedizinischesMobilar}
+        />
+        <ProductGroup
+          name="Chirurgische Instrumente"
+          description="Wir führen chirurgische Instrumente in 1a-Qualität von Aesculap sowie auch in Stationsqualität."
+          examples={[
+            'Klemmen',
+            'Nadelhalter',
+            'Pinzetten',
+            'Scheren',
+            'Skalpelle',
+            'Wundhaken',
+            'Zangen',
+          ]}
+          photo={ProductGroupPhotoChirurgischeInstrumente}
+        />
+        <ProductGroup
+          name="Motorensysteme"
+          description="Wir vertreiben Motorensysteme für die Makro- und Mikrochirurgie."
+          examples={[
+            'Akkubetrieben',
+            'Druckluftbetrieben',
+            'Elektrisch betrieben',
+          ]}
+          photo={ProductGroupPhotoMotorensysteme}
+        />
+        <ProductGroup
+          name="Rehabereich"
+          description="Unser Sortiment umfasst eine große Auswahl von Produkten für den Rehabereich."
+          examples={[
+            'Rollstühle',
+            'Toilettenstühle',
+            'Patientenlifter',
+            'Badehilfen',
+            'Gehhilfen',
+          ]}
+          photo={ProductGroupPhotoRehabereich}
+        />
+      </TileList>
     </MainSection>
   </Layout>
 )
