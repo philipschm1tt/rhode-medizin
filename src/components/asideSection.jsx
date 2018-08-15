@@ -12,8 +12,13 @@ const AsideSection = styled.aside`
   h5,
   h6,
   p {
-    font-size: ${props => props.theme.fontSizes.S};
-    line-height: ${props => props.theme.lineHeights.S};
+    font-size: ${props => props.theme.fontSizes.smallScreens.S};
+    line-height: ${props => props.theme.lineHeights.smallScreens.S};
+
+    @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
+      font-size: ${props => props.theme.fontSizes.largeScreens.S};
+      line-height: ${props => props.theme.lineHeights.largeScreens.S};
+    }
   }
 `
 

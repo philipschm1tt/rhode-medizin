@@ -10,9 +10,14 @@ const CallToActionButton = styled.button`
   border-radius: 3px;
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
   margin: 0 20px;
-  font-size: ${props => props.theme.fontSizes.L};
-  line-height: ${props => props.theme.lineHeights.L};
+  font-size: ${props => props.theme.fontSizes.smallScreens.L};
+  line-height: ${props => props.theme.lineHeights.smallScreens.L};
   font-weight: bold;
+
+  @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
+    font-size: ${props => props.theme.fontSizes.largeScreens.L};
+    line-height: ${props => props.theme.lineHeights.largeScreens.L};
+  }
 `
 
 export default CallToActionButton

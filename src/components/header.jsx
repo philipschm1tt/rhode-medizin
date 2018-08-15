@@ -14,8 +14,13 @@ const Logo = styled.img`
 
 const CompanyType = styled.div`
   text-transform: uppercase;
-  font-size: ${props => props.theme.fontSizes.XL};
-  line-height: ${props => props.theme.lineHeights.XL};
+  font-size: ${props => props.theme.fontSizes.smallScreens.XL};
+  line-height: ${props => props.theme.lineHeights.smallScreens.XL};
+
+  @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
+    font-size: ${props => props.theme.fontSizes.largeScreens.XL};
+    line-height: ${props => props.theme.lineHeights.largeScreens.XL};
+  }
 `
 
 const Header = () => (

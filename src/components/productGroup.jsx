@@ -18,8 +18,13 @@ const ProductGroupCaption = styled.div`
 
 const ProductGroupHeading = styled.h3`
   color: ${props => props.theme.colors.companyBlue};
-  font-size: ${props => props.theme.fontSizes.L};
-  line-height: ${props => props.theme.lineHeights.L};
+  font-size: ${props => props.theme.fontSizes.smallScreens.L};
+  line-height: ${props => props.theme.lineHeights.smallScreens.L};
+
+  @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
+    font-size: ${props => props.theme.fontSizes.largeScreens.L};
+    line-height: ${props => props.theme.lineHeights.largeScreens.L};
+  }
 `
 
 const ProductGroupText = styled.div`
@@ -27,14 +32,24 @@ const ProductGroupText = styled.div`
   flex-wrap: wrap;
 `
 const ProductGroupDescription = styled.p`
-  font-size: ${props => props.theme.fontSizes.M};
-  line-height: ${props => props.theme.lineHeights.M};
+  font-size: ${props => props.theme.fontSizes.smallScreens.M};
+  line-height: ${props => props.theme.lineHeights.smallScreens.M};
+
+  @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
+    font-size: ${props => props.theme.fontSizes.largeScreens.M};
+    line-height: ${props => props.theme.lineHeights.largeScreens.M};
+  }
 `
 
 const ProductGroupExamples = styled.ul`
-  font-size: ${props => props.theme.fontSizes.S};
-  line-height: ${props => props.theme.lineHeights.L};
+  font-size: ${props => props.theme.fontSizes.smallScreens.S};
+  line-height: ${props => props.theme.lineHeights.smallScreens.L};
   list-style: none;
+
+  @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
+    font-size: ${props => props.theme.fontSizes.largeScreens.S};
+    line-height: ${props => props.theme.lineHeights.largeScreens.L};
+  }
 `
 
 const ProductGroup = props => (

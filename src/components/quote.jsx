@@ -6,11 +6,16 @@ const Box = styled.div`
   color: ${props => props.theme.colors.yellow};
   background-color: ${props => props.theme.colors.companyBlue};
   padding: ${props => props.theme.sizes.baseLineHeight};
-  font-size: ${props => props.theme.fontSizes.XL};
-  line-height: 1.2;
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
   margin: 20px;
   display: inline-block;
+  font-size: ${props => props.theme.fontSizes.smallScreens.XL};
+  line-height: 1.2;
+
+  @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
+    font-size: ${props => props.theme.fontSizes.largeScreens.XL};
+    line-height: 1.2;
+  }
 `
 
 const Quote = props => <Box>{props.text}</Box>
