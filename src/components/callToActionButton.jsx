@@ -9,7 +9,6 @@ const CallToActionButton = styled.button`
   border: 1px solid ${props => props.theme.colors.yellow};
   border-radius: 3px;
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
-  margin: 0 20px;
   font-size: ${props => props.theme.fontSizes.smallScreens.L};
   line-height: ${props => props.theme.lineHeights.smallScreens.L};
   font-weight: bold;

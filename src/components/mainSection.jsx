@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 const MainSection = styled.section`
-  padding: 20px;
+  padding: ${props => props.theme.sizes.outerPadding};
   background-color: ${props =>
     props.darkBackground
       ? props.theme.colors.purple

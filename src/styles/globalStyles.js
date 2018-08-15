@@ -35,7 +35,20 @@ const globalStyles = theme => () =>
     }
   }
 
-  h3, h4, h5, h6 {
+  h3 {
+    font-size: ${theme.fontSizes.smallScreens.L};
+    line-height: ${theme.lineHeights.smallScreens.L};
+    margin-bottom: ${theme.sizes.baseLineHeight};
+    font-weight: bold;
+
+    @media (min-width: ${theme.sizes.breakpoints.large}) {
+      font-size: ${theme.fontSizes.largeScreens.L};
+      line-height: ${theme.lineHeights.largeScreens.L};
+      margin-bottom: ${theme.sizes.baseLineHeight};
+    }
+  }
+
+  h4, h5, h6 {
     font-size: ${theme.fontSizes.smallScreens.L};
     line-height: ${theme.lineHeights.smallScreens.L};
     margin: ${theme.sizes.halfBaseLineHeight} 0;

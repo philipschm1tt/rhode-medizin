@@ -5,7 +5,8 @@ const TileList = styled.div`
   flex-wrap: wrap;
 
   > * {
-    margin: 26px auto;
+    margin-bottom: ${props => props.theme.sizes.baseLineHeight};
+    margin-right: ${props => props.theme.sizes.baseLineHeight};
   }
 `
 

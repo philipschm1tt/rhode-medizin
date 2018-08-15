@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-const Box = styled.div`
+const Box = styled.aside`
   color: ${props => props.theme.colors.yellow};
   background-color: ${props => props.theme.colors.companyBlue};
   padding: ${props => props.theme.sizes.baseLineHeight};
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
-  margin: 20px;
+  margin: ${props => props.theme.sizes.baseLineHeight};
   display: inline-block;
   font-size: ${props => props.theme.fontSizes.smallScreens.XL};
   line-height: 1.2;

@@ -2,10 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import logo from '../images/logo.png'
 import logo2x from '../images/logo@2x.png'
+import ContentBox from './contentBox'
 
-const HeaderArea = styled.div`
+const HeaderArea = styled.header`
   color: ${props => props.theme.colors.companyBlue};
-  margin: 20px;
+  padding: ${props => props.theme.sizes.outerPadding};
 `
 
 const Logo = styled.img`
@@ -25,12 +26,14 @@ const CompanyType = styled.div`
 
 const Header = () => (
   <HeaderArea>
-    <Logo
-      src={logo}
-      srcSet={`${logo}, ${logo2x} 2x`}
-      alt="Heinrich Rhode GmbH"
-    />
-    <CompanyType>Medizintechnik</CompanyType>
+    <ContentBox>
+      <Logo
+        src={logo}
+        srcSet={`${logo}, ${logo2x} 2x`}
+        alt="Heinrich Rhode GmbH"
+      />
+      <CompanyType>Medizintechnik</CompanyType>
+    </ContentBox>
   </HeaderArea>
 )
 

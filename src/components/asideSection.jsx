@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 const AsideSection = styled.aside`
-  padding: 20px;
+  padding: ${props => props.theme.sizes.outerPadding};
   background-color: ${props => props.theme.colors.lightBlue};
 
   h3 {

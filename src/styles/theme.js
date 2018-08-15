@@ -43,6 +43,8 @@ export default {
     breakpoints: {
       large: '800px',
     },
+    innerPadding: '13px',
+    outerPadding: '26px',
     halfBaseLineHeight: '13px',
     baseLineHeight: '26px',
     doubleBaseLineHeight: '52px',

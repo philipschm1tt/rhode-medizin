@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import ContentBox from './contentBox'
 
 const ProductGroupTile = styled.div`
   background-color: ${props => props.theme.colors.lightYellow};
@@ -10,10 +11,6 @@ const ProductGroupTile = styled.div`
 
 const ProductGroupImage = styled.img`
   max-width: 100%;
-`
-
-const ProductGroupCaption = styled.div`
-  padding: 0 10px;
 `
 
 const ProductGroupHeading = styled.h3`
@@ -55,7 +52,7 @@ const ProductGroupExamples = styled.ul`
 const ProductGroup = props => (
   <ProductGroupTile>
     <ProductGroupImage src={props.photo} alt="" />
-    <ProductGroupCaption>
+    <ContentBox>
       <ProductGroupHeading>{props.name}</ProductGroupHeading>
       <ProductGroupText>
         <ProductGroupDescription>{props.description}</ProductGroupDescription>
@@ -65,7 +62,7 @@ const ProductGroup = props => (
           ))}
         </ProductGroupExamples>
       </ProductGroupText>
-    </ProductGroupCaption>
+    </ContentBox>
   </ProductGroupTile>
 )
 
