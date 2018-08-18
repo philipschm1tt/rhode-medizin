@@ -26,16 +26,16 @@ export default {
   },
   lineHeights: {
     smallScreens: {
-      XXL: 52 / 43,
-      XL: 39 / 32,
-      L: 26 / 24,
+      XXL: 39 / 32,
+      XL: 26 / 24,
+      L: 26 / 18,
       M: 26 / 18,
       S: 17.3 / 14,
     },
     largeScreens: {
-      XXL: 52 / 32,
-      XL: 26 / 24,
-      L: 26 / 18,
+      XXL: 39 / 43,
+      XL: 39 / 32,
+      L: 26 / 24,
       M: 26 / 18,
       S: 17.3 / 14,
     },
