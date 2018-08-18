@@ -10,7 +10,8 @@ const Tile = styled.div`
   flex-direction: column-reverse;
   border-radius: 3px;
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
-  margin: 20px;
+  margin-bottom: ${props => props.theme.sizes.baseLineHeight};
+  margin-right: ${props => props.theme.sizes.baseLineHeight};
 `
 const CaptionArea = styled.div`
   background-color: ${props => props.theme.colors.overlay};
