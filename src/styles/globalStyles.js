@@ -26,12 +26,15 @@ const globalStyles = theme => () =>
   h2 {
     font-size: ${theme.fontSizes.smallScreens.XL};
     line-height: ${theme.lineHeights.smallScreens.XL};
+    margin-top: ${theme.sizes.baseLineHeight};
     margin-bottom: ${theme.sizes.halfBaseLineHeight};
+    font-weight: bold;
 
     @media (min-width: ${theme.sizes.breakpoints.large}) {
       font-size: ${theme.fontSizes.largeScreens.XL};
       line-height: ${theme.lineHeights.largeScreens.XL};
-      margin-bottom: ${theme.sizes.halfBaseLineHeight};
+      margin-top: ${theme.sizes.halfBaseLineHeight};
+      margin-bottom: ${theme.sizes.baseLineHeight};
     }
   }
 
@@ -39,12 +42,14 @@ const globalStyles = theme => () =>
     font-size: ${theme.fontSizes.smallScreens.L};
     line-height: ${theme.lineHeights.smallScreens.L};
     margin-bottom: ${theme.sizes.baseLineHeight};
+    margin-top: ${theme.sizes.halfBaseLineHeight};
     font-weight: bold;
 
     @media (min-width: ${theme.sizes.breakpoints.large}) {
       font-size: ${theme.fontSizes.largeScreens.L};
       line-height: ${theme.lineHeights.largeScreens.L};
       margin-bottom: ${theme.sizes.baseLineHeight};
+      margin-top: ${theme.sizes.halfBaseLineHeight};
     }
   }
 
@@ -62,14 +67,26 @@ const globalStyles = theme => () =>
   }
 
   p {
-    font-size: ${theme.fontSizes.smallScreens.L};
-    line-height: ${theme.lineHeights.smallScreens.L};
+    font-size: ${theme.fontSizes.smallScreens.M};
+    line-height: ${theme.lineHeights.smallScreens.M};
     margin-bottom: ${theme.sizes.baseLineHeight};
+    max-width: 30em;
 
     @media (min-width: ${theme.sizes.breakpoints.large}) {
-      font-size: ${theme.fontSizes.largeScreens.L};
-      line-height: ${theme.lineHeights.largeScreens.L};
+      font-size: ${theme.fontSizes.largeScreens.M};
+      line-height: ${theme.lineHeights.largeScreens.M};
       margin-bottom: ${theme.sizes.baseLineHeight};
+    }
+  }
+
+  li {
+    font-size: ${theme.fontSizes.smallScreens.M};
+    line-height: ${theme.lineHeights.smallScreens.M};
+    max-width: 30em;
+
+    @media (min-width: ${theme.sizes.breakpoints.large}) {
+      font-size: ${theme.fontSizes.largeScreens.M};
+      line-height: ${theme.lineHeights.largeScreens.M};
     }
   }
 
@@ -77,10 +94,6 @@ const globalStyles = theme => () =>
     overflow-wrap: break-word;
     word-wrap: break-word;
     hyphens: auto;
-  }
-
-  p, li {
-    max-width: 30em;
   }
 
   ol, ul {
