@@ -7,7 +7,8 @@ import styled, { ThemeProvider } from 'styled-components'
 import theme from '../styles/theme'
 import globalStyles from '../styles/globalStyles'
 
-import Logo from './header'
+import Header from './header'
+import MainGrid, { MainGridColumns } from './mainGrid'
 
 const GlobalWrapper = styled.div`
   ${globalStyles(theme)};
@@ -19,19 +20,14 @@ const GlobalWrapper = styled.div`
   @supports (display: grid) {
     max-width: none;
     margin: 0;
-
-    display: grid;
-    grid-template-columns:
-      1.618fr
-      [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
-      1fr;
   }
 `
 
 const SideBackground = styled.div`
   background-color: ${props => props.theme.colors.lightBlue};
-  grid-column: side-column-start / 5;
+  grid-column: ${MainGridColumns.sideColumnStart} / ${MainGridColumns.rightEdge};
   grid-row: 1 / 4;
+  justify-self: stretch;
 `
 
 const Layout = ({ children }) => (
@@ -58,9 +54,11 @@ const Layout = ({ children }) => (
         </Helmet>
         <ThemeProvider theme={theme}>
           <GlobalWrapper>
-            <SideBackground />
-            <Logo />
-            {children}
+            <MainGrid>
+              <SideBackground />
+              <Header />
+              {children}
+            </MainGrid>
           </GlobalWrapper>
         </ThemeProvider>
       </>

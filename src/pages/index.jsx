@@ -18,6 +18,7 @@ import ProductGroupPhotoChirurgischeInstrumente from '../images/chirurgische-ins
 import ProductGroupPhotoMotorensysteme from '../images/motorensysteme.jpg'
 import ProductGroupPhotoRehabereich from '../images/rehabereich.jpg'
 import ContentBox from '../components/contentBox'
+import MainGrid from '../components/mainGrid'
 
 const IndexPage = () => (
   <Layout>
@@ -171,71 +172,73 @@ const IndexPage = () => (
       />
 
       <MainSection darkBackground="true" fullWidth="true">
-        <ContentBox>
-          <h2>Unser Warensortiment</h2>
-          <TileList>
-            <ProductGroup
-              name="Medizinische Geräte"
-              description="Unser Sortiment umfasst medizinische Geräte für unterschiedliche Anwendungsbereiche."
-              examples={[
-                'Absaugungen',
-                'Blutdruckmessung',
-                'Inhalation',
-                'Sterilisation',
-              ]}
-              photo={ProductGroupPhotoMedizinischeGeraete}
-            />
-            <ProductGroup
-              name="Medizinisches Mobilar"
-              description="Wir liefern qualitativ hochwertiges medizinisches Mobilar."
-              examples={[
-                'Einbauten',
-                'Funktionswägen',
-                'Liegen',
-                'OP-Tische',
-                'Patiententransport',
-                'Stühle und Hocker',
-              ]}
-              photo={ProductGroupPhotoMedizinischesMobilar}
-            />
-            <ProductGroup
-              name="Chirurgische Instrumente"
-              description="Wir führen chirurgische Instrumente in 1a-Qualität von Aesculap sowie auch in Stationsqualität."
-              examples={[
-                'Klemmen',
-                'Nadelhalter',
-                'Pinzetten',
-                'Scheren',
-                'Skalpelle',
-                'Wundhaken',
-                'Zangen',
-              ]}
-              photo={ProductGroupPhotoChirurgischeInstrumente}
-            />
-            <ProductGroup
-              name="Motorensysteme"
-              description="Wir vertreiben Motorensysteme für die Makro- und Mikrochirurgie."
-              examples={[
-                'Akkubetrieben',
-                'Druckluftbetrieben',
-                'Elektrisch betrieben',
-              ]}
-              photo={ProductGroupPhotoMotorensysteme}
-            />
-            <ProductGroup
-              name="Rehabereich"
-              description="Unser Sortiment umfasst eine große Auswahl von Produkten für den Rehabereich."
-              examples={[
-                'Rollstühle',
-                'Toilettenstühle',
-                'Patientenlifter',
-                'Badehilfen',
-                'Gehhilfen',
-              ]}
-              photo={ProductGroupPhotoRehabereich}
-            />
-          </TileList>
-        </ContentBox>
+        <MainGrid>
+          <ContentBox>
+            <h2>Unser Warensortiment</h2>
+            <TileList>
+              <ProductGroup
+                name="Medizinische Geräte"
+                description="Unser Sortiment umfasst medizinische Geräte für unterschiedliche Anwendungsbereiche."
+                examples={[
+                  'Absaugungen',
+                  'Blutdruckmessung',
+                  'Inhalation',
+                  'Sterilisation',
+                ]}
+                photo={ProductGroupPhotoMedizinischeGeraete}
+              />
+              <ProductGroup
+                name="Medizinisches Mobilar"
+                description="Wir liefern qualitativ hochwertiges medizinisches Mobilar."
+                examples={[
+                  'Einbauten',
+                  'Funktionswägen',
+                  'Liegen',
+                  'OP-Tische',
+                  'Patiententransport',
+                  'Stühle und Hocker',
+                ]}
+                photo={ProductGroupPhotoMedizinischesMobilar}
+              />
+              <ProductGroup
+                name="Chirurgische Instrumente"
+                description="Wir führen chirurgische Instrumente in 1a-Qualität von Aesculap sowie auch in Stationsqualität."
+                examples={[
+                  'Klemmen',
+                  'Nadelhalter',
+                  'Pinzetten',
+                  'Scheren',
+                  'Skalpelle',
+                  'Wundhaken',
+                  'Zangen',
+                ]}
+                photo={ProductGroupPhotoChirurgischeInstrumente}
+              />
+              <ProductGroup
+                name="Motorensysteme"
+                description="Wir vertreiben Motorensysteme für die Makro- und Mikrochirurgie."
+                examples={[
+                  'Akkubetrieben',
+                  'Druckluftbetrieben',
+                  'Elektrisch betrieben',
+                ]}
+                photo={ProductGroupPhotoMotorensysteme}
+              />
+              <ProductGroup
+                name="Rehabereich"
+                description="Unser Sortiment umfasst eine große Auswahl von Produkten für den Rehabereich."
+                examples={[
+                  'Rollstühle',
+                  'Toilettenstühle',
+                  'Patientenlifter',
+                  'Badehilfen',
+                  'Gehhilfen',
+                ]}
+                photo={ProductGroupPhotoRehabereich}
+              />
+            </TileList>
+          </ContentBox>
+        </MainGrid>
       </MainSection>
     </Article>
   </Layout>

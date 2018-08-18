@@ -2,11 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
+import MainGrid, { MainGridColumns } from './mainGrid'
 import CallToActionButton from './callToActionButton'
 import Photo from '../images/hero-image.jpg'
 import ContentBox from './contentBox'
 
-const HeroArea = styled.section`
+const HeroArea = MainGrid.withComponent('section').extend`
   background-image: url(${Photo});
   background-position: center center;
   background-size: cover;
@@ -16,15 +17,9 @@ const HeroArea = styled.section`
   padding-bottom: 60px;
 
   grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns:
-    1.618fr
-    [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
-    1fr;
-  justify-items: start;
 
   > * {
-    grid-column: main-column-start / main-column-end;
+    grid-column: ${MainGridColumns.mainColumn};
   }
 
   @supports (display: grid) {

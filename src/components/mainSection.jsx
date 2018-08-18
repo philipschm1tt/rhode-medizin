@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { MainGridColumns } from './mainGrid'
 
 const MainSection = styled.section`
   padding: ${props => props.theme.sizes.outerPadding};
@@ -8,7 +9,7 @@ const MainSection = styled.section`
       : props.theme.colors.lightYellow};
 
   grid-column: ${props =>
-    props.fullWidth ? '1 / -1' : 'main-column-start / main-column-end'};
+    props.fullWidth ? '1 / -1' : MainGridColumns.mainColumn};
 
   @supports (display: grid) {
     padding: ${props =>
@@ -22,21 +23,6 @@ const MainSection = styled.section`
         ? props.theme.colors.lightYellow
         : props.theme.colors.companyBlue};
   }
-
-  ${props =>
-    props.fullWidth
-      ? `
-        display: grid;
-        grid-template-columns:
-          1.618fr
-          [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
-          1fr;
-
-        > * {
-          grid-column: main-column-start / side-column-end;
-        }
-        `
-      : ''};
 `
 
 export default MainSection
