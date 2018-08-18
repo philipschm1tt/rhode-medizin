@@ -9,6 +9,7 @@ import ContentBox from './contentBox'
 const HeroArea = styled.section`
   background-image: url(${Photo});
   background-position: center center;
+  background-size: cover;
   padding-left: ${props => props.theme.sizes.outerPadding};
   padding-right: ${props => props.theme.sizes.outerPadding};
   padding-top: 40px;
@@ -17,9 +18,10 @@ const HeroArea = styled.section`
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns:
-    minmax(auto, 1fr)
+    1.618fr
     [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
-    minmax(auto, 1fr);
+    1fr;
+  justify-items: start;
 
   > * {
     grid-column: main-column-start / main-column-end;

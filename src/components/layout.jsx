@@ -22,10 +22,16 @@ const GlobalWrapper = styled.div`
 
     display: grid;
     grid-template-columns:
-      minmax(auto, 1fr)
+      1.618fr
       [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
-      minmax(auto, 1fr);
+      1fr;
   }
+`
+
+const SideBackground = styled.div`
+  background-color: ${props => props.theme.colors.lightBlue};
+  grid-column: side-column-start / 5;
+  grid-row: 1 / 4;
 `
 
 const Layout = ({ children }) => (
@@ -52,6 +58,7 @@ const Layout = ({ children }) => (
         </Helmet>
         <ThemeProvider theme={theme}>
           <GlobalWrapper>
+            <SideBackground />
             <Logo />
             {children}
           </GlobalWrapper>

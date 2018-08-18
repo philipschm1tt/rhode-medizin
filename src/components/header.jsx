@@ -9,6 +9,7 @@ const HeaderArea = styled.header`
   padding: ${props => props.theme.sizes.outerPadding};
 
   grid-column: main-column-start / side-column-end;
+  grid-row: 1;
 
   @supports (display: grid) {
     padding: 0;
@@ -32,7 +33,7 @@ const CompanyType = styled.div`
 
 const Header = () => (
   <HeaderArea>
-    <ContentBox>
+    <ContentBox extraVerticalPadding="true">
       <Logo
         src={logo}
         srcSet={`${logo}, ${logo2x} 2x`}
