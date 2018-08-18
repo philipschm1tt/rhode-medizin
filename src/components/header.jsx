@@ -7,6 +7,12 @@ import ContentBox from './contentBox'
 const HeaderArea = styled.header`
   color: ${props => props.theme.colors.companyBlue};
   padding: ${props => props.theme.sizes.outerPadding};
+
+  grid-column: main-column-start / side-column-end;
+
+  @supports (display: grid) {
+    padding: 0;
+  }
 `
 
 const Logo = styled.img`

@@ -9,9 +9,26 @@ import ContentBox from './contentBox'
 const HeroArea = styled.section`
   background-image: url(${Photo});
   background-position: center center;
-  padding: ${props => props.theme.sizes.outerPadding};
+  padding-left: ${props => props.theme.sizes.outerPadding};
+  padding-right: ${props => props.theme.sizes.outerPadding};
   padding-top: 40px;
   padding-bottom: 60px;
+
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns:
+    minmax(auto, 1fr)
+    [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
+    minmax(auto, 1fr);
+
+  > * {
+    grid-column: main-column-start / main-column-end;
+  }
+
+  @supports (display: grid) {
+    padding-left: 0;
+    padding-right: 0;
+  }
 `
 const Overlay = styled(ContentBox)`
   background-color: ${props => props.theme.colors.overlay};

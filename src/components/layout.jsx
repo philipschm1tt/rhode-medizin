@@ -15,6 +15,17 @@ const GlobalWrapper = styled.div`
   max-width: 960px;
   margin: 0 auto;
   background-color: ${theme.colors.lightYellow};
+
+  @supports (display: grid) {
+    max-width: none;
+    margin: 0;
+
+    display: grid;
+    grid-template-columns:
+      minmax(auto, 1fr)
+      [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
+      minmax(auto, 1fr);
+  }
 `
 
 const Layout = ({ children }) => (

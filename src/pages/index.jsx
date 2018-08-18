@@ -30,7 +30,13 @@ const IndexPage = () => (
 
       <MainSection>
         <ContentBox>
-          <h2>Service, Beratung, Reparatur</h2>
+          <h2>
+            Service,
+            <br />
+            Beratung,
+            <br />
+            Reparatur
+          </h2>
           <ul>
             <li>kostenlose Beratung</li>
             <li>kostenlose Erstellung von Angeboten</li>
@@ -65,7 +71,10 @@ const IndexPage = () => (
         </ContentBox>
       </AsideSection>
 
-      <Quote text="Wir nehmen uns Zeit für Sie – Service ist unsere Stärke." />
+      <Quote
+        text="Wir nehmen uns Zeit für Sie – Service ist unsere Stärke."
+        gridRow="3"
+      />
 
       <MainSection>
         <ContentBox>
@@ -156,9 +165,12 @@ const IndexPage = () => (
         </ContentBox>
       </AsideSection>
 
-      <Quote text="Wer an Qualität spart, spart am falschen Ende." />
+      <Quote
+        text="Wer an Qualität spart, spart am falschen Ende."
+        gridRow="5"
+      />
 
-      <MainSection darkBackground="true">
+      <MainSection darkBackground="true" fullWidth="true">
         <ContentBox>
           <h2>Unser Warensortiment</h2>
           <TileList>
