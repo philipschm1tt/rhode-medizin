@@ -9,7 +9,6 @@ const ProductGroupTile = styled.div`
   max-width: 100%;
 
   @media (min-width: 900px) {
-    min-height: 260px;
     display: grid;
     grid-template-columns: 1fr 1.618fr;
     grid-template-rows: min-content 1fr;
