@@ -90,12 +90,6 @@ const globalStyles = theme => () =>
     }
   }
 
-  h1, h2 {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    hyphens: auto;
-  }
-
   ol, ul {
     list-style: inside;
     margin: ${theme.sizes.halfBaseLineHeight} 0;
