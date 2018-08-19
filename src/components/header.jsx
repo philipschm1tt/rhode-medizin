@@ -2,13 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import logo from '../images/logo.png'
 import logo2x from '../images/logo@2x.png'
+import MainGrid, { MainGridColumns } from './mainGrid'
 import ContentBox from './contentBox'
 
-const HeaderArea = styled.header`
+const HeaderArea = MainGrid.withComponent('header').extend`
   color: ${props => props.theme.colors.companyBlue};
   padding: ${props => props.theme.sizes.outerPadding};
 
-  grid-column: main-column-start / side-column-end;
+  grid-column: ${MainGridColumns.fullWidth};
   grid-row: 1;
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {

@@ -16,7 +16,6 @@ const HeroArea = MainGrid.withComponent('section').extend`
   margin-bottom: ${props => props.theme.sizes.baseLineHeight};
 
   grid-column: 1 / -1;
-  justify-self: stretch;
 
   > * {
     grid-column: ${MainGridColumns.mainColumn};
@@ -36,6 +35,7 @@ const Overlay = styled(ContentBox)`
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
   margin-bottom: ${props => props.theme.sizes.baseLineHeight};
   display: inline-block;
+  justify-self: start;
 `
 
 const MainHeadline = styled.h1`

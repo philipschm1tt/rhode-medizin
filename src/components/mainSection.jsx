@@ -9,8 +9,7 @@ const MainSection = styled.section`
       : props.theme.colors.lightYellow};
 
   grid-column: ${props =>
-    props.fullWidth ? '1 / -1' : MainGridColumns.mainColumn};
-  justify-self: stretch;
+    props.fullWidth ? MainGridColumns.fullWidth : MainGridColumns.mainColumn};
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
     @supports (display: grid) {

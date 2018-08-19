@@ -1,7 +1,7 @@
-import MainGrid from './mainGrid'
+import MainGrid, { MainGridColumns } from './mainGrid'
 
 const Article = MainGrid.withComponent('article').extend`
-  grid-column: 1 / -1;
+  grid-column: ${MainGridColumns.fullWidth};
   grid-row: 2;
 `
 

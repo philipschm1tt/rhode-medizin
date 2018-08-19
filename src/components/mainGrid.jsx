@@ -7,11 +7,11 @@ const MainGrid = styled.div`
       1.618fr
       [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
       1fr;
-    justify-items: start;
+    justify-items: stretch;
+  }
 
-    > * {
-      grid-column: main-column-start / side-column-end;
-    }
+  > * {
+    grid-column: main-column-start / side-column-end;
   }
 `
 
@@ -24,6 +24,7 @@ export const MainGridColumns = {
   sideColumn: 'side-column-start / side-column-end',
   sideColumnStart: 'side-column-start',
   sideColumnEnd: 'side-column-end',
+  fullWidth: '1 / 5',
 }
 
 export default MainGrid

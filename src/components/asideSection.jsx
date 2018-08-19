@@ -1,12 +1,12 @@
 import styled from 'styled-components'
+import { MainGridColumns } from './mainGrid'
 
 const AsideSection = styled.aside`
   padding: ${props => props.theme.sizes.outerPadding};
   background-color: ${props => props.theme.colors.lightBlue};
 
-  grid-column: side-column-start / side-column-end;
+  grid-column: ${MainGridColumns.sideColumn};
   grid-row: ${props => (props.gridRow ? props.gridRow : 'unset')};
-  justify-self: stretch;
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
     @supports (display: grid) {

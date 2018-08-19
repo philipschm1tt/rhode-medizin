@@ -8,6 +8,7 @@ import theme from '../styles/theme'
 import globalStyles from '../styles/globalStyles'
 
 import Header from './header'
+import Footer from './footer'
 import MainGrid, { MainGridColumns } from './mainGrid'
 
 const GlobalWrapper = styled.div`
@@ -29,7 +30,6 @@ const SideBackground = styled.div`
   background-color: ${props => props.theme.colors.lightBlue};
   grid-column: ${MainGridColumns.sideColumnStart} / ${MainGridColumns.rightEdge};
   grid-row: 1 / 4;
-  justify-self: stretch;
 `
 
 const Layout = ({ children }) => (
@@ -60,6 +60,7 @@ const Layout = ({ children }) => (
               <SideBackground />
               <Header />
               {children}
+              <Footer />
             </MainGrid>
           </GlobalWrapper>
         </ThemeProvider>

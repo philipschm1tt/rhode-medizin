@@ -10,6 +10,10 @@ const globalStyles = theme => () =>
     font-family: sans-serif;
   }
 
+  h1, h2, h3 {
+    color: ${theme.colors.companyBlue};
+  }
+
   h1 {
     font-size: ${theme.fontSizes.smallScreens.XXL};
     line-height: ${theme.lineHeights.smallScreens.XXL};

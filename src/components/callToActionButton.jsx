@@ -12,6 +12,7 @@ const CallToActionButton = styled.button`
   font-size: ${props => props.theme.fontSizes.smallScreens.L};
   line-height: ${props => props.theme.lineHeights.smallScreens.L};
   font-weight: bold;
+  justify-self: start;
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
     font-size: ${props => props.theme.fontSizes.largeScreens.L};
