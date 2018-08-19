@@ -8,7 +8,9 @@ const Box = styled.aside`
   background-color: ${props => props.theme.colors.companyBlue};
   padding: ${props => props.theme.sizes.baseLineHeight};
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
-  margin: ${props => props.theme.sizes.doubleBaseLineHeight};
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: ${props => props.theme.sizes.doubleBaseLineHeight};
   margin-top: ${props => props.theme.sizes.baseLineHeight};
   display: inline-block;
   width: 50%;
