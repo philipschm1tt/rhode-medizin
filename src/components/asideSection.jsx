@@ -6,9 +6,12 @@ const AsideSection = styled.aside`
 
   grid-column: side-column-start / side-column-end;
   grid-row: ${props => (props.gridRow ? props.gridRow : 'unset')};
+  justify-self: stretch;
 
-  @supports (display: grid) {
-    padding: 0;
+  @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+    @supports (display: grid) {
+      padding: 0;
+    }
   }
 
   h3 {

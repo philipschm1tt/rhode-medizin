@@ -22,9 +22,11 @@ const HeroArea = MainGrid.withComponent('section').extend`
     grid-column: ${MainGridColumns.mainColumn};
   }
 
-  @supports (display: grid) {
-    padding-left: 0;
-    padding-right: 0;
+  @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+    @supports (display: grid) {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 `
 const Overlay = styled(ContentBox)`

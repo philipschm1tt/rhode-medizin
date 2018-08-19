@@ -11,8 +11,10 @@ const HeaderArea = styled.header`
   grid-column: main-column-start / side-column-end;
   grid-row: 1;
 
-  @supports (display: grid) {
-    padding: 0;
+  @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+    @supports (display: grid) {
+      padding: 0;
+    }
   }
 `
 

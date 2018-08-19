@@ -10,11 +10,14 @@ const MainSection = styled.section`
 
   grid-column: ${props =>
     props.fullWidth ? '1 / -1' : MainGridColumns.mainColumn};
+  justify-self: stretch;
 
-  @supports (display: grid) {
-    padding: ${props =>
-        props.fullWidth ? props.theme.sizes.innerPadding : '0'}
-      0;
+  @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+    @supports (display: grid) {
+      padding: ${props =>
+          props.fullWidth ? props.theme.sizes.innerPadding : '0'}
+        0;
+    }
   }
 
   h2 {

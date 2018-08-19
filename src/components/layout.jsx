@@ -17,9 +17,11 @@ const GlobalWrapper = styled.div`
   margin: 0 auto;
   background-color: ${theme.colors.lightYellow};
 
-  @supports (display: grid) {
-    max-width: none;
-    margin: 0;
+  @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+    @supports (display: grid) {
+      max-width: none;
+      margin: 0;
+    }
   }
 `
 

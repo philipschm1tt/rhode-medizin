@@ -1,15 +1,17 @@
 import styled from 'styled-components'
 
 const MainGrid = styled.div`
-  display: grid;
-  grid-template-columns:
-    1.618fr
-    [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
-    1fr;
-  justify-items: start;
+  @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+    display: grid;
+    grid-template-columns:
+      1.618fr
+      [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end]
+      1fr;
+    justify-items: start;
 
-  > * {
-    grid-column: main-column-start / side-column-end;
+    > * {
+      grid-column: main-column-start / side-column-end;
+    }
   }
 `
 
