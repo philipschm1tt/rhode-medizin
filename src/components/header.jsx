@@ -1,9 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import logo from '../images/logo.png'
-import logo2x from '../images/logo@2x.png'
+import { Link } from 'gatsby'
+
 import MainGrid, { MainGridColumns } from './mainGrid'
 import ContentBox from './contentBox'
+
+import logo from '../images/logo.png'
+import logo2x from '../images/logo@2x.png'
 
 const HeaderArea = MainGrid.withComponent('header').extend`
   color: ${props => props.theme.colors.companyBlue};
@@ -37,11 +40,13 @@ const CompanyType = styled.div`
 const Header = () => (
   <HeaderArea>
     <ContentBox extraVerticalPadding="true">
-      <Logo
-        src={logo}
-        srcSet={`${logo}, ${logo2x} 2x`}
-        alt="Heinrich Rhode GmbH"
-      />
+      <Link to="/">
+        <Logo
+          src={logo}
+          srcSet={`${logo}, ${logo2x} 2x`}
+          alt="Heinrich Rhode GmbH"
+        />
+      </Link>
       <CompanyType>Medizintechnik</CompanyType>
     </ContentBox>
   </HeaderArea>

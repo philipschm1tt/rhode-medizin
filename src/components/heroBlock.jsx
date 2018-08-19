@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Link } from 'gatsby'
 
 import MainGrid, { MainGridColumns } from './mainGrid'
 import CallToActionButton from './callToActionButton'
@@ -56,7 +57,11 @@ const HeroBlock = props => (
       <SubHeadline>{props.subHeadline}</SubHeadline>
     </Overlay>
     <br />
-    <CallToActionButton type="button">{props.callToAction}</CallToActionButton>
+    <Link to="/imprint/">
+      <CallToActionButton type="button">
+        {props.callToAction}
+      </CallToActionButton>
+    </Link>
   </HeroArea>
 )
 
