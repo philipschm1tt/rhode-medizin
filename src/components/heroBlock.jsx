@@ -11,12 +11,12 @@ const HeroArea = MainGrid.withComponent('section').extend`
   background-image: url(${Photo});
   background-position: center center;
   background-size: cover;
-  padding-left: ${props => props.theme.sizes.outerPadding};
-  padding-right: ${props => props.theme.sizes.outerPadding};
-  padding-top: 40px;
-  padding-bottom: 60px;
+  padding: ${props => props.theme.sizes.tripleBaseLineHeight}
+    ${props => props.theme.sizes.outerPadding};
+  margin-bottom: ${props => props.theme.sizes.baseLineHeight};
 
   grid-column: 1 / -1;
+  justify-self: stretch;
 
   > * {
     grid-column: ${MainGridColumns.mainColumn};

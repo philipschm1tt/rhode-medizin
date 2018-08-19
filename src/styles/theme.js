@@ -49,5 +49,6 @@ export default {
     halfBaseLineHeight: '13px',
     baseLineHeight: '26px',
     doubleBaseLineHeight: '52px',
+    tripleBaseLineHeight: '78px',
   },
 }
