@@ -11,25 +11,49 @@ const Box = styled.aside`
   margin: ${props => props.theme.sizes.doubleBaseLineHeight};
   margin-top: ${props => props.theme.sizes.baseLineHeight};
   display: inline-block;
-  font-size: ${props => props.theme.fontSizes.smallScreens.XL};
-  line-height: 1.2;
-  font-weight: bold;
   width: 50%;
+  min-width: 260px;
 
   grid-column: main-column-start / side-column-end;
   grid-row: ${props => (props.gridRow ? props.gridRow : 'unset')};
   justify-self: center;
 
-  @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
-    font-size: ${props => props.theme.fontSizes.largeScreens.XL};
+  @media (max-width: ${props => props.theme.sizes.breakpoints.large}) {
+    padding: ${props => props.theme.sizes.halfBaseLineHeight};
+  }
+
+  p {
+    font-size: ${props => props.theme.fontSizes.smallScreens.XL};
     line-height: 1.2;
+    font-weight: bold;
+    margin: 0;
+
+    @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+      font-size: ${props => props.theme.fontSizes.largeScreens.XL};
+      line-height: 1.2;
+    }
+  }
+
+  @supports (display: grid) {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+
+    &::before {
+      grid-column: 1;
+      content: '“';
+      font-size: ${props => props.theme.sizes.doubleBaseLineHeight};
+      font-weight: bold;
+      margin-right: ${props => props.theme.sizes.halfBaseLineHeight};
+    }
   }
 `
 
 const Quote = props => (
   <>
     <AsideSection gridRow={props.gridRow} />
-    <Box gridRow={props.gridRow}>{props.text}</Box>
+    <Box gridRow={props.gridRow}>
+      <p>{props.text}</p>
+    </Box>
   </>
 )
 
