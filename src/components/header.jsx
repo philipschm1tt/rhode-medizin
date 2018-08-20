@@ -22,6 +22,13 @@ const HeaderArea = MainGrid.withComponent('header').extend`
   }
 `
 
+const ConstructionBanner = styled.div`
+  color: white;
+  background-color: #c31616;
+  grid-column: ${MainGridColumns.fullWidth};
+  text-align: center;
+`
+
 const Logo = styled.img`
   max-width: 100%;
 `
@@ -39,6 +46,9 @@ const CompanyType = styled.div`
 
 const Header = () => (
   <HeaderArea>
+    <ConstructionBanner>
+      <ContentBox>UNDER CONSTRUCTION</ContentBox>
+    </ConstructionBanner>
     <ContentBox extraVerticalPadding="true">
       <Link to="/">
         <Logo
