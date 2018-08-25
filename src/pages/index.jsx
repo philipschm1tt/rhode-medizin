@@ -84,49 +84,41 @@ const IndexPage = () => (
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
             <EmployeeTile
               name="Max Mustermann"
               department="Außendienst"
-              since="seit 1996"
               photo={EmployeePhoto}
             />
           </TileGrid>

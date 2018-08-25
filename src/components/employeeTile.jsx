@@ -27,8 +27,6 @@ const EmployeeTile = props => (
       {props.name}
       <br />
       {props.department}
-      <br />
-      {props.since}
     </CaptionArea>
   </Tile>
 )
@@ -36,7 +34,6 @@ const EmployeeTile = props => (
 EmployeeTile.propTypes = {
   name: PropTypes.string.isRequired,
   department: PropTypes.string.isRequired,
-  since: PropTypes.string.isRequired,
   photo: PropTypes.string.isRequired,
 }
 
