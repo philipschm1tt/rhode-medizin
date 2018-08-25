@@ -21,12 +21,12 @@ const CaptionArea = styled.div`
   padding: 5px 10px;
 `
 
-const EmployeeTile = props => (
-  <Tile photo={props.photo}>
+const EmployeeTile = ({ name, department, photo }) => (
+  <Tile photo={photo}>
     <CaptionArea>
-      {props.name}
+      {name}
       <br />
-      {props.department}
+      {department}
     </CaptionArea>
   </Tile>
 )
