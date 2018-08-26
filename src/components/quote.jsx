@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import AsideSection from './asideSection'
 
 const Box = styled.aside`
   color: ${props => props.theme.colors.yellow};
@@ -17,7 +16,6 @@ const Box = styled.aside`
   min-width: 260px;
 
   grid-column: main-column-start / side-column-end;
-  grid-row: ${props => (props.gridRow ? props.gridRow : 'unset')};
   justify-self: center;
 
   @media (max-width: ${props => props.theme.sizes.breakpoints.large}) {
@@ -52,8 +50,7 @@ const Box = styled.aside`
 
 const Quote = props => (
   <>
-    <AsideSection gridRow={props.gridRow} />
-    <Box gridRow={props.gridRow}>
+    <Box>
       <p>{props.text}</p>
     </Box>
   </>
@@ -61,7 +58,6 @@ const Quote = props => (
 
 Quote.propTypes = {
   text: PropTypes.string.isRequired,
-  gridRow: PropTypes.string,
 }
 
 export default Quote
