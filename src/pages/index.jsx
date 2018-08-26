@@ -20,9 +20,9 @@ const IndexPage = props => (
   <Layout>
     <Article>
       <HeroBlock
-        mainHeadline="Medizintechnik mit Tradition"
-        subHeadline="Medizinische Geräte, Instrumente und Mobilar für Ärzte und Krankenhäuser mit Liefer- und Aufstellservice in Oberbayern."
-        callToAction="Jetzt Kontakt aufnehmen"
+        mainHeadline={props.data.page.hauptueberschrift}
+        subHeadline={props.data.page.unterueberschrift}
+        callToAction={props.data.page.callToAction.text}
       />
 
       <MainSection>
@@ -47,10 +47,7 @@ const IndexPage = props => (
         />
       </AsideSection>
 
-      <Quote
-        text="Wir nehmen uns Zeit für Sie – Service ist unsere Stärke."
-        gridRow="3"
-      />
+      <Quote text={props.data.quotes.edges[0].node.zitat} gridRow="3" />
 
       <MainSection>
         <ContentBox>
@@ -79,10 +76,7 @@ const IndexPage = props => (
         />
       </AsideSection>
 
-      <Quote
-        text="Wer an Qualität spart, spart am falschen Ende."
-        gridRow="5"
-      />
+      <Quote text={props.data.quotes.edges[1].node.zitat} gridRow="5" />
 
       <MainSection darkBackground="true" fullWidth="true">
         <MainGrid>
@@ -114,6 +108,20 @@ export default IndexPage
 
 export const pageQuery = graphql`
   query {
+    page: contentfulSeite(slug: { eq: "index" }) {
+      hauptueberschrift
+      unterueberschrift
+      callToAction {
+        text
+      }
+    }
+    quotes: allContentfulZitat {
+      edges {
+        node {
+          zitat
+        }
+      }
+    }
     service: contentfulAbschnitt(
       titel: { eq: "Service, Beratung, Reparatur" }
     ) {
