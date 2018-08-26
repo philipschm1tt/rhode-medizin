@@ -13,16 +13,12 @@ import HeroBlock from '../components/heroBlock'
 import MainSection from '../components/mainSection'
 import AsideSection from '../components/asideSection'
 
-import ProductGroupPhotoMedizinischeGeraete from '../images/medizinische-geraete.jpg'
-import ProductGroupPhotoMedizinischesMobilar from '../images/medizinisches-mobilar.jpg'
-import ProductGroupPhotoChirurgischeInstrumente from '../images/chirurgische-instrumente.jpg'
-import ProductGroupPhotoMotorensysteme from '../images/motorensysteme.jpg'
-import ProductGroupPhotoRehabereich from '../images/rehabereich.jpg'
 import ContentBox from '../components/contentBox'
 import MainGrid from '../components/mainGrid'
 
 const IndexPage = props => {
   const employeeEdges = props.data.employees.edges
+  const productGroupEdges = props.data.productGroups.edges
   return (
     <Layout>
       <Article>
@@ -141,66 +137,15 @@ const IndexPage = props => {
             <ContentBox>
               <h2>Unser Warensortiment</h2>
               <TileList>
-                <ProductGroup
-                  name="Medizinische Geräte"
-                  description="Unser Sortiment umfasst medizinische Geräte für unterschiedliche Anwendungsbereiche."
-                  examples={[
-                    'Absaugungen',
-                    'Blutdruckmessung',
-                    'Inhalation',
-                    'Sterilisation',
-                  ]}
-                  photo={ProductGroupPhotoMedizinischeGeraete}
-                />
-                <ProductGroup
-                  name="Medizinisches Mobilar"
-                  description="Wir liefern qualitativ hochwertiges medizinisches Mobilar."
-                  examples={[
-                    'Einbauten',
-                    'Funktionswägen',
-                    'Liegen',
-                    'OP-Tische',
-                    'Patiententransport',
-                    'Stühle und Hocker',
-                  ]}
-                  photo={ProductGroupPhotoMedizinischesMobilar}
-                />
-                <ProductGroup
-                  name="Chirurgische Instrumente"
-                  description="Wir führen chirurgische Instrumente in 1a-Qualität von Aesculap sowie auch in Stationsqualität."
-                  examples={[
-                    'Klemmen',
-                    'Nadelhalter',
-                    'Pinzetten',
-                    'Scheren',
-                    'Skalpelle',
-                    'Wundhaken',
-                    'Zangen',
-                  ]}
-                  photo={ProductGroupPhotoChirurgischeInstrumente}
-                />
-                <ProductGroup
-                  name="Motorensysteme"
-                  description="Wir vertreiben Motorensysteme für die Makro- und Mikrochirurgie."
-                  examples={[
-                    'Akkubetrieben',
-                    'Druckluftbetrieben',
-                    'Elektrisch betrieben',
-                  ]}
-                  photo={ProductGroupPhotoMotorensysteme}
-                />
-                <ProductGroup
-                  name="Rehabereich"
-                  description="Unser Sortiment umfasst eine große Auswahl von Produkten für den Rehabereich."
-                  examples={[
-                    'Rollstühle',
-                    'Toilettenstühle',
-                    'Patientenlifter',
-                    'Badehilfen',
-                    'Gehhilfen',
-                  ]}
-                  photo={ProductGroupPhotoRehabereich}
-                />
+                {productGroupEdges.map(({ node }) => (
+                  <ProductGroup
+                    name={node.name}
+                    description={node.beschreibung.beschreibung}
+                    examples={node.beispiele}
+                    photo={node.foto.fixed.src}
+                    key={node.name}
+                  />
+                ))}
               </TileList>
             </ContentBox>
           </MainGrid>
@@ -223,6 +168,28 @@ export const pageQuery = graphql`
         node {
           name
           dienstbereich
+          foto {
+            fixed {
+              base64
+              width
+              height
+              src
+              srcSet
+              srcWebp
+              srcSetWebp
+            }
+          }
+        }
+      }
+    }
+    productGroups: allContentfulProduktgruppe {
+      edges {
+        node {
+          name
+          beschreibung {
+            beschreibung
+          }
+          beispiele
           foto {
             fixed {
               base64
