@@ -225,7 +225,13 @@ export const pageQuery = graphql`
           dienstbereich
           foto {
             fixed {
-              ...GatsbyContentfulFixed_withWebp
+              base64
+              width
+              height
+              src
+              srcSet
+              srcWebp
+              srcSetWebp
             }
           }
         }
