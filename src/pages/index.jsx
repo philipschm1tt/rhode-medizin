@@ -29,48 +29,25 @@ const IndexPage = props => {
         />
 
         <MainSection>
-          <ContentBox>
-            <h2>
-              Service,
-              <br />
-              Beratung,
-              <br />
-              Reparatur
-            </h2>
-            <ul>
-              <li>kostenlose Beratung</li>
-              <li>kostenlose Erstellung von Angeboten</li>
-              <li>Vor-Ort-Service</li>
-              <li>
-                Abholung und Durchführung von Reparaturen, mit anschließender
-                Lieferung
-              </li>
-              <li>
-                schnelle Reaktionszeit durch sofortige Auftragsbearbeitung
-              </li>
-              <li>breites Warensortiment</li>
-            </ul>
-          </ContentBox>
+          <ContentBox
+            dangerouslySetInnerHTML={{
+              __html:
+                props.data.service.inhalte[0]
+                  .childContentfulTextabschnittTextTextNode.childMarkdownRemark
+                  .html,
+            }}
+          />
         </MainSection>
 
         <AsideSection>
-          <ContentBox>
-            <h3>DIN ISO 9001:2008</h3>
-            <p>
-              Die Heinrich Rhode GmbH ist nach DIN ISO 9001:2008 zertifiziert.
-            </p>
-            <h4>Zertifizierungsstelle</h4>
-            <p>TÜV SÜD Management Service GmbH</p>
-            <h4>Geltungsbereich</h4>
-            <p>
-              Vertrieb von chirurgischem Instrumentatium, medizinischen Geräten,
-              Mobilar und Implantaten.
-            </p>
-            <h4>Zertifikat-Registrier-Nummer</h4>
-            <p>12 100 11122 TMS</p>
-            <h4>Gültig bis</h4>
-            <p>September 2018</p>
-          </ContentBox>
+          <ContentBox
+            dangerouslySetInnerHTML={{
+              __html:
+                props.data.service.seitenabschnitt.inhalte[0]
+                  .childContentfulTextabschnittTextTextNode.childMarkdownRemark
+                  .html,
+            }}
+          />
         </AsideSection>
 
         <Quote
@@ -199,6 +176,32 @@ export const pageQuery = graphql`
               srcSet
               srcWebp
               srcSetWebp
+            }
+          }
+        }
+      }
+    }
+    service: contentfulAbschnitt(
+      titel: { eq: "Service, Beratung, Reparatur" }
+    ) {
+      inhalte {
+        __typename
+        ... on ContentfulTextabschnitt {
+          childContentfulTextabschnittTextTextNode {
+            childMarkdownRemark {
+              html
+            }
+          }
+        }
+      }
+      seitenabschnitt {
+        inhalte {
+          __typename
+          ... on ContentfulTextabschnitt {
+            childContentfulTextabschnittTextTextNode {
+              childMarkdownRemark {
+                html
+              }
             }
           }
         }
