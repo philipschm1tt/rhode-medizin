@@ -16,6 +16,7 @@ const MainSection = styled.section`
       padding: ${props =>
           props.fullWidth ? props.theme.sizes.innerPadding : '0'}
         0;
+      padding-right: ${props => props.theme.sizes.innerPadding};
     }
   }
 
