@@ -62,27 +62,23 @@ const ModuleTemplate = ({ module }) => {
         />
       )
       break
-    case 'ContentfulGitterlayout':
+    case 'ContentfulKartenLayout':
       component = (
         <ContentBox>
           <h2>{module.titel}</h2>
-          <TileGrid>
-            {module.elemente.map(element => (
-              <ModuleTemplate module={element} key={element.name} />
-            ))}
-          </TileGrid>
-        </ContentBox>
-      )
-      break
-    case 'ContentfulListenlayout':
-      component = (
-        <ContentBox>
-          <h2>{module.titel}</h2>
-          <TileList>
-            {module.elemente.map(element => (
-              <ModuleTemplate module={element} key={element.name} />
-            ))}
-          </TileList>
+          {module.layout === 'Gitter' ? (
+            <TileGrid>
+              {module.elemente.map(element => (
+                <ModuleTemplate module={element} key={element.name} />
+              ))}
+            </TileGrid>
+          ) : (
+            <TileList>
+              {module.elemente.map(element => (
+                <ModuleTemplate module={element} key={element.name} />
+              ))}
+            </TileList>
+          )}
         </ContentBox>
       )
       break
@@ -173,7 +169,10 @@ export const pageQuery = graphql`
                 }
               }
             }
-            ... on ContentfulGitterlayout {
+            ... on ContentfulKartenLayout {
+              id
+              titel
+              layout
               elemente {
                 __typename
                 ... on ContentfulMitarbeiter {
@@ -191,11 +190,6 @@ export const pageQuery = graphql`
                     }
                   }
                 }
-              }
-            }
-            ... on ContentfulListenlayout {
-              elemente {
-                __typename
                 ... on ContentfulProduktgruppe {
                   name
                   beschreibung {
