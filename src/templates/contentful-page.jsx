@@ -24,6 +24,7 @@ const ModuleTemplate = ({ module }) => {
           mainHeadline={module.hauptueberschrift}
           subHeadline={module.unterueberschrift}
           callToAction={module.callToAction.text}
+          image={module.bild.fixed.src}
         />
       )
       break

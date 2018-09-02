@@ -5,11 +5,10 @@ import { Link } from 'gatsby'
 
 import MainGrid, { MainGridColumns } from './mainGrid'
 import CallToActionButton from './callToActionButton'
-import Photo from '../images/hero-image.jpg'
 import ContentBox from './contentBox'
 
 const HeroArea = MainGrid.withComponent('section').extend`
-  background-image: url(${Photo});
+  background-image: url(${props => props.image});
   background-position: center center;
   background-size: cover;
   padding: ${props => props.theme.sizes.tripleBaseLineHeight}
@@ -51,7 +50,7 @@ const SubHeadline = styled.p`
 `
 
 const HeroBlock = props => (
-  <HeroArea>
+  <HeroArea image={props.image}>
     <Overlay>
       <MainHeadline>{props.mainHeadline}</MainHeadline>
       <SubHeadline>{props.subHeadline}</SubHeadline>
@@ -69,6 +68,7 @@ HeroBlock.propTypes = {
   mainHeadline: PropTypes.string.isRequired,
   subHeadline: PropTypes.string.isRequired,
   callToAction: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
 }
 
 export default HeroBlock
