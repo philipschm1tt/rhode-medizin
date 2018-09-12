@@ -7,7 +7,7 @@ import MainGrid, { MainGridColumns } from './mainGrid'
 import CallToActionButton from './callToActionButton'
 import ContentBox from './contentBox'
 
-const HeroArea = MainGrid.withComponent('section').extend`
+const HeroArea = styled(MainGrid)`
   background-image: url(${props => props.image});
   background-position: center center;
   background-size: cover;
@@ -28,6 +28,7 @@ const HeroArea = MainGrid.withComponent('section').extend`
     }
   }
 `
+
 const Overlay = styled(ContentBox)`
   background-color: ${props => props.theme.colors.overlay};
   border: 1px solid white;
@@ -50,7 +51,7 @@ const SubHeadline = styled.p`
 `
 
 const HeroBlock = props => (
-  <HeroArea image={props.image}>
+  <HeroArea image={props.image} as="section">
     <Overlay>
       <MainHeadline>{props.mainHeadline}</MainHeadline>
       <SubHeadline>{props.subHeadline}</SubHeadline>

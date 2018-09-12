@@ -5,15 +5,13 @@ import { StaticQuery, graphql } from 'gatsby'
 import styled, { ThemeProvider } from 'styled-components'
 
 import theme from '../styles/theme'
-import globalStyles from '../styles/globalStyles'
+import GlobalStyle from '../styles/globalStyle'
 
 import Header from './header'
 import Footer from './footer'
 import MainGrid, { MainGridColumns } from './mainGrid'
 
 const GlobalWrapper = styled.div`
-  ${globalStyles(theme)};
-
   max-width: 960px;
   margin: 0 auto;
   background-color: ${theme.colors.lightYellow};
@@ -55,14 +53,17 @@ const Layout = ({ children }) => (
           <html lang="de" />
         </Helmet>
         <ThemeProvider theme={theme}>
-          <GlobalWrapper>
-            <MainGrid>
-              <SideBackground />
-              <Header />
-              {children}
-              <Footer />
-            </MainGrid>
-          </GlobalWrapper>
+          <>
+            <GlobalStyle theme={theme} />
+            <GlobalWrapper>
+              <MainGrid>
+                <SideBackground />
+                <Header />
+                {children}
+                <Footer />
+              </MainGrid>
+            </GlobalWrapper>
+          </>
         </ThemeProvider>
       </>
     )}

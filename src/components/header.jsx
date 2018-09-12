@@ -8,12 +8,9 @@ import ContentBox from './contentBox'
 import logo from '../images/logo.png'
 import logo2x from '../images/logo@2x.png'
 
-const HeaderArea = MainGrid.withComponent('header').extend`
+const HeaderArea = styled(MainGrid)`
   color: ${props => props.theme.colors.companyBlue};
   padding: ${props => props.theme.sizes.outerPadding};
-
-  grid-column: ${MainGridColumns.fullWidth};
-  grid-row: 1;
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
     @supports (display: grid) {
@@ -45,7 +42,7 @@ const CompanyType = styled.div`
 `
 
 const Header = () => (
-  <HeaderArea>
+  <HeaderArea gridRow="1" as="header">
     <ConstructionBanner>
       <ContentBox>UNDER CONSTRUCTION</ContentBox>
     </ConstructionBanner>
