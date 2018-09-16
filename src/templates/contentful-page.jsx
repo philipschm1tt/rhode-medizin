@@ -142,10 +142,7 @@ export const pageQuery = graphql`
             text
           }
           bild {
-            fixed {
-              base64
-              width
-              height
+            fixed(width: 1600) {
               src
               srcSet
               srcWebp
@@ -179,10 +176,7 @@ export const pageQuery = graphql`
                   name
                   dienstbereich
                   foto {
-                    fixed {
-                      base64
-                      width
-                      height
+                    fixed(width: 300) {
                       src
                       srcSet
                       srcWebp
@@ -197,10 +191,7 @@ export const pageQuery = graphql`
                   }
                   beispiele
                   foto {
-                    fixed {
-                      base64
-                      width
-                      height
+                    fixed(width: 700) {
                       src
                       srcSet
                       srcWebp
