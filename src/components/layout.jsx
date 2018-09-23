@@ -33,10 +33,56 @@ const SideBackground = styled.div`
 const Layout = ({ children }) => (
   <StaticQuery
     query={graphql`
-      query SiteTitleQuery {
+      {
         site {
           siteMetadata {
             title
+          }
+        }
+        contentfulFontContainer(name: { eq: "NeuzeitOffice" }) {
+          name
+          lizenztext {
+            lizenztext
+          }
+          lizenzUrl
+          light {
+            name
+            woff {
+              file {
+                url
+              }
+            }
+            woff2 {
+              file {
+                url
+              }
+            }
+          }
+          medium {
+            name
+            woff {
+              file {
+                url
+              }
+            }
+            woff2 {
+              file {
+                url
+              }
+            }
+          }
+          bold {
+            name
+            woff {
+              file {
+                url
+              }
+            }
+            woff2 {
+              file {
+                url
+              }
+            }
           }
         }
       }
@@ -54,7 +100,7 @@ const Layout = ({ children }) => (
         </Helmet>
         <ThemeProvider theme={theme}>
           <>
-            <GlobalStyle theme={theme} />
+            <GlobalStyle theme={theme} fonts={data.contentfulFontContainer} />
             <GlobalWrapper>
               <MainGrid>
                 <SideBackground />

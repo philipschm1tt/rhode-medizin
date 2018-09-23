@@ -4,20 +4,44 @@ import styledReset from 'styled-reset'
 const GlobalStyle = createGlobalStyle`
   ${styledReset}
 
+  ${props => props.fonts.lizenztext.lizenztext}
+  @import url(${props => props.fonts.lizenzUrl});
+
+    
+  @font-face {font-family: 'font-bold';src: url(${props =>
+    props.fonts.bold.woff2.file.url}) format('woff2'),url(${props =>
+  props.fonts.bold.woff.file.url}) format('woff');}
+  
+    
+  @font-face {font-family: 'font-medium';src: url(${props =>
+    props.fonts.medium.woff2.file.url}) format('woff2'),url(${props =>
+  props.fonts.medium.woff.file.url}) format('woff');}
+  
+    
+  @font-face {font-family: 'font-light';src: url(${props =>
+    props.fonts.light.woff2.file.url}) format('woff2'),url(${props =>
+  props.fonts.light.woff.file.url}) format('woff');}
+
   body {
     background-color: ${props => props.theme.colors.base};
-    font-family: sans-serif;
+    font-family: font-medium, Arial, sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
   }
 
   h1, h2, h3 {
     color: ${props => props.theme.colors.companyBlue};
   }
 
+  h1, h2, h3, h4, h5, h6 {
+    font-family: font-bold, Arial, sans-serif;
+  }
+
   h1 {
     font-size: ${props => props.theme.fontSizes.smallScreens.XXL};
     line-height: ${props => props.theme.lineHeights.smallScreens.XXL};
     margin-bottom: ${props => props.theme.sizes.halfBaseLineHeight};
-    font-weight: bold;
 
     @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
       font-size: ${props => props.theme.fontSizes.largeScreens.XXL};
@@ -31,7 +55,6 @@ const GlobalStyle = createGlobalStyle`
     line-height: ${props => props.theme.lineHeights.smallScreens.XL};
     margin-top: ${props => props.theme.sizes.baseLineHeight};
     margin-bottom: ${props => props.theme.sizes.halfBaseLineHeight};
-    font-weight: bold;
 
     @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
       font-size: ${props => props.theme.fontSizes.largeScreens.XL};
@@ -46,7 +69,6 @@ const GlobalStyle = createGlobalStyle`
     line-height: ${props => props.theme.lineHeights.smallScreens.L};
     margin-bottom: ${props => props.theme.sizes.baseLineHeight};
     margin-top: ${props => props.theme.sizes.halfBaseLineHeight};
-    font-weight: bold;
 
     @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
       font-size: ${props => props.theme.fontSizes.largeScreens.L};
@@ -60,7 +82,6 @@ const GlobalStyle = createGlobalStyle`
     font-size: ${props => props.theme.fontSizes.smallScreens.L};
     line-height: ${props => props.theme.lineHeights.smallScreens.L};
     margin: ${props => props.theme.sizes.halfBaseLineHeight} 0;
-    font-weight: bold;
 
     @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
       font-size: ${props => props.theme.fontSizes.largeScreens.L};

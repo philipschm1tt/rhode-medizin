@@ -15,6 +15,7 @@ const Tile = styled.div`
 const CaptionArea = styled.div`
   background-color: ${props => props.theme.colors.overlay};
   border: 1px solid white;
+  font-family: font-bold, Arial, sans-serif;
   font-size: 14px;
   line-height: ${17.3 / 14};
   padding: 5px 10px;

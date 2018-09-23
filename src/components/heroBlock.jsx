@@ -45,6 +45,7 @@ const MainHeadline = styled.h1`
 `
 
 const SubHeadline = styled.p`
+  font-family: font-bold, Arial, sans-serif;
   color: ${props => props.theme.colors.companyBlue};
   text-shadow: 0 0 15px white;
   margin-bottom: 0;
