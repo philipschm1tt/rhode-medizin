@@ -30,6 +30,16 @@ const SideBackground = styled.div`
   grid-row: 1 / 4;
 `
 
+const HiddenTextMedium = styled.div`
+  display: none;
+  font-family: font-medium, Arial, sans-serif;
+`
+
+const HiddenTextBold = styled.div`
+  display: none;
+  font-family: font-bold, Arial, sans-serif;
+`
+
 const Layout = ({ children }) => (
   <StaticQuery
     query={graphql`
@@ -109,6 +119,12 @@ const Layout = ({ children }) => (
                 <Footer />
               </MainGrid>
             </GlobalWrapper>
+            <HiddenTextMedium>
+              ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäüöß
+            </HiddenTextMedium>
+            <HiddenTextBold>
+              ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäüöß
+            </HiddenTextBold>
           </>
         </ThemeProvider>
       </>
