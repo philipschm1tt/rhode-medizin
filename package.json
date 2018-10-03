@@ -29,7 +29,7 @@
   "license": "MIT",
   "scripts": {
     "build": "gatsby build",
-    "build-subfont": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css --inline-fonts --font-display block --output public_subfont",
+    "build-subfont": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css --inline-fonts --font-display block",
     "develop": "gatsby develop",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{js,jsx,json,md,yml}\"",
     "test": "echo \"Error: no test specified\" && exit 1",
