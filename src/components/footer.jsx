@@ -24,7 +24,7 @@ const Footer = () => (
   <FooterArea gridRow="3" as="footer">
     <ContentBox extraVerticalPadding="true">
       <FooterLink to="/imprint/">Impressum</FooterLink>
-      <FooterLink to="/dataPolicy/">Datenschutzhinweis</FooterLink>
+      <FooterLink to="/data-policy/">Datenschutzhinweis</FooterLink>
       <ExternalFooterLink
         href="https://www.contentful.com/"
         rel="nofollow noopener noreferrer"
