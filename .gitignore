@@ -6,4 +6,5 @@ yarn-error.log
 
 # Build directory
 /public
+/public_subfont
 .DS_Store

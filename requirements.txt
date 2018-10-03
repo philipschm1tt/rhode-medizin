@@ -1,0 +1,8 @@
+# python dependencies for subfont
+# see https://github.com/Munter/subfont#readme
+#
+# will be automatically installed by netlify
+# see https://www.netlify.com/docs/build-settings/#python
+fonttools
+brotli
+zopfli

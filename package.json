@@ -12,7 +12,6 @@
     "gatsby-plugin-offline": "^2.0.5",
     "gatsby-plugin-react-helmet": "^3.0.0",
     "gatsby-plugin-styled-components": "^3.0.0",
-    "gatsby-plugin-subfont": "^1.0.1",
     "gatsby-source-contentful": "^2.0.1",
     "gatsby-transformer-remark": "^2.1.6",
     "prop-types": "^15.6.2",
@@ -21,7 +20,8 @@
     "react-helmet": "^5.2.0",
     "react-router-dom": "^4.3.1",
     "styled-components": "^4.0.0-beta.9",
-    "styled-reset": "^1.5.1"
+    "styled-reset": "^1.5.1",
+    "subfont": "^3.6.2"
   },
   "keywords": [
     "gatsby"
@@ -29,6 +29,7 @@
   "license": "MIT",
   "scripts": {
     "build": "gatsby build",
+    "build-subfont": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css --inline-fonts --font-display block --output public_subfont",
     "develop": "gatsby develop",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{js,jsx,json,md,yml}\"",
     "test": "echo \"Error: no test specified\" && exit 1",
