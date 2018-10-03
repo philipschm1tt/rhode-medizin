@@ -5,7 +5,7 @@ module.exports = {
     title: 'Rhode Medizintechnik',
   },
   plugins: [
-    'gatsby-plugin-react-helmet',
+    `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
@@ -19,8 +19,8 @@ module.exports = {
       },
     },
     `gatsby-transformer-remark`,
-    'gatsby-plugin-offline',
-    'gatsby-plugin-styled-components',
+    `gatsby-plugin-offline`,
+    `gatsby-plugin-styled-components`,
     `gatsby-plugin-netlify`,
     {
       resolve: `gatsby-source-contentful`,
