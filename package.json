@@ -30,7 +30,7 @@
   "scripts": {
     "build": "gatsby build",
     "build-subfont": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css --inline-fonts",
-    "build-subfont-preload": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css",
+    "build-subfont-preload": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css --font-display swap",
     "develop": "gatsby develop",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{js,jsx,json,md,yml}\"",
     "test": "echo \"Error: no test specified\" && exit 1",
