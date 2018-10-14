@@ -15,7 +15,7 @@ const AsideSection = styled.aside`
   }
 
   h3 {
-    color: ${props => props.theme.colors.purple};
+    color: ${props => props.theme.colors.darkPurple};
   }
 
   h4,

@@ -7,7 +7,7 @@ import MainGrid from './mainGrid'
 import ContentBox from './contentBox'
 
 const FooterArea = styled(MainGrid)`
-  background-color: ${props => props.theme.colors.darkPurple};
+  background-color: ${props => props.theme.colors.darkerPurple};
   color: ${props => props.theme.colors.lightYellow};
 `
 

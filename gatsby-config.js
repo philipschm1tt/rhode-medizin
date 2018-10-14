@@ -10,7 +10,7 @@ module.exports = {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: 'Heinrich Rhode GmbH',
-        short_name: 'Rhode Medizin',
+        short_name: 'Rhode GmbH',
         lang: 'de-DE',
         start_url: '/',
         background_color: '#FFFDF3',

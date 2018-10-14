@@ -9,15 +9,15 @@ const GlobalStyle = createGlobalStyle`
     
   @font-face {font-family: 'font-bold';src: url(${props =>
     props.fonts.bold.woff2.file.url}) format('woff2'),url(${props =>
-  props.fonts.bold.woff.file.url}) format('woff');}
+  props.fonts.bold.woff.file.url}) format('woff'); font-display: swap;}
   
   @font-face {font-family: 'font-medium';src: url(${props =>
     props.fonts.medium.woff2.file.url}) format('woff2'),url(${props =>
-  props.fonts.medium.woff.file.url}) format('woff');}
+  props.fonts.medium.woff.file.url}) format('woff'); font-display: swap;}
   
   @font-face {font-family: 'font-light';src: url(${props =>
     props.fonts.light.woff2.file.url}) format('woff2'),url(${props =>
-  props.fonts.light.woff.file.url}) format('woff');}
+  props.fonts.light.woff.file.url}) format('woff'); font-display: swap;}
 
   body {
     background-color: ${props => props.theme.colors.base};
