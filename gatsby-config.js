@@ -9,13 +9,14 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: 'gatsby-starter-default',
-        short_name: 'starter',
+        name: 'Heinrich Rhode GmbH',
+        short_name: 'Rhode Medizin',
+        lang: 'de-DE',
         start_url: '/',
-        background_color: '#663399',
-        theme_color: '#663399',
+        background_color: '#FFFDF3',
+        theme_color: '#4038A0',
         display: 'minimal-ui',
-        icon: 'src/images/gatsby-icon.png', // This path is relative to the root of the site.
+        icon: 'src/images/logo_small_rhode_medizin_white.png', // This path is relative to the root of the site.
       },
     },
     `gatsby-transformer-remark`,
