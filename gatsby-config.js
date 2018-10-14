@@ -16,7 +16,7 @@ module.exports = {
         background_color: '#FFFDF3',
         theme_color: '#4038A0',
         display: 'minimal-ui',
-        icon: 'src/images/logo_small_rhode_medizin_white.png', // This path is relative to the root of the site.
+        icon: 'src/images/logo_small_rhode_medizin.png', // This path is relative to the root of the site.
       },
     },
     `gatsby-transformer-remark`,
