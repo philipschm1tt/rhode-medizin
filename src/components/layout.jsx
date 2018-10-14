@@ -107,6 +107,7 @@ const Layout = ({ children }) => (
           ]}
         >
           <html lang="de" />
+          <style>{data.contentfulFontContainer.lizenztext.lizenztext}</style>
         </Helmet>
         <ThemeProvider theme={theme}>
           <>
