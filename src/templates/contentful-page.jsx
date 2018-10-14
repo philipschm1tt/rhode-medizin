@@ -68,13 +68,17 @@ const ModuleTemplate = ({ module }) => {
           {module.layout === 'Gitter' ? (
             <TileGrid>
               {module.elemente.map(element => (
-                <ModuleTemplate module={element} key={element.name} />
+                <li>
+                  <ModuleTemplate module={element} key={element.name} />
+                </li>
               ))}
             </TileGrid>
           ) : (
             <TileList>
               {module.elemente.map(element => (
-                <ModuleTemplate module={element} key={element.name} />
+                <li>
+                  <ModuleTemplate module={element} key={element.name} />
+                </li>
               ))}
             </TileList>
           )}

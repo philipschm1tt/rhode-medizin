@@ -1,11 +1,13 @@
 import styled from 'styled-components'
 
-const TileGrid = styled.div`
+const TileGrid = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
 
   > * {
+    list-style: none;
+    max-width: 100%;
     margin-bottom: ${props => props.theme.sizes.baseLineHeight};
     margin-right: ${props => props.theme.sizes.baseLineHeight};
   }
