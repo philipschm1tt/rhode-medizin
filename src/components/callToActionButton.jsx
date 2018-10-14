@@ -8,6 +8,7 @@ const CallToActionButton = styled.button`
   padding: 10px ${props => props.theme.sizes.baseLineHeight};
   border: 1px solid ${props => props.theme.colors.yellow};
   border-radius: 3px;
+  overflow: hidden;
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
   font-family: font-bold, Arial, sans-serif;
   font-size: ${props => props.theme.fontSizes.smallScreens.L};

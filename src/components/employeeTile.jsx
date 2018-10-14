@@ -9,6 +9,7 @@ const Tile = styled.div`
   display: flex;
   flex-direction: column-reverse;
   border-radius: 3px;
+  overflow: hidden;
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
 `
 

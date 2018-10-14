@@ -6,6 +6,7 @@ import ContentBox from './contentBox'
 const ProductGroupTile = styled.section`
   background-color: ${props => props.theme.colors.lightYellow};
   border-radius: 3px;
+  overflow: hidden;
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
 
   @media (min-width: 900px) {

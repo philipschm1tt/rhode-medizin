@@ -6,6 +6,8 @@ const Box = styled.aside`
   color: ${props => props.theme.colors.yellow};
   background-color: ${props => props.theme.colors.companyBlue};
   padding: ${props => props.theme.sizes.baseLineHeight};
+  border-radius: 3px;
+  overflow: hidden;
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
   margin-left: auto;
   margin-right: auto;

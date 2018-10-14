@@ -33,6 +33,7 @@ const Overlay = styled(ContentBox)`
   background-color: ${props => props.theme.colors.overlay};
   border: 1px solid white;
   border-radius: 3px;
+  overflow: hidden;
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
   margin-bottom: ${props => props.theme.sizes.baseLineHeight};
   display: inline-block;
