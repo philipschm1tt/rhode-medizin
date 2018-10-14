@@ -52,7 +52,7 @@ const SubHeadline = styled.p`
 `
 
 const HeroBlock = props => (
-  <HeroArea image={props.image} as="section">
+  <HeroArea image={props.image} as="header">
     <Overlay>
       <MainHeadline>{props.mainHeadline}</MainHeadline>
       <SubHeadline>{props.subHeadline}</SubHeadline>

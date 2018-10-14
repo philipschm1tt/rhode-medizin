@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import ContentBox from './contentBox'
 
-const ProductGroupTile = styled.div`
+const ProductGroupTile = styled.section`
   background-color: ${props => props.theme.colors.lightYellow};
   box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
   max-width: 100%;
@@ -52,12 +52,14 @@ const ProductGroupText = styled(ContentBox)`
   }
 `
 
+const ProductGroupHeader = styled.header`
+  grid-column: span 2;
+`
+
 const ProductGroupHeading = styled.h3`
   color: ${props => props.theme.colors.companyBlue};
   font-size: ${props => props.theme.fontSizes.smallScreens.L};
   line-height: ${props => props.theme.lineHeights.smallScreens.L};
-
-  grid-column: span 2;
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.largeScreens}) {
     font-size: ${props => props.theme.fontSizes.largeScreens.L};
@@ -93,7 +95,9 @@ const ProductGroup = props => (
   <ProductGroupTile>
     <ProductGroupImage photo={props.photo} />
     <ProductGroupText>
-      <ProductGroupHeading>{props.name}</ProductGroupHeading>
+      <ProductGroupHeader>
+        <ProductGroupHeading>{props.name}</ProductGroupHeading>
+      </ProductGroupHeader>
       <ProductGroupDescription>{props.description}</ProductGroupDescription>
       <ProductGroupExamples>
         {props.examples.map(example => (
