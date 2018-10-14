@@ -8,14 +8,13 @@ import CallToActionButton from './callToActionButton'
 import ContentBox from './contentBox'
 
 const HeroArea = styled(MainGrid)`
+  grid-column: ${MainGridColumns.fullWidth};
   background-image: url(${props => props.image});
   background-position: center center;
   background-size: cover;
   padding: ${props => props.theme.sizes.tripleBaseLineHeight}
     ${props => props.theme.sizes.outerPadding};
   margin-bottom: ${props => props.theme.sizes.baseLineHeight};
-
-  grid-column: 1 / -1;
 
   > * {
     grid-column: ${MainGridColumns.mainColumn};
@@ -38,27 +37,24 @@ const Overlay = styled(ContentBox)`
   margin-bottom: ${props => props.theme.sizes.baseLineHeight};
   display: inline-block;
   justify-self: start;
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
 `
 
-const MainHeadline = styled.h1`
-  color: ${props => props.theme.colors.companyBlue};
-  text-shadow: 0 0 15px white;
-`
-
-const SubHeadline = styled.p`
+const Headline = styled.div`
   font-family: font-bold, Arial, sans-serif;
   color: ${props => props.theme.colors.companyBlue};
   text-shadow: 0 0 15px white;
-  margin-bottom: 0;
 `
 
 const HeroBlock = props => (
   <HeroArea image={props.image} as="header">
     <Overlay>
-      <MainHeadline>{props.mainHeadline}</MainHeadline>
-      <SubHeadline>{props.subHeadline}</SubHeadline>
+      <Headline as="h1">{props.mainHeadline}</Headline>
+      <Headline as="p">{props.subHeadline}</Headline>
     </Overlay>
-    <br />
     <Link to="/imprint/">
       <CallToActionButton type="button">
         {props.callToAction}

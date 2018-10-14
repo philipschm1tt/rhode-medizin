@@ -51,11 +51,9 @@ const Box = styled.aside`
 `
 
 const Quote = props => (
-  <>
-    <Box>
-      <p>{props.text}</p>
-    </Box>
-  </>
+  <Box>
+    <p>{props.text}</p>
+  </Box>
 )
 
 Quote.propTypes = {
