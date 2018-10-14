@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { graphql } from 'gatsby'
 
 import Layout from '../components/layout'
-import Article from '../components/article'
 import Quote from '../components/quote'
 import TileGrid from '../components/tileGrid'
 import TileList from '../components/tileList'
@@ -113,11 +112,9 @@ const ContentfulPageTemplate = ({ data }) => {
   const seite = data.contentfulSeite
   return (
     <Layout>
-      <Article>
-        {seite.module.map(module => (
-          <ModuleTemplate module={module} key={module.id} />
-        ))}
-      </Article>
+      {seite.module.map(module => (
+        <ModuleTemplate module={module} key={module.id} />
+      ))}
     </Layout>
   )
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
 
@@ -20,8 +21,8 @@ const ExternalFooterLink = styled.a`
   width: 100px;
 `
 
-const Footer = () => (
-  <FooterArea gridRow="3" as="footer">
+const Footer = props => (
+  <FooterArea gridRow={props.gridRow} as="footer">
     <ContentBox extraVerticalPadding="true">
       <FooterLink to="/imprint/">Impressum</FooterLink>
       <FooterLink to="/data-policy/">Datenschutzhinweis</FooterLink>
@@ -38,5 +39,9 @@ const Footer = () => (
     </ContentBox>
   </FooterArea>
 )
+
+Footer.propTypes = {
+  gridRow: PropTypes.string.isRequired,
+}
 
 export default Footer

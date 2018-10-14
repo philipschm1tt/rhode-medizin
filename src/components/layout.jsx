@@ -8,6 +8,7 @@ import theme from '../styles/theme'
 import GlobalStyle from '../styles/globalStyle'
 
 import Header from './header'
+import MainContent from './mainContent'
 import Footer from './footer'
 import MainGrid, { MainGridColumns } from './mainGrid'
 
@@ -27,7 +28,7 @@ const GlobalWrapper = styled.div`
 const SideBackground = styled.div`
   background-color: ${props => props.theme.colors.lightBlue};
   grid-column: ${MainGridColumns.sideColumnStart} / ${MainGridColumns.rightEdge};
-  grid-row: 1 / 4;
+  grid-row: ${props => props.gridRow};
 `
 
 const HiddenTextMedium = styled.div`
@@ -114,10 +115,10 @@ const Layout = ({ children }) => (
             <GlobalStyle theme={theme} fonts={data.contentfulFontContainer} />
             <GlobalWrapper>
               <MainGrid>
-                <SideBackground />
-                <Header />
-                {children}
-                <Footer />
+                <SideBackground gridRow="1 / 4" />
+                <Header gridRow="1" />
+                <MainContent gridRow="2">{children}</MainContent>
+                <Footer gridRow="3" />
               </MainGrid>
             </GlobalWrapper>
             <HiddenTextMedium>

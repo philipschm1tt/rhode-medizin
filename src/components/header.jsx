@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
 
@@ -41,8 +42,8 @@ const CompanyType = styled.div`
   }
 `
 
-const Header = () => (
-  <HeaderArea gridRow="1" as="header">
+const Header = props => (
+  <HeaderArea gridRow={props.gridRow} as="header">
     <ConstructionBanner>
       <ContentBox>UNDER CONSTRUCTION</ContentBox>
     </ConstructionBanner>
@@ -58,5 +59,9 @@ const Header = () => (
     </ContentBox>
   </HeaderArea>
 )
+
+Header.propTypes = {
+  gridRow: PropTypes.string.isRequired,
+}
 
 export default Header
