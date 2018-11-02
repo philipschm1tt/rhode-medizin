@@ -19,6 +19,15 @@ module.exports = {
         icon: 'src/images/logo_small_rhode_medizin.png', // This path is relative to the root of the site.
       },
     },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/src/images`,
+        name: 'images',
+      },
+    },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
     `gatsby-transformer-remark`,
     `gatsby-plugin-offline`,
     `gatsby-plugin-styled-components`,

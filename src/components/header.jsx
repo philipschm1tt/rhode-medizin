@@ -1,13 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Link } from 'gatsby'
+import { StaticQuery, graphql, Link } from 'gatsby'
+import Img from 'gatsby-image'
 
 import MainGrid, { MainGridColumns } from './mainGrid'
 import ContentBox from './contentBox'
-
-import logo from '../images/logo.png'
-import logo2x from '../images/logo@2x.png'
 
 const HeaderArea = styled(MainGrid)`
   color: ${props => props.theme.colors.companyBlue};
@@ -27,8 +25,8 @@ const ConstructionBanner = styled.div`
   text-align: center;
 `
 
-const Logo = styled.img`
-  max-width: 100%;
+const Logo = styled(Img)`
+  max-width: 460px;
 `
 
 const CompanyType = styled.div`
@@ -43,21 +41,37 @@ const CompanyType = styled.div`
 `
 
 const Header = props => (
-  <HeaderArea gridRow={props.gridRow} as="header">
-    <ConstructionBanner>
-      <ContentBox>UNDER CONSTRUCTION</ContentBox>
-    </ConstructionBanner>
-    <ContentBox extraVerticalPadding="true">
-      <Link to="/">
-        <Logo
-          src={logo}
-          srcSet={`${logo}, ${logo2x} 2x`}
-          alt="Heinrich Rhode GmbH"
-        />
-      </Link>
-      <CompanyType>Medizintechnik</CompanyType>
-    </ContentBox>
-  </HeaderArea>
+  <StaticQuery
+    query={graphql`
+      query LogoQuery {
+        logo: file(relativePath: { eq: "logo@2x.png" }) {
+          childImageSharp {
+            fluid(maxWidth: 460) {
+              ...GatsbyImageSharpFluid_withWebp_noBase64
+            }
+          }
+        }
+      }
+    `}
+    render={data => (
+      <HeaderArea gridRow={props.gridRow} as="header">
+        <ConstructionBanner>
+          <ContentBox>UNDER CONSTRUCTION</ContentBox>
+        </ConstructionBanner>
+        <ContentBox extraVerticalPadding="true">
+          <Link to="/">
+            <Logo
+              fluid={data.logo.childImageSharp.fluid}
+              alt="Heinrich Rhode GmbH"
+              fadeIn={false}
+              critical
+            />
+          </Link>
+          <CompanyType>Medizintechnik</CompanyType>
+        </ContentBox>
+      </HeaderArea>
+    )}
+  />
 )
 
 Header.propTypes = {
