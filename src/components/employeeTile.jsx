@@ -1,19 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Img from 'gatsby-image'
 
 const Tile = styled.div`
   min-width: 141px;
   height: 182px;
-  background: top right url(${props => props.photo});
-  display: flex;
-  flex-direction: column-reverse;
   border-radius: 3px;
   overflow: hidden;
   box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
+  position: relative;
+`
+
+const Photo = styled(Img)`
+  position: absolute !important;
+  top: 0;
+  right: 0;
 `
 
 const CaptionArea = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: ${props => props.theme.colors.overlay};
   border: 1px solid white;
   font-family: font-bold, Arial, sans-serif;
@@ -23,7 +32,8 @@ const CaptionArea = styled.div`
 `
 
 const EmployeeTile = ({ name, department, photo }) => (
-  <Tile photo={photo}>
+  <Tile>
+    <Photo fixed={photo} />
     <CaptionArea>
       {name}
       <br />
@@ -35,7 +45,7 @@ const EmployeeTile = ({ name, department, photo }) => (
 EmployeeTile.propTypes = {
   name: PropTypes.string.isRequired,
   department: PropTypes.string.isRequired,
-  photo: PropTypes.string.isRequired,
+  photo: PropTypes.object.isRequired,
 }
 
 export default EmployeeTile

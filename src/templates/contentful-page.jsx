@@ -90,7 +90,7 @@ const ModuleTemplate = ({ module }) => {
         <EmployeeTile
           name={module.name}
           department={module.dienstbereich}
-          photo={module.foto.fixed.src}
+          photo={module.foto.fixed}
           key={module.name}
         />
       )
@@ -177,11 +177,8 @@ export const pageQuery = graphql`
                   name
                   dienstbereich
                   foto {
-                    fixed(width: 300) {
-                      src
-                      srcSet
-                      srcWebp
-                      srcSetWebp
+                    fixed(width: 160, height: 182) {
+                      ...GatsbyContentfulFixed_withWebp
                     }
                   }
                 }
