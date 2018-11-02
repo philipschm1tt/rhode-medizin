@@ -101,7 +101,7 @@ const ModuleTemplate = ({ module }) => {
           name={module.name}
           description={module.beschreibung.beschreibung}
           examples={module.beispiele}
-          photo={module.foto.fixed.src}
+          photo={module.foto.fluid}
           key={module.name}
         />
       )
@@ -189,11 +189,8 @@ export const pageQuery = graphql`
                   }
                   beispiele
                   foto {
-                    fixed(width: 700) {
-                      src
-                      srcSet
-                      srcWebp
-                      srcSetWebp
+                    fluid(maxWidth: 700) {
+                      ...GatsbyContentfulFluid_withWebp
                     }
                   }
                 }

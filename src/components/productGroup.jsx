@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Img from 'gatsby-image'
 import ContentBox from './contentBox'
 
 const ProductGroupTile = styled.section`
@@ -24,13 +25,9 @@ const ProductGroupTile = styled.section`
   }
 `
 
-const ProductGroupImage = styled.div`
+const ProductGroupImage = styled(Img)`
   max-width: 100%;
   height: 260px;
-
-  background-image: url(${props => props.photo});
-  background-size: cover;
-  background-position: center center;
 
   grid-row: span 2;
 `
@@ -94,7 +91,7 @@ const ProductGroupExamples = styled.ul`
 
 const ProductGroup = props => (
   <ProductGroupTile>
-    <ProductGroupImage photo={props.photo} />
+    <ProductGroupImage fluid={props.photo} />
     <ProductGroupText>
       <ProductGroupHeader>
         <ProductGroupHeading>{props.name}</ProductGroupHeading>
@@ -113,7 +110,7 @@ ProductGroup.propTypes = {
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   examples: PropTypes.arrayOf(PropTypes.string).isRequired,
-  photo: PropTypes.string.isRequired,
+  photo: PropTypes.object.isRequired,
 }
 
 export default ProductGroup
