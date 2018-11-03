@@ -17,6 +17,8 @@ const MainGrid = styled.div`
   grid-row: ${props => props.gridRow || 'auto'};
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
+    display: flex; /* fallback – justify-self still works */
+    flex-direction: column;
     display: grid;
     grid-template-columns:
       1.618fr
