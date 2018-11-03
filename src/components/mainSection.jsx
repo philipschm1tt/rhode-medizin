@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { MainGridColumns } from './mainGrid'
 
 const MainSection = styled.section`
-  padding: ${props => props.theme.sizes.outerPadding};
+  padding: 0 ${props => props.theme.sizes.outerPadding};
   background-color: ${props =>
     props.darkBackground
       ? props.theme.colors.purple

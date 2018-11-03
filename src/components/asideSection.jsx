@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { MainGridColumns } from './mainGrid'
 
 const AsideSection = styled.aside`
-  padding: ${props => props.theme.sizes.outerPadding};
+  padding: 0 ${props => props.theme.sizes.outerPadding};
   background-color: ${props => props.theme.colors.lightBlue};
 
   grid-column: ${MainGridColumns.sideColumn};

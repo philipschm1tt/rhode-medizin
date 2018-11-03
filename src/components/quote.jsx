@@ -22,6 +22,7 @@ const Box = styled.aside`
 
   @media (max-width: ${props => props.theme.sizes.breakpoints.large}) {
     padding: ${props => props.theme.sizes.halfBaseLineHeight};
+    margin-bottom: ${props => props.theme.sizes.baseLineHeight};
   }
 
   p {

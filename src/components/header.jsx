@@ -9,7 +9,7 @@ import ContentBox from './contentBox'
 
 const HeaderArea = styled(MainGrid)`
   color: ${props => props.theme.colors.companyBlue};
-  padding: ${props => props.theme.sizes.outerPadding};
+  padding: 0 ${props => props.theme.sizes.outerPadding};
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
     @supports (display: grid) {
