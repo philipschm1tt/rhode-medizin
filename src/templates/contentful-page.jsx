@@ -23,7 +23,7 @@ const ModuleTemplate = ({ module }) => {
           mainHeadline={module.hauptueberschrift}
           subHeadline={module.unterueberschrift}
           callToAction={module.callToAction.text}
-          image={module.bild.fixed.src}
+          image={module.bild.fluid}
         />
       )
       break
@@ -143,11 +143,8 @@ export const pageQuery = graphql`
             text
           }
           bild {
-            fixed(width: 1600) {
-              src
-              srcSet
-              srcWebp
-              srcSetWebp
+            fluid(maxWidth: 1600) {
+              ...GatsbyContentfulFluid_withWebp
             }
           }
         }
@@ -177,7 +174,7 @@ export const pageQuery = graphql`
                   name
                   dienstbereich
                   foto {
-                    fixed(width: 160, height: 182) {
+                    fixed(width: 200, height: 182) {
                       ...GatsbyContentfulFixed_withWebp
                     }
                   }

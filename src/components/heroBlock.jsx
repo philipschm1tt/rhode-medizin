@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
+import Img from 'gatsby-image'
 
 import MainGrid, { MainGridColumns } from './mainGrid'
 import CallToActionButton from './callToActionButton'
@@ -9,23 +10,37 @@ import ContentBox from './contentBox'
 
 const HeroArea = styled(MainGrid)`
   grid-column: ${MainGridColumns.fullWidth};
-  background-image: url(${props => props.image});
-  background-position: center center;
-  background-size: cover;
+  margin-bottom: ${props => props.theme.sizes.baseLineHeight};
+  grid-template-rows: ${props => props.theme.sizes.tripleBaseLineHeight} fit-content(0) ${props => props.theme.sizes.tripleBaseLineHeight};
+
+  position: relative;
   padding: ${props => props.theme.sizes.tripleBaseLineHeight}
     ${props => props.theme.sizes.outerPadding};
-  margin-bottom: ${props => props.theme.sizes.baseLineHeight};
-
-  > * {
-    grid-column: ${MainGridColumns.mainColumn};
-  }
 
   @media (min-width: ${props => props.theme.sizes.breakpoints.large}) {
     @supports (display: grid) {
-      padding-left: 0;
-      padding-right: 0;
+      padding: 0;
     }
   }
+`
+
+const HeroImage = styled(Img)`
+  grid-column: ${MainGridColumns.fullWidth};
+  grid-row: 1 / 4;
+  position: absolute !important;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+`
+
+const HeroContent = styled.div`
+  grid-column: ${MainGridColumns.mainColumn};
+  grid-row: 2;
+  position: relative;
+  z-index: 1;
+  padding: 0;
 `
 
 const Overlay = styled(ContentBox)`
@@ -37,6 +52,7 @@ const Overlay = styled(ContentBox)`
   margin-bottom: ${props => props.theme.sizes.baseLineHeight};
   display: inline-block;
   justify-self: start;
+  align-self: start;
 
   & > :last-child {
     margin-bottom: 0;
@@ -50,16 +66,20 @@ const Headline = styled.div`
 `
 
 const HeroBlock = props => (
-  <HeroArea image={props.image} as="header">
-    <Overlay>
-      <Headline as="h1">{props.mainHeadline}</Headline>
-      <Headline as="p">{props.subHeadline}</Headline>
-    </Overlay>
-    <Link to="/imprint/">
-      <CallToActionButton type="button">
-        {props.callToAction}
-      </CallToActionButton>
-    </Link>
+  <HeroArea as="header">
+    <HeroImage fluid={props.image} />
+    <HeroContent>
+      <Overlay>
+        <Headline as="h1">{props.mainHeadline}</Headline>
+        <Headline as="p">{props.subHeadline}</Headline>
+      </Overlay>
+      <br />
+      <Link to="/imprint/">
+        <CallToActionButton type="button">
+          {props.callToAction}
+        </CallToActionButton>
+      </Link>
+    </HeroContent>
   </HeroArea>
 )
 
@@ -67,7 +87,7 @@ HeroBlock.propTypes = {
   mainHeadline: PropTypes.string.isRequired,
   subHeadline: PropTypes.string.isRequired,
   callToAction: PropTypes.string.isRequired,
-  image: PropTypes.string.isRequired,
+  image: PropTypes.object.isRequired,
 }
 
 export default HeroBlock
