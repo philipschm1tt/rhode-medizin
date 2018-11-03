@@ -174,7 +174,7 @@ export const pageQuery = graphql`
                   name
                   dienstbereich
                   foto {
-                    fixed(width: 200, height: 182) {
+                    fixed(width: 300, height: 182) {
                       ...GatsbyContentfulFixed_withWebp
                     }
                   }

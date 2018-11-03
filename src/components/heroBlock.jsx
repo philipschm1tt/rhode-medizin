@@ -11,7 +11,10 @@ import ContentBox from './contentBox'
 const HeroArea = styled(MainGrid)`
   grid-column: ${MainGridColumns.fullWidth};
   margin-bottom: ${props => props.theme.sizes.baseLineHeight};
-  grid-template-rows: ${props => props.theme.sizes.tripleBaseLineHeight} fit-content(0) ${props => props.theme.sizes.tripleBaseLineHeight};
+  grid-template-rows:
+    ${props => props.theme.sizes.tripleBaseLineHeight}
+    fit-content(0)
+    ${props => props.theme.sizes.tripleBaseLineHeight};
 
   position: relative;
   padding: ${props => props.theme.sizes.tripleBaseLineHeight}
