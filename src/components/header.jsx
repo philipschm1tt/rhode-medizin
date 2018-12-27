@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { StaticQuery, graphql, Link } from 'gatsby'
 import Img from 'gatsby-image'
 
-import MainGrid, { MainGridColumns } from './mainGrid'
+import MainGrid from './mainGrid'
 import ContentBox from './contentBox'
 
 const HeaderArea = styled(MainGrid)`
@@ -16,13 +16,6 @@ const HeaderArea = styled(MainGrid)`
       padding: 0;
     }
   }
-`
-
-const ConstructionBanner = styled.div`
-  color: white;
-  background-color: #c31616;
-  grid-column: ${MainGridColumns.fullWidth};
-  text-align: center;
 `
 
 const Logo = styled(Img)`
@@ -55,9 +48,6 @@ const Header = props => (
     `}
     render={data => (
       <HeaderArea gridRow={props.gridRow} as="header">
-        <ConstructionBanner>
-          <ContentBox>UNDER CONSTRUCTION</ContentBox>
-        </ConstructionBanner>
         <ContentBox extraVerticalPadding="true">
           <Link to="/">
             <Logo
