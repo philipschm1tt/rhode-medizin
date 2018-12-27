@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const Box = styled.aside`
-  color: ${props => props.theme.colors.yellow};
-  background-color: ${props => props.theme.colors.companyBlue};
+  color: ${props => props.theme.colors.lightYellow};
+  background-color: ${props => props.theme.colors.darkerPurple};
   padding: ${props => props.theme.sizes.baseLineHeight};
   border-radius: 3px;
   overflow: hidden;
