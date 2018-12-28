@@ -33,12 +33,14 @@ const SideBackground = styled.div`
 
 const HiddenTextMedium = styled.div`
   display: none;
-  font-family: font-medium, Arial, sans-serif;
+  /*font-family: font-medium, Arial, sans-serif;*/
+  font-family: Arial, sans-serif;
 `
 
 const HiddenTextBold = styled.div`
   display: none;
-  font-family: font-bold, Arial, sans-serif;
+  /*font-family: font-bold, Arial, sans-serif;*/
+  font-family: Arial, sans-serif;
 `
 
 const Layout = ({ children }) => (

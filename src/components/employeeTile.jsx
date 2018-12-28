@@ -25,7 +25,9 @@ const CaptionArea = styled.div`
   right: 0;
   background-color: ${props => props.theme.colors.overlay};
   border: 1px solid white;
-  font-family: font-bold, Arial, sans-serif;
+  /*font-family: font-bold, Arial, sans-serif;*/
+  font-family: Arial, sans-serif;
+  font-weight: bold;
   font-size: 14px;
   line-height: ${17.3 / 14};
   padding: 5px 10px;

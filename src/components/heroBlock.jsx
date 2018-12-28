@@ -63,7 +63,9 @@ const Overlay = styled(ContentBox)`
 `
 
 const Headline = styled.div`
-  font-family: font-bold, Arial, sans-serif;
+  /*font-family: font-bold, Arial, sans-serif;*/
+  font-family: Arial, sans-serif;
+  font-weight: bold;
   color: ${props => props.theme.colors.companyBlue};
   text-shadow: 0 0 15px white;
 `

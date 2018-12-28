@@ -4,24 +4,25 @@ import styledReset from 'styled-reset'
 const GlobalStyle = createGlobalStyle`
   ${styledReset}
 
-  ${props => props.fonts.lizenztext.lizenztext}
-  @import url(${props => props.fonts.lizenzUrl});
-    
+  /*${props => props.fonts.lizenztext.lizenztext}*/
+  /*@import url(${props => props.fonts.lizenzUrl});*/
+
   @font-face {font-family: 'font-bold';src: url(${props =>
     props.fonts.bold.woff2.file.url}) format('woff2'),url(${props =>
   props.fonts.bold.woff.file.url}) format('woff'); font-display: swap;}
-  
+
   @font-face {font-family: 'font-medium';src: url(${props =>
     props.fonts.medium.woff2.file.url}) format('woff2'),url(${props =>
   props.fonts.medium.woff.file.url}) format('woff'); font-display: swap;}
-  
+
   @font-face {font-family: 'font-light';src: url(${props =>
     props.fonts.light.woff2.file.url}) format('woff2'),url(${props =>
   props.fonts.light.woff.file.url}) format('woff'); font-display: swap;}
 
   body {
     background-color: ${props => props.theme.colors.base};
-    font-family: font-medium__subset, font-medium, Arial, sans-serif;
+    /* font-family: font-medium__subset, font-medium, Arial, sans-serif;*/
+    font-family: Arial, sans-serif;
     font-weight: normal;
     font-style: normal;
   }
@@ -31,7 +32,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: font-bold__subset, font-bold, Arial, sans-serif;
+    /* font-family: font-bold__subset, font-bold, Arial, sans-serif;*/
+    font-family: Arial, sans-serif;
+    font-weight: bold;
   }
 
   h1 {
