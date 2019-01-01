@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 import styled, { ThemeProvider } from 'styled-components'
+import CookieConsent from 'react-cookie-consent'
 
 import theme from '../styles/theme'
 import GlobalStyle from '../styles/globalStyle'
@@ -116,6 +117,15 @@ const Layout = ({ children }) => (
           <>
             <GlobalStyle theme={theme} fonts={data.contentfulFontContainer} />
             <GlobalWrapper>
+              <CookieConsent
+                location="bottom"
+                buttonText="OK"
+                cookieName="cookie-consent"
+                expires={150}
+              >
+                Diese Website verwendet Cookies, um Ihnen den bestmöglichen
+                Service zu gewährleisten.
+              </CookieConsent>
               <MainGrid>
                 <SideBackground gridRow="1 / 4" />
                 <Header gridRow="1" />
