@@ -5,7 +5,7 @@ const CallToActionButton = styled.button`
   text-shadow: 0 0 15px white;
   background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.1)),
     ${props => props.theme.colors.yellow};
-  padding: 10px ${props => props.theme.sizes.baseLineHeight};
+  padding: 10px ${props => props.theme.sizes.innerPadding};
   border: 1px solid ${props => props.theme.colors.yellow};
   border-radius: 3px;
   overflow: hidden;
