@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import Img from 'gatsby-image'
+import Img from 'gatsby-image/withIEPolyfill'
 import ContentBox from './contentBox'
 
 const ProductGroupTile = styled.section`
@@ -91,7 +91,11 @@ const ProductGroupExamples = styled.ul`
 
 const ProductGroup = props => (
   <ProductGroupTile>
-    <ProductGroupImage fluid={props.photo} />
+    <ProductGroupImage
+      fluid={props.photo}
+      objectFit="cover"
+      objectPosition="50% 50%"
+    />
     <ProductGroupText>
       <ProductGroupHeader>
         <ProductGroupHeading>{props.name}</ProductGroupHeading>
