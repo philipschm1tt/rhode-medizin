@@ -3,6 +3,6 @@
 #
 # will be automatically installed by netlify
 # see https://www.netlify.com/docs/build-settings/#python
-fonttools
-brotli
-zopfli
+#fonttools
+#brotli
+#zopfli
