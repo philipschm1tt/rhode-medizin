@@ -34,6 +34,17 @@ Run `lint` before considering work done. There is no typecheck step (plain JS, n
 - Skip ADRs for routine implementation details, small refactors, or decisions already documented elsewhere.
 - In the completion summary, state whether ADRs were added or why none were needed.
 
+## Commits
+
+- As part of spec-driven work, identify cohesive changes that warrant commits while executing implementation plans.
+- When completing a spec, commit the completed changes before considering the work done.
+- Prefer meaningful commit boundaries. Implementation-plan steps are often suitable commit boundaries when they represent independently coherent changes.
+- Avoid tiny mechanical commits that do not help review or history.
+- Avoid broad commits that mix unrelated steps or concerns.
+- Match existing repository commit messages: short active-voice subjects, no conventional commit prefixes.
+- Use commit bodies when helpful to summarize the change, explain reasoning, or include the verbatim prompt that led to the change.
+- Before committing, inspect `git status`, `git diff`, and `git log --oneline -10`; stage only intended files; never commit secrets or unrelated user changes.
+
 ## Style conventions
 
 - Prettier: no semicolons, single quotes, ES5 trailing commas. 2-space indent, LF.
