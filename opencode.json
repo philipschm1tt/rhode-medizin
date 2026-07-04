@@ -1,0 +1,38 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"],
+  "permission": {
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "**/.env": "deny",
+      "**/.env.*": "deny",
+      "**/.envrc": "deny",
+      "**/.envrc.*": "deny",
+      "**/.npmrc": "deny",
+      "**/.pypirc": "deny",
+      "**/.netrc": "deny",
+      "**/credentials": "deny",
+      "**/credentials.*": "deny",
+      "**/*.pem": "deny",
+      "**/*.key": "deny",
+      "**/*.p12": "deny",
+      "**/*.pfx": "deny",
+      "**/*.keystore": "deny",
+      "**/id_rsa": "deny",
+      "**/id_rsa.*": "deny",
+      "**/id_ed25519": "deny",
+      "**/id_ed25519.*": "deny",
+      "**/*.kube/config": "deny",
+      "**/.aws/credentials": "deny",
+      "**/.aws/config": "deny",
+      "**/.gcloud/*": "deny",
+      "**/secrets.*": "deny",
+      "**/secrets/**": "deny",
+      "**/secrets.yml": "deny",
+      "**/secrets.yaml": "deny"
+    }
+  }
+}
