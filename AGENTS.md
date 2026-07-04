@@ -25,6 +25,15 @@ Run `lint` before considering work done. There is no typecheck step (plain JS, n
 - `src/components/layout.jsx` runs a `StaticQuery` for site metadata + a `contentfulFontContainer` ("NeuzeitOffice") used for webfonts and license text. Font inlining is handled via `subfont` build scripts, not Gatsby.
 - Styling: styled-components with a theme in `src/styles/`. `GlobalWrapper` is centered at 960px and flips to full-width CSS grid on large screens (`@supports (display: grid)`).
 
+## Spec-driven work and ADRs
+
+- For every completed spec implementation, review the work for significant architecture decisions before considering the task done.
+- Document significant architecture decisions in `docs/adrs/` when they are not already covered by an existing ADR.
+- ADR filenames use the next available two-digit number plus a short lowercase topic, e.g. `adr_01_astro.md`.
+- Keep ADRs concise. Include reasons only when they are known from the spec, implementation, or conversation; do not invent rationale.
+- Skip ADRs for routine implementation details, small refactors, or decisions already documented elsewhere.
+- In the completion summary, state whether ADRs were added or why none were needed.
+
 ## Style conventions
 
 - Prettier: no semicolons, single quotes, ES5 trailing commas. 2-space indent, LF.
