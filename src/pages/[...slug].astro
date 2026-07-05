@@ -4,23 +4,29 @@ import Layout from '../layouts/Layout.astro'
 import MainContent from '../components/MainContent.astro'
 import ModuleRenderer from '../components/ModuleRenderer.astro'
 
-// M2 renders only the legal pages. The homepage (/) is excluded from
-// static paths; it is migrated in M3.
+// Renders all Contentful pages: the homepage (/) plus legal pages.
+// A Contentful slug of '/' or '' maps to Astro path undefined so it
+// renders at the site root.
 export async function getStaticPaths() {
-  const legalSlugs = new Set(['imprint', 'data-policy'])
   const normalize = (slug: string): string =>
     slug.replace(/^\/+/, '').replace(/\/+$/, '')
   const pages = await getCollection('pages')
-  return pages
-    .filter(page => legalSlugs.has(normalize(page.data.slug)))
-    .map(page => ({
-      params: { slug: normalize(page.data.slug) },
+  return pages.map(page => {
+    const slug = normalize(page.data.slug)
+    return {
+      params: { slug: slug === '' ? undefined : slug },
       props: { page },
-    }))
+    }
+  })
 }
 
 const { page } = Astro.props
-const title = page.data.slug === '/data-policy' ? 'Datenschutzhinweis' : 'Impressum'
+const slug = page.data.slug.replace(/^\/+/, '').replace(/\/+$/, '')
+const title = slug === 'data-policy'
+  ? 'Datenschutzhinweis'
+  : slug === 'imprint'
+    ? 'Impressum'
+    : 'Rhode Medizintechnik'
 const modules = page.data.module as unknown as {
   __typename: string
   id: string
