@@ -46,11 +46,13 @@ const alt = image?.description || image?.title || ''
       {subHeadline && <p class="subheadline">{subHeadline}</p>}
     </div>
     <br />
-    {callToAction && (
-      <a href="/imprint/">
-        <CallToActionButton text={callToAction} />
-      </a>
-    )}
+    {
+      callToAction && (
+        <a href="/imprint/">
+          <CallToActionButton text={callToAction} />
+        </a>
+      )
+    }
   </div>
 </header>
 
