@@ -1,0 +1,20 @@
+---
+// Native Astro port of src/components/contentBox.jsx.
+// Wraps children in standard inner padding; opt in to the wider
+// outer padding on both axes with `extraVerticalPadding`.
+const { extraVerticalPadding = false } = Astro.props
+---
+
+<div class:list={['content-box', { 'extra-vertical': extraVerticalPadding }]}>
+  <slot />
+</div>
+
+<style>
+  .content-box {
+    padding: var(--inner-padding);
+  }
+
+  .content-box.extra-vertical {
+    padding: var(--outer-padding);
+  }
+</style>

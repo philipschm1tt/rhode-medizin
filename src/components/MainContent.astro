@@ -1,0 +1,11 @@
+---
+import MainGrid from './MainGrid.astro'
+
+const { gridRow = '2' } = Astro.props
+---
+
+<article>
+  <MainGrid gridRow={gridRow}>
+    <slot />
+  </MainGrid>
+</article>

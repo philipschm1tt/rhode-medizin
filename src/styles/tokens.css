@@ -1,0 +1,60 @@
+:root {
+  /* colors */
+  --color-base: #555555;
+  --color-light-yellow: #fffdf3;
+  --color-light-blue: #f7f7ff;
+  --color-company-blue: #4038a0;
+  --color-purple: #7788d1;
+  --color-dark-purple: #4038a0;
+  --color-darker-purple: #576399;
+  --color-yellow: #ffda00;
+  --color-overlay: rgba(255, 255, 255, 0.8);
+
+  /* font families */
+  --font-bold: font-bold, Arial, sans-serif;
+  --font-medium: font-medium, Arial, sans-serif;
+  --font-light: font-light, Arial, sans-serif;
+
+  /* font sizes — small screens */
+  --font-size-xxl-small: 32px;
+  --font-size-xl-small: 24px;
+  --font-size-l-small: 18px;
+  --font-size-m-small: 18px;
+  --font-size-s-small: 14px;
+
+  /* font sizes — large screens */
+  --font-size-xxl-large: 43px;
+  --font-size-xl-large: 32px;
+  --font-size-l-large: 24px;
+  --font-size-m-large: 18px;
+  --font-size-s-large: 14px;
+
+  /* line heights — small screens */
+  --line-height-xxl-small: 1.21875;
+  --line-height-xl-small: 1.083333333;
+  --line-height-l-small: 1.444444444;
+  --line-height-m-small: 1.444444444;
+  --line-height-s-small: 1.235714286;
+
+  /* line heights — large screens */
+  --line-height-xxl-large: 0.9069767442;
+  --line-height-xl-large: 1.21875;
+  --line-height-l-large: 1.083333333;
+  --line-height-m-large: 1.444444444;
+  --line-height-s-large: 1.235714286;
+
+  /* sizes */
+  --breakpoint-large: 800px;
+  --inner-padding: 13px;
+  --outer-padding: 26px;
+  --half-base-line-height: 13px;
+  --base-line-height: 26px;
+  --double-base-line-height: 52px;
+  --triple-base-line-height: 78px;
+
+  /* legacy layout widths */
+  --layout-max-width: 960px;
+
+  /* main grid column template (large screens) */
+  --main-grid-columns: 1.618fr [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end] 1fr;
+}
