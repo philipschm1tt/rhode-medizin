@@ -1,0 +1,37 @@
+---
+// Native Astro port of src/components/tileGrid.jsx.
+// A <ul> that lays out tiles in a flex row (fallback) and switches
+// to a CSS grid of minmax(141px, 1fr) columns when grid is supported.
+---
+
+<ul class="tile-grid">
+  <slot />
+</ul>
+
+<style>
+  .tile-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .tile-grid > :global(*) {
+    list-style: none;
+    max-width: 100%;
+    margin-bottom: var(--base-line-height);
+    margin-right: var(--base-line-height);
+  }
+
+  @supports (display: grid) {
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(141px, 1fr));
+      grid-gap: var(--base-line-height);
+    }
+
+    .tile-grid > :global(*) {
+      width: auto;
+      margin: 0;
+    }
+  }
+</style>

@@ -23,6 +23,7 @@ const { page } = Astro.props
 const title = page.data.slug === '/data-policy' ? 'Datenschutzhinweis' : 'Impressum'
 const modules = page.data.module as unknown as {
   __typename: string
+  id: string
   [key: string]: unknown
 }[]
 ---

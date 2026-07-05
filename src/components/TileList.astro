@@ -1,0 +1,16 @@
+---
+// Native Astro port of src/components/tileList.jsx.
+// A plain <ul> that stacks its children vertically.
+---
+
+<ul class="tile-list">
+  <slot />
+</ul>
+
+<style>
+  .tile-list > :global(*) {
+    list-style: none;
+    max-width: 100%;
+    margin-bottom: var(--base-line-height);
+  }
+</style>
