@@ -1,0 +1,43 @@
+---
+// Native Astro port of src/components/callToActionButton.jsx.
+// The original was a styled <button> wrapped in a Gatsby <Link> by
+// heroBlock.jsx. We keep the same element structure: callers wrap this
+// <button> in an <a> for navigation.
+interface Props {
+  text: string
+}
+
+const { text } = Astro.props
+---
+
+<button class="cta-button" type="button">
+  {text}
+</button>
+
+<style>
+  .cta-button {
+    color: var(--color-company-blue);
+    text-shadow: 0 0 15px white;
+    background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.1)),
+      var(--color-yellow);
+    padding: 10px var(--inner-padding);
+    border: 1px solid var(--color-yellow);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
+    font-family: var(--font-bold);
+    font-size: var(--font-size-l-small);
+    line-height: var(--line-height-l-small);
+    font-weight: bold;
+    justify-self: start;
+    cursor: pointer;
+  }
+
+  @media (min-width: 800px) {
+    .cta-button {
+      font-size: var(--font-size-l-large);
+      line-height: var(--line-height-l-large);
+      padding: 10px var(--double-base-line-height);
+    }
+  }
+</style>
