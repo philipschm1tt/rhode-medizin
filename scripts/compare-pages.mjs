@@ -76,11 +76,14 @@ const normalizeAttributes = ($) => {
 }
 
 // Attributes that carry content semantics and must survive normalization.
+// `alt` is intentionally excluded: the old Gatsby site used empty alt
+// everywhere (gatsby-image default), while the new Astro site adds
+// meaningful alt from Contentful image descriptions per the M3 plan.
+// Alt text is a deliberate accessibility improvement, not content parity.
 const KEEP_ATTRIBUTES = new Set([
   'src',
   'srcset',
   'href',
-  'alt',
   'colspan',
   'rowspan',
   'lang',

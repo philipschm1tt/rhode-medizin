@@ -10,6 +10,7 @@ import TileGrid from './TileGrid.astro'
 import TileList from './TileList.astro'
 import EmployeeTile from './EmployeeTile.astro'
 import ProductGroup from './ProductGroup.astro'
+import HeroBlock from './HeroBlock.astro'
 import ModuleRenderer from './ModuleRenderer.astro'
 
 interface Image {
@@ -65,6 +66,14 @@ interface ProductGroupModule extends Module {
   foto?: Image
 }
 
+interface HeroBlockModule extends Module {
+  __typename: 'ContentfulHeroBlock'
+  hauptueberschrift: string
+  unterueberschrift?: string
+  callToAction?: { text: string }
+  bild?: Image
+}
+
 interface Props {
   module: Module
 }
@@ -77,6 +86,7 @@ const isQuote = mod.__typename === 'ContentfulZitat'
 const isCardLayout = mod.__typename === 'ContentfulKartenLayout'
 const isEmployee = mod.__typename === 'ContentfulMitarbeiter'
 const isProductGroup = mod.__typename === 'ContentfulProduktgruppe'
+const isHeroBlock = mod.__typename === 'ContentfulHeroBlock'
 
 const section = isSection ? (mod as unknown as SectionModule) : null
 const text = isText ? (mod as unknown as TextModule) : null
@@ -84,7 +94,19 @@ const quote = isQuote ? (mod as unknown as QuoteModule) : null
 const cardLayout = isCardLayout ? (mod as unknown as CardLayoutModule) : null
 const employee = isEmployee ? (mod as unknown as EmployeeModule) : null
 const productGroup = isProductGroup ? (mod as unknown as ProductGroupModule) : null
+const heroBlock = isHeroBlock ? (mod as unknown as HeroBlockModule) : null
 ---
+
+{
+  isHeroBlock && heroBlock && (
+    <HeroBlock
+      mainHeadline={heroBlock.hauptueberschrift}
+      subHeadline={heroBlock.unterueberschrift}
+      callToAction={heroBlock.callToAction?.text}
+      image={heroBlock.bild}
+    />
+  )
+}
 
 {
   isSection && section && (
@@ -95,14 +117,16 @@ const productGroup = isProductGroup ? (mod as unknown as ProductGroupModule) : n
         </MainGrid>
       </MainSection>
     ) : (
-      <MainSection>
-        {section.inhalte[0] && <ModuleRenderer module={section.inhalte[0]} />}
+      <>
+        <MainSection>
+          {section.inhalte[0] && <ModuleRenderer module={section.inhalte[0]} />}
+        </MainSection>
         {section.seitenabschnitt && (
           <AsideSection>
             <ModuleRenderer module={section.seitenabschnitt} />
           </AsideSection>
         )}
-      </MainSection>
+      </>
     )
   )
 }

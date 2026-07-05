@@ -1,0 +1,124 @@
+---
+// Native Astro port of src/components/heroBlock.jsx.
+// The hero area is a MainGrid variant with an absolutely positioned
+// background image, a content overlay (headline + subheadline), and a
+// call-to-action button. The hero image is the LCP element: it is eager
+// loaded with fetchpriority="high" and width/height attributes.
+import MainGrid from './MainGrid.astro'
+import ContentBox from './ContentBox.astro'
+import CallToActionButton from './CallToActionButton.astro'
+
+interface Image {
+  src: string
+  width: number
+  height: number
+  title?: string
+  description?: string
+}
+
+interface Props {
+  mainHeadline: string
+  subHeadline?: string
+  callToAction?: string
+  image?: Image
+}
+
+const { mainHeadline, subHeadline, callToAction, image } = Astro.props
+const alt = image?.description || image?.title || ''
+---
+
+<header class="hero-area">
+  {
+    image && (
+      <img
+        class="hero-image"
+        src={image.src}
+        width={image.width}
+        height={image.height}
+        alt={alt}
+        fetchpriority="high"
+      />
+    )
+  }
+  <div class="hero-content">
+    <div class="overlay">
+      <h1>{mainHeadline}</h1>
+      {subHeadline && <p class="subheadline">{subHeadline}</p>}
+    </div>
+    <br />
+    {callToAction && (
+      <a href="/imprint/">
+        <CallToActionButton text={callToAction} />
+      </a>
+    )}
+  </div>
+</header>
+
+<style>
+  .hero-area {
+    grid-column: 1 / 5;
+    margin-bottom: var(--base-line-height);
+    grid-template-rows:
+      var(--triple-base-line-height)
+      fit-content(0)
+      var(--triple-base-line-height);
+    position: relative;
+    padding: var(--triple-base-line-height) var(--outer-padding);
+    display: grid;
+  }
+
+  @media (min-width: 800px) {
+    @supports (display: grid) {
+      .hero-area {
+        padding: 0;
+      }
+    }
+  }
+
+  .hero-image {
+    grid-column: 1 / 5;
+    grid-row: 1 / 4;
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+
+  .hero-content {
+    grid-column: main-column-start / main-column-end;
+    grid-row: 2;
+    position: relative;
+    z-index: 1;
+    padding: 0;
+  }
+
+  .overlay {
+    background-color: var(--color-overlay);
+    border: 1px solid white;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
+    margin-bottom: var(--base-line-height);
+    display: inline-block;
+    justify-self: start;
+    align-self: start;
+    padding: var(--inner-padding);
+  }
+
+  .overlay > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .overlay h1,
+  .overlay .subheadline {
+    font-family: var(--font-bold);
+    color: var(--color-company-blue);
+    text-shadow: 0 0 15px white;
+  }
+</style>

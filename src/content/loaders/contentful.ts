@@ -189,8 +189,8 @@ const normalizeCallToAction = (
 const renderMarkdown = async (markdown: string): Promise<string> => {
   const file = await unified()
     .use(remarkParse)
-    .use(remarkRehype)
-    .use(rehypeStringify)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeStringify, { allowDangerousHtml: true })
     .process(markdown)
 
   return String(file)
