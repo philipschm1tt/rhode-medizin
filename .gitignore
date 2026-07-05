@@ -13,3 +13,6 @@ TODO
 # Astro
 /dist
 /.astro
+
+# Playwright CLI session artifacts
+/.playwright-cli
