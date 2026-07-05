@@ -1,29 +1,33 @@
 # AGENTS.md
 
-Gatsby v2 marketing site for Heinrich Rhode GmbH. Content comes from Contentful; the build is essentially a renderer for Contentful pages.
+Astro marketing site for Heinrich Rhode GmbH. Content comes from Contentful at build time; the build is essentially a renderer for Contentful pages.
 
 ## Commands
 
-- `npm run develop` — dev server (needs Contentful creds, see below)
-- `npm run build` — production build to `public/`
-- `npm run build-subfont` / `build-subfont-preload` — build then inline fonts via `subfont` (Python deps in `requirements.txt`, currently disabled — see git history before re-enabling)
-- `npm run lint` — runs `lint:es` (eslint, airbnb + prettier) then `lint:style` (stylelint over `src/**/*.{js,jsx}`, processes styled-components)
-- `npm run format` — prettier write
-- `npm test` — no tests configured; do not assume a test runner exists
+- `pnpm develop` — dev server (needs Contentful creds, see below)
+- `pnpm build` — production build to `dist/` (runs `astro check` then `astro build`)
+- `pnpm compare:legal` — compare built legal pages against captured fixtures
+- `pnpm compare:pages` — compare built homepage + legal pages against captured fixtures
+- `pnpm format` — prettier write
+- `pnpm lint` — prettier check (no eslint/stylelint after Astro migration)
+- `pnpm test` — no tests configured; do not assume a test runner exists
 
-Run `lint` before considering work done. There is no typecheck step (plain JS, no Flow/TS).
+Run `lint` before considering work done. The build also runs `astro check` (TypeScript diagnostics for `.astro` and `.ts` files).
 
 ## Environment
 
-`.env` (gitignored) must define `CONTENTFUL_SPACE_ID` and `CONTENTFUL_ACCESS_TOKEN`, loaded by `gatsby-config.js` via `dotenv`. Without these, `gatsby-source-contentful` returns empty data and `gatsby-node.js`'s `createPages` produces no pages. Do not commit `.env`.
+`.env` (gitignored) must define `CONTENTFUL_SPACE_ID` and `CONTENTFUL_DELIVERY_TOKEN`, loaded by `src/content/loaders/contentful.ts` via `dotenv`. Without these, the Contentful loader throws and the build fails. Do not commit `.env`.
+
+`CONTENTFUL_ACCESS_TOKEN` exists only for the legacy Gatsby build and is no longer used by the Astro stack. `CONTENTFUL_PREVIEW_TOKEN` is optional for preview builds (set `CONTENTFUL_USE_PREVIEW=true` to use it against `preview.contentful.com`).
 
 ## Architecture
 
-- `gatsby-node.js` queries `allContentfulSeite` and creates one page per `slug` using `src/templates/contentful-page.jsx`. There is only a `404.jsx` page in `src/pages/`; all real routes are Contentful-driven.
-- `src/templates/contentful-page.jsx` is the central dispatcher: `ModuleTemplate` switches on `module.__typename` (e.g. `ContentfulHeroBlock`, `ContentfulAbschnitt`, `ContentfulKartenlayout`) to render the matching component. New Contentful content types must be added to both the GraphQL fragment and the switch.
-- Contentful field names are German (`hauptueberschrift`, `unterueberschrift`, `volleBreite`, `seitenabschnitt`, `inhalte`). Preserve this convention when extending queries.
-- `src/components/layout.jsx` runs a `StaticQuery` for site metadata + a `contentfulFontContainer` ("NeuzeitOffice") used for webfonts and license text. Font inlining is handled via `subfont` build scripts, not Gatsby.
-- Styling: styled-components with a theme in `src/styles/`. `GlobalWrapper` is centered at 960px and flips to full-width CSS grid on large screens (`@supports (display: grid)`).
+- `src/pages/[...slug].astro` reads the `pages` content collection and creates one page per `slug`. A Contentful slug of `/` or empty maps to the site root.
+- `src/components/ModuleRenderer.astro` is the central dispatcher: it switches on `module.__typename` (e.g. `ContentfulHeroBlock`, `ContentfulAbschnitt`, `ContentfulKartenLayout`) to render the matching `.astro` component. New Contentful content types must be added to both the Zod schema in `src/content.config.ts` and the dispatcher.
+- Contentful field names are German (`hauptueberschrift`, `unterueberschrift`, `volleBreite`, `seitenabschnitt`, `inhalte`). Preserve this convention when extending schemas.
+- `src/content/loaders/contentful.ts` is a custom Astro Content Loader that fetches from Contentful via the `contentful.js` SDK, resolves cross-references, renders Markdown to HTML, and normalizes image data to `{ src, width, height, title?, description? }`.
+- `src/layouts/Layout.astro` is the HTML shell with header, footer, and global grid.
+- Styling: native `.astro` scoped CSS with custom properties in `src/styles/tokens.css` and global element styles in `src/styles/global.css`. No styled-components, no React runtime.
 
 ## Spec-driven work and ADRs
 
@@ -48,9 +52,8 @@ Run `lint` before considering work done. There is no typecheck step (plain JS, n
 ## Style conventions
 
 - Prettier: no semicolons, single quotes, ES5 trailing commas. 2-space indent, LF.
-- ESLint: airbnb base with prettier integration; `react/destructuring-assignment` and `react/jsx-one-expression-per-line` are off, tagged-template expressions are allowed (for styled-components).
-- Stylelint is configured to lint CSS inside styled-components — keep `lint:style` green when touching `src/**/*.{js,jsx}`.
+- Astro components use scoped CSS in `<style>` blocks. CSS custom properties in `src/styles/tokens.css` carry the design tokens.
 
 ## Deploy
 
-Deployed to Netlify (see README button). `requirements.txt` is read by Netlify's Python build step for `subfont`; lines are currently commented out after "Disable subfont requirements" — re-enable there if you revive subfont builds.
+To be deployed to Cloudflare Pages (M5). The build output is `dist/` with no SSR adapter — fully static, cookie-free, no service worker.

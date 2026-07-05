@@ -1,13 +1,15 @@
 ---
 // Native Astro port of src/components/mainSection.jsx.
 // `fullWidth` and `darkBackground` map to the original styled-components props.
-const {
-  fullWidth = false,
-  darkBackground = false,
-} = Astro.props
+const { fullWidth = false, darkBackground = false } = Astro.props
 ---
 
-<section class:list={['main-section', { 'full-width': fullWidth, 'dark': darkBackground }]}>
+<section
+  class:list={[
+    'main-section',
+    { 'full-width': fullWidth, dark: darkBackground },
+  ]}
+>
   <slot />
 </section>
 

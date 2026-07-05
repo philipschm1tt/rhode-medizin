@@ -60,7 +60,7 @@ const moduleSchema: z.ZodTypeAny = z.lazy(() =>
       beispiele: z.array(z.string()).optional(),
       foto: imageSchema.optional(),
     }),
-  ]),
+  ])
 )
 
 const pages = defineCollection({

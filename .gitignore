@@ -6,8 +6,7 @@ yarn-error.log
 TODO
 
 # Build directory
-/public
-/public_subfont
+/dist
 .DS_Store
 
 # Astro

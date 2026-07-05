@@ -1,22 +1,55 @@
 # rhode-medizin
 
-Based on the default Gatsby starter.
+Astro marketing site for Heinrich Rhode GmbH. Content is fetched from Contentful at build time.
+
+## Prerequisites
+
+- Node.js (current LTS)
+- pnpm
 
 ## Install
 
-Make sure that you have the Gatsby CLI program installed:
-
 ```sh
-npm install --global gatsby-cli
+pnpm install
 ```
 
-Then you can run it by:
+## Environment
+
+Copy `.env.example` to `.env` and fill in Contentful credentials:
+
+```
+CONTENTFUL_SPACE_ID=...
+CONTENTFUL_DELIVERY_TOKEN=...
+```
+
+For preview builds against `preview.contentful.com`, also set:
+
+```
+CONTENTFUL_PREVIEW_TOKEN=...
+CONTENTFUL_USE_PREVIEW=true
+```
+
+## Develop
 
 ```sh
-cd rhode-medizin
-gatsby develop
+pnpm develop
+```
+
+## Build
+
+```sh
+pnpm build
+```
+
+Output is written to `dist/`.
+
+## Parity checks
+
+```sh
+pnpm compare:legal   # legal pages against captured fixtures
+pnpm compare:pages   # homepage + legal pages against captured fixtures
 ```
 
 ## Deploy
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/maeh2k/rhode-medizin)
+Static output in `dist/` is served by Cloudflare Pages (no SSR adapter).
