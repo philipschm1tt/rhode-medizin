@@ -1,0 +1,30 @@
+---
+// Native Astro port of src/components/mainGrid.jsx.
+// Used as a grid wrapper that places children in the main column on
+// large screens, and falls back to a flex column on smaller screens.
+const { gridRow = 'auto' } = Astro.props
+---
+
+<div class="main-grid" style={`grid-row: ${gridRow};`}>
+  <slot />
+</div>
+
+<style>
+  .main-grid {
+    grid-column: 1 / 5;
+  }
+
+  @media (min-width: var(--breakpoint-large)) {
+    .main-grid {
+      display: flex; /* fallback */
+      flex-direction: column;
+      display: grid;
+      grid-template-columns: var(--main-grid-columns);
+      justify-items: stretch;
+    }
+
+    .main-grid > :global(*) {
+      grid-column: main-column-start / side-column-end;
+    }
+  }
+</style>
