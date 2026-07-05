@@ -1,38 +1,89 @@
 ---
-// M2 ModuleRenderer: supports only ContentfulAbschnitt and ContentfulTextinhalt.
-// Other module types render nothing in M2 (added in M3).
-//
-// Mirrors the dispatch in src/templates/contentful-page.jsx for the
-// legal-page subset: a non-volleBreite Abschnitt renders its first
-// inhalte child inside MainSection (no extra ContentBox wrapper);
-// a volleBreite Abschnitt wraps the child in MainGrid inside MainSection;
-// Textinhalt renders its HTML inside ContentBox with no extra wrapper div.
+// ModuleRenderer dispatches on module.__typename to render the matching
+// Astro component, mirroring src/templates/contentful-page.jsx.
 import MainSection from './MainSection.astro'
 import AsideSection from './AsideSection.astro'
 import ContentBox from './ContentBox.astro'
 import MainGrid from './MainGrid.astro'
+import Quote from './Quote.astro'
+import TileGrid from './TileGrid.astro'
+import TileList from './TileList.astro'
+import EmployeeTile from './EmployeeTile.astro'
+import ProductGroup from './ProductGroup.astro'
 import ModuleRenderer from './ModuleRenderer.astro'
 
+interface Image {
+  src: string
+  width: number
+  height: number
+  title?: string
+  description?: string
+}
+
+interface Module {
+  __typename: string
+  id: string
+  [key: string]: unknown
+}
+
+interface SectionModule extends Module {
+  __typename: 'ContentfulAbschnitt'
+  volleBreite: boolean
+  inhalte: Module[]
+  seitenabschnitt?: Module
+}
+
+interface TextModule extends Module {
+  __typename: 'ContentfulTextinhalt'
+  textHtml: string
+}
+
+interface QuoteModule extends Module {
+  __typename: 'ContentfulZitat'
+  zitat: string
+}
+
+interface CardLayoutModule extends Module {
+  __typename: 'ContentfulKartenLayout'
+  titel?: string
+  layout?: string
+  elemente: Module[]
+}
+
+interface EmployeeModule extends Module {
+  __typename: 'ContentfulMitarbeiter'
+  name: string
+  dienstbereich?: string
+  foto?: Image
+}
+
+interface ProductGroupModule extends Module {
+  __typename: 'ContentfulProduktgruppe'
+  name: string
+  beschreibung?: string
+  beispiele?: string[]
+  foto?: Image
+}
+
 interface Props {
-  module: {
-    __typename: string
-    [key: string]: unknown
-  }
+  module: Module
 }
 
 const { module: mod } = Astro.props
 
-type SectionModule = {
-  volleBreite: boolean
-  inhalte: Props['module'][]
-  seitenabschnitt?: Props['module']
-}
-type TextModule = { textHtml: string }
-
 const isSection = mod.__typename === 'ContentfulAbschnitt'
 const isText = mod.__typename === 'ContentfulTextinhalt'
+const isQuote = mod.__typename === 'ContentfulZitat'
+const isCardLayout = mod.__typename === 'ContentfulKartenLayout'
+const isEmployee = mod.__typename === 'ContentfulMitarbeiter'
+const isProductGroup = mod.__typename === 'ContentfulProduktgruppe'
+
 const section = isSection ? (mod as unknown as SectionModule) : null
 const text = isText ? (mod as unknown as TextModule) : null
+const quote = isQuote ? (mod as unknown as QuoteModule) : null
+const cardLayout = isCardLayout ? (mod as unknown as CardLayoutModule) : null
+const employee = isEmployee ? (mod as unknown as EmployeeModule) : null
+const productGroup = isProductGroup ? (mod as unknown as ProductGroupModule) : null
 ---
 
 {
@@ -57,3 +108,45 @@ const text = isText ? (mod as unknown as TextModule) : null
 }
 
 {isText && text && <ContentBox set:html={text.textHtml} />}
+
+{
+  isQuote && quote && <Quote text={quote.zitat} />
+}
+
+{
+  isEmployee && employee && (
+    <EmployeeTile name={employee.name} department={employee.dienstbereich} photo={employee.foto} />
+  )
+}
+
+{
+  isProductGroup && productGroup && (
+    <ProductGroup
+      name={productGroup.name}
+      description={productGroup.beschreibung}
+      examples={productGroup.beispiele}
+      photo={productGroup.foto}
+    />
+  )
+}
+
+{
+  isCardLayout && cardLayout && (
+    <ContentBox>
+      {cardLayout.titel && <h2>{cardLayout.titel}</h2>}
+      {cardLayout.layout === 'Gitter' ? (
+        <TileGrid>
+          {cardLayout.elemente.map(element => (
+            <li><ModuleRenderer module={element} /></li>
+          ))}
+        </TileGrid>
+      ) : (
+        <TileList>
+          {cardLayout.elemente.map(element => (
+            <li><ModuleRenderer module={element} /></li>
+          ))}
+        </TileList>
+      )}
+    </ContentBox>
+  )
+}
