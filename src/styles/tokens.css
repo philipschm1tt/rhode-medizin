@@ -56,5 +56,6 @@
   --layout-max-width: 960px;
 
   /* main grid column template (large screens) */
-  --main-grid-columns: 1.618fr [main-column-start] 4.854fr [main-column-end side-column-start] 3fr [side-column-end] 1fr;
+  --main-grid-columns: 1.618fr [main-column-start] 4.854fr [main-column-end
+    side-column-start] 3fr [side-column-end] 1fr;
 }

@@ -3,7 +3,10 @@
 const { gridRow } = Astro.props
 ---
 
-<aside class="aside-section" style={gridRow ? `grid-row: ${gridRow};` : undefined}>
+<aside
+  class="aside-section"
+  style={gridRow ? `grid-row: ${gridRow};` : undefined}
+>
   <slot />
 </aside>
 

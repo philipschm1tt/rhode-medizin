@@ -126,14 +126,16 @@ const getContentfulConfig = () => {
   const host = usePreview ? 'preview.contentful.com' : 'cdn.contentful.com'
 
   if (!space) {
-    throw new Error('CONTENTFUL_SPACE_ID is required for the Astro Contentful loader')
+    throw new Error(
+      'CONTENTFUL_SPACE_ID is required for the Astro Contentful loader'
+    )
   }
 
   if (!accessToken) {
     throw new Error(
       usePreview
         ? 'CONTENTFUL_PREVIEW_TOKEN is required when CONTENTFUL_USE_PREVIEW=true'
-        : 'CONTENTFUL_DELIVERY_TOKEN is required for the Astro Contentful loader',
+        : 'CONTENTFUL_DELIVERY_TOKEN is required for the Astro Contentful loader'
     )
   }
 
@@ -154,7 +156,9 @@ const asString = (value: unknown): string =>
   typeof value === 'string' ? value : ''
 
 const asStringArray = (value: unknown): string[] =>
-  Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : []
+  Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string')
+    : []
 
 const asBoolean = (value: unknown): boolean => value === true
 
@@ -171,7 +175,7 @@ const getReferenceIds = (value: unknown): string[] =>
 
 const normalizeCallToAction = (
   value: unknown,
-  entries: Map<string, RawEntry>,
+  entries: Map<string, RawEntry>
 ): { text: string } | undefined => {
   if (typeof value === 'string') {
     return value ? { text: value } : undefined
@@ -212,7 +216,9 @@ const normalizeAssetUrl = (url: string): string => {
   return `https://${url}`
 }
 
-const normalizeImage = (asset: RawAsset | undefined): ContentfulImage | undefined => {
+const normalizeImage = (
+  asset: RawAsset | undefined
+): ContentfulImage | undefined => {
   const file = asset?.fields?.file
   const image = file?.details?.image
 
@@ -230,12 +236,14 @@ const normalizeImage = (asset: RawAsset | undefined): ContentfulImage | undefine
 }
 
 const createEntryIndex = (entries: RawEntry[]): Map<string, RawEntry> =>
-  new Map(entries.map(entry => [entry.sys.id, entry]))
+  new Map(entries.map((entry) => [entry.sys.id, entry]))
 
 const createAssetIndex = (assets: RawAsset[]): Map<string, RawAsset> =>
-  new Map(assets.map(asset => [asset.sys.id, asset]))
+  new Map(assets.map((asset) => [asset.sys.id, asset]))
 
-const contentfulTypename = (entry: RawEntry): NormalizedModule['__typename'] | 'ContentfulSeite' | undefined => {
+const contentfulTypename = (
+  entry: RawEntry
+): NormalizedModule['__typename'] | 'ContentfulSeite' | undefined => {
   const contentType = entry.sys.contentType.sys.id
 
   switch (contentType) {
@@ -263,7 +271,7 @@ const contentfulTypename = (entry: RawEntry): NormalizedModule['__typename'] | '
 const normalizeModule = async (
   entry: RawEntry,
   entries: Map<string, RawEntry>,
-  assets: Map<string, RawAsset>,
+  assets: Map<string, RawAsset>
 ): Promise<NormalizedModule> => {
   const fields = entry.fields as Record<string, unknown>
   const id = entry.sys.id
@@ -271,7 +279,7 @@ const normalizeModule = async (
 
   if (!typename) {
     throw new Error(
-      `Cannot normalize unsupported Contentful content type: ${entry.sys.contentType.sys.id}`,
+      `Cannot normalize unsupported Contentful content type: ${entry.sys.contentType.sys.id}`
     )
   }
 
@@ -294,7 +302,9 @@ const normalizeModule = async (
     case 'ContentfulAbschnitt': {
       const inhalte = (
         await Promise.all(
-          getReferenceIds(fields.inhalte).map(referenceId => normalizeModuleById(referenceId, entries, assets)),
+          getReferenceIds(fields.inhalte).map((referenceId) =>
+            normalizeModuleById(referenceId, entries, assets)
+          )
         )
       ).filter((module): module is NormalizedModule => Boolean(module))
       const seitenabschnittId = getReferenceId(fields.seitenabschnitt)
@@ -327,7 +337,9 @@ const normalizeModule = async (
         layout: asString(fields.layout) || undefined,
         elemente: (
           await Promise.all(
-            getReferenceIds(fields.elemente).map(referenceId => normalizeModuleById(referenceId, entries, assets)),
+            getReferenceIds(fields.elemente).map((referenceId) =>
+              normalizeModuleById(referenceId, entries, assets)
+            )
           )
         ).filter((module): module is NormalizedModule => Boolean(module)),
       }
@@ -344,7 +356,10 @@ const normalizeModule = async (
         id,
         __typename: typename,
         name: asString(fields.name),
-        beschreibung: asString((fields.beschreibung as { beschreibung?: unknown } | undefined)?.beschreibung),
+        beschreibung: asString(
+          (fields.beschreibung as { beschreibung?: unknown } | undefined)
+            ?.beschreibung
+        ),
         beispiele: asStringArray(fields.beispiele),
         foto: normalizeImage(assets.get(getReferenceId(fields.foto) || '')),
       }
@@ -356,7 +371,7 @@ const normalizeModule = async (
 const normalizeModuleById = async (
   id: string,
   entries: Map<string, RawEntry>,
-  assets: Map<string, RawAsset>,
+  assets: Map<string, RawAsset>
 ): Promise<NormalizedModule | undefined> => {
   const entry = entries.get(id)
 
@@ -374,7 +389,7 @@ const normalizeModuleById = async (
 const normalizePage = async (
   entry: RawEntry,
   entries: Map<string, RawEntry>,
-  assets: Map<string, RawAsset>,
+  assets: Map<string, RawAsset>
 ): Promise<NormalizedPage> => {
   const fields = entry.fields as Record<string, unknown>
   const moduleIds = getReferenceIds(fields.module)
@@ -385,7 +400,9 @@ const normalizePage = async (
     slug: asString(fields.slug),
     module: (
       await Promise.all(
-        moduleIds.map(referenceId => normalizeModuleById(referenceId, entries, assets)),
+        moduleIds.map((referenceId) =>
+          normalizeModuleById(referenceId, entries, assets)
+        )
       )
     ).filter((module): module is NormalizedModule => Boolean(module)),
   }
@@ -399,18 +416,29 @@ const fetchContentfulEntries = async () => {
   })
 
   const entries = response.items as RawEntry[]
-  const assets = response.includes?.Asset ? (response.includes.Asset as RawAsset[]) : []
+  const assets = response.includes?.Asset
+    ? (response.includes.Asset as RawAsset[])
+    : []
 
   return { entries, assets }
 }
 
 export const contentfulLoader = () => ({
   name: 'contentful-loader',
-  load: async ({ store }: { store: { clear: () => void; set: (entry: { id: string; data: NormalizedPage }) => void } }) => {
+  load: async ({
+    store,
+  }: {
+    store: {
+      clear: () => void
+      set: (entry: { id: string; data: NormalizedPage }) => void
+    }
+  }) => {
     const { entries, assets } = await fetchContentfulEntries()
     const entryIndex = createEntryIndex(entries)
     const assetIndex = createAssetIndex(assets)
-    const pages = entries.filter(entry => contentfulTypename(entry) === 'ContentfulSeite')
+    const pages = entries.filter(
+      (entry) => contentfulTypename(entry) === 'ContentfulSeite'
+    )
 
     store.clear()
 

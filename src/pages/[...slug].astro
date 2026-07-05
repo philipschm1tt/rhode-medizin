@@ -11,7 +11,7 @@ export async function getStaticPaths() {
   const normalize = (slug: string): string =>
     slug.replace(/^\/+/, '').replace(/\/+$/, '')
   const pages = await getCollection('pages')
-  return pages.map(page => {
+  return pages.map((page) => {
     const slug = normalize(page.data.slug)
     return {
       params: { slug: slug === '' ? undefined : slug },
@@ -22,11 +22,12 @@ export async function getStaticPaths() {
 
 const { page } = Astro.props
 const slug = page.data.slug.replace(/^\/+/, '').replace(/\/+$/, '')
-const title = slug === 'data-policy'
-  ? 'Datenschutzhinweis'
-  : slug === 'imprint'
-    ? 'Impressum'
-    : 'Rhode Medizintechnik'
+const title =
+  slug === 'data-policy'
+    ? 'Datenschutzhinweis'
+    : slug === 'imprint'
+      ? 'Impressum'
+      : 'Rhode Medizintechnik'
 const modules = page.data.module as unknown as {
   __typename: string
   id: string
@@ -36,6 +37,6 @@ const modules = page.data.module as unknown as {
 
 <Layout title={title}>
   <MainContent gridRow="2">
-    {modules.map(mod => <ModuleRenderer module={mod} />)}
+    {modules.map((mod) => <ModuleRenderer module={mod} />)}
   </MainContent>
 </Layout>
