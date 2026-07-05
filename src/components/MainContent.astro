@@ -1,11 +1,30 @@
 ---
-import MainGrid from './MainGrid.astro'
-
+// Native Astro port of src/components/mainContent.jsx.
+// The original is <MainGrid as="article">: the <article> element itself
+// is the grid container, so we apply the grid styles directly to <article>.
 const { gridRow = '2' } = Astro.props
 ---
 
-<article>
-  <MainGrid gridRow={gridRow}>
-    <slot />
-  </MainGrid>
+<article class="main-content" style={`grid-row: ${gridRow};`}>
+  <slot />
 </article>
+
+<style>
+  .main-content {
+    grid-column: 1 / 5;
+  }
+
+  @media (min-width: 800px) {
+    .main-content {
+      display: flex; /* fallback */
+      flex-direction: column;
+      display: grid;
+      grid-template-columns: var(--main-grid-columns);
+      justify-items: stretch;
+    }
+
+    .main-content > :global(*) {
+      grid-column: main-column-start / side-column-end;
+    }
+  }
+</style>
