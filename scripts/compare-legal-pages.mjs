@@ -1,6 +1,8 @@
 import { readFileSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import * as cheerio from 'cheerio'
+import * as cheerioNS from 'cheerio'
+
+const cheerio = cheerioNS.default ?? cheerioNS
 
 const PAGES = [
   {
@@ -67,6 +69,32 @@ const normalizeAttributes = ($) => {
   })
 }
 
+// Attributes that carry content semantics and must survive normalization.
+const KEEP_ATTRIBUTES = new Set([
+  'src',
+  'srcset',
+  'href',
+  'alt',
+  'colspan',
+  'rowspan',
+  'lang',
+])
+
+// Strip presentational noise (class names, data-astro-cid, styled-components
+// hashes, inline styles) so the comparison focuses on content structure.
+// Element tags themselves are kept — wrapper element differences would
+// indicate a structural change worth flagging.
+const stripPresentationalAttributes = ($) => {
+  $('*').each((_, el) => {
+    const attribs = el.attribs ?? {}
+    for (const name of Object.keys(attribs)) {
+      if (!KEEP_ATTRIBUTES.has(name)) {
+        delete attribs[name]
+      }
+    }
+  })
+}
+
 // Whitespace-only differences: collapse runs of whitespace and trim each line.
 const normalizeWhitespace = (html) =>
   html
@@ -78,6 +106,7 @@ const extractMainContent = (rawHtml) => {
   const $ = cheerio.load(rawHtml)
   stripNoise($)
   normalizeAttributes($)
+  stripPresentationalAttributes($)
   // Both the live Gatsby fixture and the Astro build wrap the legal-page
   // content in <article>. Fall back to <main> if <article> is absent.
   const root = $('article').first()
