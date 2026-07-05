@@ -9,3 +9,7 @@ TODO
 /public
 /public_subfont
 .DS_Store
+
+# Astro
+/dist
+/.astro
