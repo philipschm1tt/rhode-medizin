@@ -1,0 +1,72 @@
+---
+// Native Astro port of src/components/quote.jsx.
+// Renders a Contentful Zitat module as a styled aside with an
+// opening-quote glyph rendered via the CSS ::before pseudo-element
+// when grid layout is supported.
+interface Props {
+  text: string
+}
+
+const { text } = Astro.props
+---
+
+<aside class="quote">
+  <p>{text}</p>
+</aside>
+
+<style>
+  .quote {
+    color: var(--color-light-yellow);
+    background-color: var(--color-darker-purple);
+    padding: var(--base-line-height);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: var(--double-base-line-height);
+    margin-top: var(--base-line-height);
+    display: inline-block;
+    width: 50%;
+    min-width: 260px;
+
+    grid-column: main-column-start / side-column-end;
+    justify-self: center;
+  }
+
+  @media (max-width: 799px) {
+    .quote {
+      padding: var(--half-base-line-height);
+      margin-bottom: var(--base-line-height);
+    }
+  }
+
+  .quote p {
+    font-size: var(--font-size-xl-small);
+    line-height: 1.2;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  @media (min-width: 800px) {
+    .quote p {
+      font-size: var(--font-size-xl-large);
+      line-height: 1.2;
+    }
+  }
+
+  @supports (display: grid) {
+    .quote {
+      display: grid;
+      grid-template-columns: min-content 1fr;
+    }
+
+    .quote::before {
+      grid-column: 1;
+      content: '\201C';
+      font-size: var(--double-base-line-height);
+      font-weight: bold;
+      margin-right: var(--half-base-line-height);
+    }
+  }
+</style>
