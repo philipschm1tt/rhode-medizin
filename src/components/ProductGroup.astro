@@ -1,0 +1,153 @@
+---
+// Native Astro port of src/components/productGroup.jsx.
+// Renders a Produktgruppe tile: a two-column grid (image | text) on
+// large screens with header, description, and examples list. The
+// original used gatsby-image fluid; the Astro port uses a plain <img>
+// with object-fit: cover and the Contentful image dimensions.
+import ContentBox from './ContentBox.astro'
+
+interface Image {
+  src: string
+  width: number
+  height: number
+  title?: string
+  description?: string
+}
+
+interface Props {
+  name: string
+  description?: string
+  examples?: string[]
+  photo?: Image
+}
+
+const { name, description, examples = [], photo } = Astro.props
+const alt = photo?.description || photo?.title || ''
+---
+
+<section class="product-group">
+  {
+    photo && (
+      <img
+        class="product-image"
+        src={photo.src}
+        width={photo.width}
+        height={photo.height}
+        alt={alt}
+        loading="lazy"
+      />
+    )
+  }
+  <ContentBox class="product-text">
+    <header class="product-header">
+      <h3>{name}</h3>
+    </header>
+    {description && <p class="product-description">{description}</p>}
+    {
+      examples.length > 0 && (
+        <ul class="product-examples">
+          {examples.map(example => <li>{example}</li>)}
+        </ul>
+      )
+    }
+  </ContentBox>
+</section>
+
+<style>
+  .product-group {
+    background-color: var(--color-light-yellow);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  .product-image {
+    max-width: 100%;
+    height: 260px;
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+
+  @media (min-width: 900px) {
+    .product-group {
+      display: grid;
+      grid-template-columns: 1fr 1.618fr;
+      grid-template-rows: min-content 1fr;
+    }
+
+    @supports (display: grid) {
+      .product-group {
+        max-width: none;
+      }
+
+      .product-group :global(h3) {
+        margin-top: 0;
+      }
+    }
+
+    .product-image {
+      grid-row: span 2;
+    }
+  }
+
+  @media (min-width: 550px) {
+    .product-text {
+      padding: var(--base-line-height);
+    }
+
+    @supports (display: grid) {
+      .product-text {
+        display: grid;
+        grid-column-gap: var(--base-line-height);
+        grid-template-columns: 1.618fr 1fr;
+      }
+
+      .product-text :global(p),
+      .product-text :global(ol),
+      .product-text :global(ul) {
+        margin: 0;
+      }
+    }
+  }
+
+  .product-header {
+    grid-column: span 2;
+  }
+
+  .product-group :global(h3) {
+    color: var(--color-company-blue);
+    font-size: var(--font-size-l-small);
+    line-height: var(--line-height-l-small);
+  }
+
+  @media (min-width: 800px) {
+    .product-group :global(h3) {
+      font-size: var(--font-size-l-large);
+      line-height: var(--line-height-l-large);
+    }
+  }
+
+  .product-description {
+    font-size: var(--font-size-m-small);
+    line-height: var(--line-height-m-small);
+  }
+
+  @media (min-width: 800px) {
+    .product-description {
+      font-size: var(--font-size-m-large);
+      line-height: var(--line-height-m-large);
+    }
+  }
+
+  .product-examples > li {
+    font-size: var(--font-size-s-small);
+    line-height: var(--line-height-s-small);
+  }
+
+  @media (min-width: 800px) {
+    .product-examples > li {
+      font-size: var(--font-size-s-large);
+      line-height: var(--line-height-s-large);
+    }
+  }
+</style>
