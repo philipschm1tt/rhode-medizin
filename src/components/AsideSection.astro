@@ -1,0 +1,52 @@
+---
+// Native Astro port of src/components/asideSection.jsx.
+const { gridRow } = Astro.props
+---
+
+<aside class="aside-section" style={gridRow ? `grid-row: ${gridRow};` : undefined}>
+  <slot />
+</aside>
+
+<style>
+  .aside-section {
+    padding: 0 var(--outer-padding);
+    background-color: var(--color-light-blue);
+    grid-column: side-column-start / side-column-end;
+  }
+
+  @media (min-width: 800px) {
+    @supports (display: grid) {
+      .aside-section {
+        padding: 0;
+      }
+    }
+  }
+
+  .aside-section :global(h3) {
+    color: var(--color-dark-purple);
+  }
+
+  .aside-section :global(h4),
+  .aside-section :global(h5),
+  .aside-section :global(h6),
+  .aside-section :global(p) {
+    font-size: var(--font-size-s-small);
+    line-height: var(--line-height-s-small);
+  }
+
+  .aside-section :global(h4),
+  .aside-section :global(h5),
+  .aside-section :global(h6) {
+    margin: 0;
+  }
+
+  @media (min-width: 800px) {
+    .aside-section :global(h4),
+    .aside-section :global(h5),
+    .aside-section :global(h6),
+    .aside-section :global(p) {
+      font-size: var(--font-size-s-large);
+      line-height: var(--line-height-s-large);
+    }
+  }
+</style>

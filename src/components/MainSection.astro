@@ -1,0 +1,50 @@
+---
+// Native Astro port of src/components/mainSection.jsx.
+// `fullWidth` and `darkBackground` map to the original styled-components props.
+const {
+  fullWidth = false,
+  darkBackground = false,
+} = Astro.props
+---
+
+<section class:list={['main-section', { 'full-width': fullWidth, 'dark': darkBackground }]}>
+  <slot />
+</section>
+
+<style>
+  .main-section {
+    padding: 0 var(--outer-padding);
+    background-color: var(--color-light-yellow);
+    grid-column: main-column-start / main-column-end;
+  }
+
+  .main-section.dark {
+    background-color: var(--color-purple);
+  }
+
+  .main-section.full-width {
+    grid-column: 1 / 5;
+  }
+
+  @media (min-width: 800px) {
+    @supports (display: grid) {
+      .main-section {
+        padding: 0;
+        padding-right: var(--inner-padding);
+      }
+
+      .main-section.full-width {
+        padding: var(--inner-padding) 0;
+        padding-right: var(--inner-padding);
+      }
+    }
+  }
+
+  .main-section :global(h2) {
+    color: var(--color-company-blue);
+  }
+
+  .main-section.dark :global(h2) {
+    color: var(--color-light-yellow);
+  }
+</style>

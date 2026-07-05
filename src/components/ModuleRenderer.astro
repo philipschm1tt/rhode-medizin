@@ -1,0 +1,59 @@
+---
+// M2 ModuleRenderer: supports only ContentfulAbschnitt and ContentfulTextinhalt.
+// Other module types render nothing in M2 (added in M3).
+//
+// Mirrors the dispatch in src/templates/contentful-page.jsx for the
+// legal-page subset: a non-volleBreite Abschnitt renders its first
+// inhalte child inside MainSection (no extra ContentBox wrapper);
+// a volleBreite Abschnitt wraps the child in MainGrid inside MainSection;
+// Textinhalt renders its HTML inside ContentBox with no extra wrapper div.
+import MainSection from './MainSection.astro'
+import AsideSection from './AsideSection.astro'
+import ContentBox from './ContentBox.astro'
+import MainGrid from './MainGrid.astro'
+import ModuleRenderer from './ModuleRenderer.astro'
+
+interface Props {
+  module: {
+    __typename: string
+    [key: string]: unknown
+  }
+}
+
+const { module: mod } = Astro.props
+
+type SectionModule = {
+  volleBreite: boolean
+  inhalte: Props['module'][]
+  seitenabschnitt?: Props['module']
+}
+type TextModule = { textHtml: string }
+
+const isSection = mod.__typename === 'ContentfulAbschnitt'
+const isText = mod.__typename === 'ContentfulTextinhalt'
+const section = isSection ? (mod as unknown as SectionModule) : null
+const text = isText ? (mod as unknown as TextModule) : null
+---
+
+{
+  isSection && section && (
+    section.volleBreite ? (
+      <MainSection fullWidth darkBackground>
+        <MainGrid>
+          {section.inhalte[0] && <ModuleRenderer module={section.inhalte[0]} />}
+        </MainGrid>
+      </MainSection>
+    ) : (
+      <MainSection>
+        {section.inhalte[0] && <ModuleRenderer module={section.inhalte[0]} />}
+        {section.seitenabschnitt && (
+          <AsideSection>
+            <ModuleRenderer module={section.seitenabschnitt} />
+          </AsideSection>
+        )}
+      </MainSection>
+    )
+  )
+}
+
+{isText && text && <ContentBox set:html={text.textHtml} />}
