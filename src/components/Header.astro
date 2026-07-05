@@ -1,0 +1,54 @@
+---
+import MainGrid from './MainGrid.astro'
+import ContentBox from './ContentBox.astro'
+import logoSrc from '../images/logo@2x.png'
+---
+
+<header class="header">
+  <MainGrid>
+    <ContentBox extraVerticalPadding>
+      <a href="/">
+        <img
+          class="logo"
+          src={logoSrc.src}
+          width={460}
+          height={30}
+          alt="Heinrich Rhode GmbH"
+        />
+      </a>
+      <div class="company-type">Medizintechnik</div>
+    </ContentBox>
+  </MainGrid>
+</header>
+
+<style>
+  .header {
+    color: var(--color-company-blue);
+    padding: 0 var(--outer-padding);
+  }
+
+  .logo {
+    max-width: 460px;
+    width: 100%;
+    height: auto;
+  }
+
+  .company-type {
+    text-transform: uppercase;
+    font-size: var(--font-size-xl-small);
+    line-height: var(--line-height-xl-small);
+  }
+
+  @media (min-width: var(--breakpoint-large)) {
+    @supports (display: grid) {
+      .header {
+        padding: 0;
+      }
+    }
+
+    .company-type {
+      font-size: var(--font-size-xl-large);
+      line-height: var(--line-height-xl-large);
+    }
+  }
+</style>

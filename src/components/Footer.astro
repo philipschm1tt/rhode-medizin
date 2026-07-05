@@ -1,0 +1,25 @@
+---
+import MainGrid from './MainGrid.astro'
+import ContentBox from './ContentBox.astro'
+---
+
+<footer class="footer">
+  <MainGrid>
+    <ContentBox extraVerticalPadding>
+      <a class="footer-link" href="/imprint/">Impressum</a>
+      <a class="footer-link" href="/data-policy/">Datenschutzhinweis</a>
+    </ContentBox>
+  </MainGrid>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-darker-purple);
+    color: var(--color-light-yellow);
+  }
+
+  .footer-link {
+    color: var(--color-light-yellow);
+    margin-right: var(--base-line-height);
+  }
+</style>
