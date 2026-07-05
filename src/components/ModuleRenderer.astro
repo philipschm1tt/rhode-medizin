@@ -93,7 +93,9 @@ const text = isText ? (mod as unknown as TextModule) : null
 const quote = isQuote ? (mod as unknown as QuoteModule) : null
 const cardLayout = isCardLayout ? (mod as unknown as CardLayoutModule) : null
 const employee = isEmployee ? (mod as unknown as EmployeeModule) : null
-const productGroup = isProductGroup ? (mod as unknown as ProductGroupModule) : null
+const productGroup = isProductGroup
+  ? (mod as unknown as ProductGroupModule)
+  : null
 const heroBlock = isHeroBlock ? (mod as unknown as HeroBlockModule) : null
 ---
 
@@ -109,8 +111,9 @@ const heroBlock = isHeroBlock ? (mod as unknown as HeroBlockModule) : null
 }
 
 {
-  isSection && section && (
-    section.volleBreite ? (
+  isSection &&
+    section &&
+    (section.volleBreite ? (
       <MainSection fullWidth darkBackground>
         <MainGrid>
           {section.inhalte[0] && <ModuleRenderer module={section.inhalte[0]} />}
@@ -127,19 +130,20 @@ const heroBlock = isHeroBlock ? (mod as unknown as HeroBlockModule) : null
           </AsideSection>
         )}
       </>
-    )
-  )
+    ))
 }
 
 {isText && text && <ContentBox set:html={text.textHtml} />}
 
-{
-  isQuote && quote && <Quote text={quote.zitat} />
-}
+{isQuote && quote && <Quote text={quote.zitat} />}
 
 {
   isEmployee && employee && (
-    <EmployeeTile name={employee.name} department={employee.dienstbereich} photo={employee.foto} />
+    <EmployeeTile
+      name={employee.name}
+      department={employee.dienstbereich}
+      photo={employee.foto}
+    />
   )
 }
 
@@ -160,14 +164,18 @@ const heroBlock = isHeroBlock ? (mod as unknown as HeroBlockModule) : null
       {cardLayout.titel && <h2>{cardLayout.titel}</h2>}
       {cardLayout.layout === 'Gitter' ? (
         <TileGrid>
-          {cardLayout.elemente.map(element => (
-            <li><ModuleRenderer module={element} /></li>
+          {cardLayout.elemente.map((element) => (
+            <li>
+              <ModuleRenderer module={element} />
+            </li>
           ))}
         </TileGrid>
       ) : (
         <TileList>
-          {cardLayout.elemente.map(element => (
-            <li><ModuleRenderer module={element} /></li>
+          {cardLayout.elemente.map((element) => (
+            <li>
+              <ModuleRenderer module={element} />
+            </li>
           ))}
         </TileList>
       )}

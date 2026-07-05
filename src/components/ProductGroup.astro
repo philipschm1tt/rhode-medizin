@@ -46,7 +46,9 @@ const alt = photo?.description || photo?.title || ''
     {
       examples.length > 0 && (
         <ul class="product-examples">
-          {examples.map(example => <li>{example}</li>)}
+          {examples.map((example) => (
+            <li>{example}</li>
+          ))}
         </ul>
       )
     }
