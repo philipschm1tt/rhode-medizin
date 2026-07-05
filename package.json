@@ -41,6 +41,7 @@
   "scripts": {
     "build": "astro check && astro build",
     "build:gatsby": "gatsby build",
+    "compare:legal": "node scripts/compare-legal-pages.mjs",
     "build-subfont": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css --inline-fonts",
     "build-subfont-preload": "gatsby build && node_modules/.bin/subfont public -i --no-recursive --inline-css --font-display swap",
     "develop": "astro dev",
