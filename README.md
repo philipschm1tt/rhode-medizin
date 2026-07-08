@@ -52,4 +52,23 @@ pnpm compare:pages   # homepage + legal pages against captured fixtures
 
 ## Deploy
 
-Static output in `dist/` is served by Cloudflare Pages (no SSR adapter).
+The site is served by Cloudflare Pages as a fully static build (no SSR adapter).
+
+Cloudflare Pages project settings:
+
+```text
+Framework preset: Astro
+Build command: pnpm install --frozen-lockfile && pnpm build
+Output directory: dist
+Environment variables: CONTENTFUL_SPACE_ID, CONTENTFUL_DELIVERY_TOKEN
+NODE_VERSION: current LTS supported by Astro and Cloudflare Pages
+```
+
+No `CONTENTFUL_PREVIEW_TOKEN` is set for production Cloudflare builds.
+
+### Content rebuilds
+
+Content is fetched from Contentful at build time, so content edits do not
+appear until a rebuild. Trigger a rebuild via git push, a manual Cloudflare
+deploy, or a Contentful webhook pointing at a Cloudflare Pages deploy hook
+(`publish`/`unpublish` events).
