@@ -135,16 +135,19 @@ feature-name-m2
 feature-name-m3
 ```
 
-Create branches from the previous milestone branch:
+Create each next branch only after the previous milestone has been committed, so downstream branches contain the work they build on:
 
 ```bash
 git checkout master
 git pull --ff-only
 git checkout -b feature-name
+# implement and commit milestone 1 on feature-name
 
 git checkout -b feature-name-m2
+# implement and commit milestone 2 on feature-name-m2
 
 git checkout -b feature-name-m3
+# implement and commit milestone 3 on feature-name-m3
 ```
 
 Open PRs bottom-up, with each PR targeting the previous branch:
