@@ -40,14 +40,7 @@ Run `lint` before considering work done. The build also runs `astro check` (Type
 
 ## Commits
 
-- As part of spec-driven work, identify cohesive changes that warrant commits while executing implementation plans.
-- When completing a spec, commit the completed changes before considering the work done.
-- Prefer meaningful commit boundaries. Implementation-plan steps are often suitable commit boundaries when they represent independently coherent changes.
-- Avoid tiny mechanical commits that do not help review or history.
-- Avoid broad commits that mix unrelated steps or concerns.
-- Match existing repository commit messages: short active-voice subjects, no conventional commit prefixes.
-- Use commit bodies when helpful to summarize the change, explain reasoning, or include the verbatim prompt that led to the change.
-- Before committing, inspect `git status`, `git diff`, and `git log --oneline -10`; stage only intended files; never commit secrets or unrelated user changes.
+- Use the local `commit-workflow` skill before creating any commit in this repository.
 
 ## Style conventions
 
