@@ -1,28 +1,26 @@
 ---
-import MainGrid from './MainGrid.astro'
 import ContentBox from './ContentBox.astro'
 import logoSrc from '../images/logo@2x.png'
 ---
 
 <header class="header">
-  <MainGrid>
-    <ContentBox extraVerticalPadding>
-      <a href="/">
-        <img
-          class="logo"
-          src={logoSrc.src}
-          width={460}
-          height={30}
-          alt="Heinrich Rhode GmbH"
-        />
-      </a>
-      <div class="company-type">Medizintechnik</div>
-    </ContentBox>
-  </MainGrid>
+  <ContentBox extraVerticalPadding>
+    <a href="/">
+      <img
+        class="logo"
+        src={logoSrc.src}
+        width={460}
+        height={30}
+        alt="Heinrich Rhode GmbH"
+      />
+    </a>
+    <div class="company-type">Medizintechnik</div>
+  </ContentBox>
 </header>
 
 <style>
   .header {
+    grid-column: 1 / 5;
     color: var(--color-company-blue);
     padding: 0 var(--outer-padding);
   }
@@ -40,10 +38,17 @@ import logoSrc from '../images/logo@2x.png'
   }
 
   @media (min-width: 800px) {
-    @supports (display: grid) {
-      .header {
-        padding: 0;
-      }
+    .header {
+      display: flex;
+      flex-direction: column;
+      display: grid;
+      grid-template-columns: var(--main-grid-columns);
+      justify-items: stretch;
+      padding: 0;
+    }
+
+    .header > :global(*) {
+      grid-column: main-column-start / side-column-end;
     }
 
     .company-type {
