@@ -5,6 +5,7 @@
   "version": "0.0.0",
   "dependencies": {
     "astro": "^7.0.6",
+    "astro-seo": "^1.1.0",
     "contentful": "^11.12.6",
     "dotenv": "^17.0.0",
     "rehype-stringify": "^10.0.1",
