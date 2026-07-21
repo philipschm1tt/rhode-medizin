@@ -4,7 +4,6 @@
 // background image, a content overlay (headline + subheadline), and a
 // call-to-action button. The hero image is the LCP element: it is eager
 // loaded with fetchpriority="high" and width/height attributes.
-import MainGrid from './MainGrid.astro'
 import ContentBox from './ContentBox.astro'
 import CallToActionButton from './CallToActionButton.astro'
 
@@ -68,10 +67,17 @@ const alt = image?.description || image?.title || ''
   }
 
   @media (min-width: 800px) {
-    @supports (display: grid) {
-      .hero-area {
-        padding: 0;
-      }
+    .hero-area {
+      display: flex;
+      flex-direction: column;
+      display: grid;
+      grid-template-columns: var(--main-grid-columns);
+      justify-items: stretch;
+      padding: 0;
+    }
+
+    .hero-area > :global(*) {
+      grid-column: main-column-start / side-column-end;
     }
   }
 
