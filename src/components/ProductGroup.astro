@@ -2,8 +2,9 @@
 // Native Astro port of src/components/productGroup.jsx.
 // Renders a Produktgruppe tile: a two-column grid (image | text) on
 // large screens with header, description, and examples list. The
-// original used gatsby-image fluid; the Astro port uses a plain <img>
-// with object-fit: cover and the Contentful image dimensions.
+// original used gatsby-image fluid; the Astro port uses an optimized
+// <Image> with object-fit: cover and the Contentful image dimensions.
+import { Image } from 'astro:assets'
 import ContentBox from './ContentBox.astro'
 
 interface Image {
@@ -28,12 +29,13 @@ const alt = photo?.description || photo?.title || ''
 <section class="product-group">
   {
     photo && (
-      <img
+      <Image
         class="product-image"
         src={photo.src}
         width={photo.width}
         height={photo.height}
         alt={alt}
+        sizes="(min-width: 900px) 38vw, 100vw"
         loading="lazy"
       />
     )
