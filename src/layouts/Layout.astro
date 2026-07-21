@@ -2,7 +2,7 @@
 import '../styles/global.css'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
-import MainGrid from '../components/MainGrid.astro'
+import MainContent from '../components/MainContent.astro'
 
 const { title = 'Rhode Medizintechnik' } = Astro.props
 ---
@@ -16,12 +16,10 @@ const { title = 'Rhode Medizintechnik' } = Astro.props
   </head>
   <body>
     <div class="global-wrapper">
-      <MainGrid>
-        <div class="side-background" style="grid-row: 1 / 4;"></div>
-        <Header gridRow="1" />
-        <slot />
-        <Footer gridRow="3" />
-      </MainGrid>
+      <div class="side-background"></div>
+      <Header />
+      <slot />
+      <Footer />
     </div>
   </body>
 </html>
@@ -34,8 +32,7 @@ const { title = 'Rhode Medizintechnik' } = Astro.props
   }
 
   .side-background {
-    background-color: var(--color-light-blue);
-    grid-column: side-column-start / side-column-end;
+    display: none;
   }
 
   @media (min-width: 800px) {
@@ -43,6 +40,16 @@ const { title = 'Rhode Medizintechnik' } = Astro.props
       .global-wrapper {
         max-width: none;
         margin: 0;
+        display: grid;
+        grid-template-columns: var(--main-grid-columns);
+        grid-template-rows: auto 1fr auto;
+      }
+
+      .side-background {
+        display: block;
+        background-color: var(--color-light-blue);
+        grid-column: side-column-start / 5;
+        grid-row: 1 / 4;
       }
     }
   }

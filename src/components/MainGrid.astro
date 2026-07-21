@@ -2,6 +2,8 @@
 // Native Astro port of src/components/mainGrid.jsx.
 // Used as a grid wrapper that places children in the main column on
 // large screens, and falls back to a flex column on smaller screens.
+// Header.astro and Footer.astro carry their own copy of these grid
+// rules so they can span 1 / 5 without being constrained as grid items.
 const { gridRow = 'auto' } = Astro.props
 ---
 
