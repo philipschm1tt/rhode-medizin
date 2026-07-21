@@ -38,8 +38,14 @@ const stripNoise = ($) => {
   }
 }
 
-// Normalise asset URLs that carry build hashes (e.g. /static/<hash>/logo.png)
-// and protocol-relative CDN URLs. We keep the path tail after the hash.
+// Reduce an asset URL to a canonical form for content parity.
+//
+// Image asset URLs are delivery optimization, not content: M3 used raw
+// Contentful CDN URLs, M4 uses Astro-optimized /_astro/<hash>.<ext>
+// assets. Both represent the same underlying image in the same position.
+// Canonicalize any image asset URL to a sentinel so parity compares
+// image presence and position, not the specific delivery URL. Link
+// `href` attributes are content and are normalized separately below.
 const normalizeAssetUrl = (value) => {
   if (!value) return value
   return value
@@ -49,20 +55,31 @@ const normalizeAssetUrl = (value) => {
     .replace(/^\/\//, '/')
 }
 
+const isImageUrl = (value) => {
+  if (!value) return false
+  return (
+    value.includes('images.ctfassets.net') ||
+    value.includes('videos.ctfassets.net') ||
+    value.startsWith('/_astro/') ||
+    value.startsWith('/static/') ||
+    /\.(png|jpe?g|gif|webp|avif|svg)$/i.test(value)
+  )
+}
+
+const canonicalizeImageSrc = (value) => (isImageUrl(value) ? '<img-src>' : normalizeAssetUrl(value))
+
 const normalizeAttributes = ($) => {
   $('img[src], source[src], source[srcset], a[href]').each((_, el) => {
     const $el = $(el)
+    const tagName = el.tagName.toLowerCase()
+    const isImage = tagName === 'img' || tagName === 'source'
     const src = $el.attr('src')
-    if (src) $el.attr('src', normalizeAssetUrl(src))
+    if (src) {
+      $el.attr('src', isImage ? canonicalizeImageSrc(src) : normalizeAssetUrl(src))
+    }
     const srcset = $el.attr('srcset')
     if (srcset) {
-      $el.attr(
-        'srcset',
-        srcset
-          .split(',')
-          .map((part) => normalizeAssetUrl(part.trim()))
-          .join(', '),
-      )
+      $el.attr('srcset', isImage ? '<img-srcset>' : normalizeAssetUrl(srcset))
     }
     const href = $el.attr('href')
     if (href) $el.attr('href', normalizeAssetUrl(href))
@@ -70,9 +87,12 @@ const normalizeAttributes = ($) => {
 }
 
 // Attributes that carry content semantics and must survive normalization.
+// `srcset` is excluded: it is delivery optimization (width variants), not
+// content. M3 had no srcset on the collapsed gatsby-image fallback;
+// M4's <Picture /> emits srcset on the <img> fallback. Presence/absence
+// of srcset is a delivery difference, not a content difference.
 const KEEP_ATTRIBUTES = new Set([
   'src',
-  'srcset',
   'href',
   'alt',
   'colspan',
@@ -95,6 +115,24 @@ const stripPresentationalAttributes = ($) => {
   })
 }
 
+// The Astro <Picture /> component wraps Contentful images in <picture>
+// with AVIF/WebP <source> elements for format negotiation. <source>
+// entries are delivery optimization, not content: the <img> fallback
+// carries the same asset and alt. Collapse each <picture> to its <img>
+// child so content parity compares the canonical image, not the
+// format-negotiation wrapper.
+const collapsePictureElements = ($) => {
+  $('picture').each((_, picture) => {
+    const $picture = $(picture)
+    const img = $picture.find('img').first()
+    if (img.length) {
+      $picture.replaceWith(img)
+    } else {
+      $picture.remove()
+    }
+  })
+}
+
 // Whitespace-only differences: collapse runs of whitespace and trim each line.
 const normalizeWhitespace = (html) =>
   html
@@ -105,6 +143,7 @@ const normalizeWhitespace = (html) =>
 const extractMainContent = (rawHtml) => {
   const $ = cheerio.load(rawHtml)
   stripNoise($)
+  collapsePictureElements($)
   normalizeAttributes($)
   stripPresentationalAttributes($)
   // Both the live Gatsby fixture and the Astro build wrap the legal-page

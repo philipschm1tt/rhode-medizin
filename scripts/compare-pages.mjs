@@ -43,9 +43,14 @@ const stripNoise = ($) => {
   }
 }
 
-// Reduce a Contentful CDN URL (or any asset URL) to a canonical path so
-// that Gatsby's transformed variants (?w=300&h=182&q=50&fit=fill) and
-// the Astro loader's raw URLs compare equal. Strips protocol and query.
+// Reduce an asset URL to a canonical form for content parity.
+//
+// Image asset URLs are delivery optimization, not content: M3 used raw
+// Contentful CDN URLs, M4 uses Astro-optimized /_astro/<hash>.<ext>
+// assets. Both represent the same underlying image in the same position.
+// Canonicalize any image asset URL to a sentinel so parity compares
+// image presence and position, not the specific delivery URL. Link
+// `href` attributes are content and are normalized separately below.
 const normalizeAssetUrl = (value) => {
   if (!value) return value
   return value
@@ -55,20 +60,34 @@ const normalizeAssetUrl = (value) => {
     .replace(/^\/\//, '/')
 }
 
+const isImageUrl = (value) => {
+  if (!value) return false
+  return (
+    value.includes('images.ctfassets.net') ||
+    value.includes('videos.ctfassets.net') ||
+    value.startsWith('/_astro/') ||
+    value.startsWith('/static/') ||
+    /\.(png|jpe?g|gif|webp|avif|svg)$/i.test(value)
+  )
+}
+
+const canonicalizeImageSrc = (value) => (isImageUrl(value) ? '<img-src>' : normalizeAssetUrl(value))
+
 const normalizeAttributes = ($) => {
   $('img[src], source[src], source[srcset], a[href]').each((_, el) => {
     const $el = $(el)
+    const tagName = el.tagName.toLowerCase()
+    const isImage = tagName === 'img' || tagName === 'source'
     const src = $el.attr('src')
-    if (src) $el.attr('src', normalizeAssetUrl(src))
+    if (src) {
+      $el.attr('src', isImage ? canonicalizeImageSrc(src) : normalizeAssetUrl(src))
+    }
     const srcset = $el.attr('srcset')
     if (srcset) {
-      $el.attr(
-        'srcset',
-        srcset
-          .split(',')
-          .map((part) => normalizeAssetUrl(part.trim()))
-          .join(', '),
-      )
+      // srcset is always image-only; collapse each entry to the sentinel
+      // so the whole attribute becomes a repeated placeholder. Presence
+      // of the attribute is the content signal, not the specific URLs.
+      $el.attr('srcset', isImage ? '<img-srcset>' : normalizeAssetUrl(srcset))
     }
     const href = $el.attr('href')
     if (href) $el.attr('href', normalizeAssetUrl(href))
@@ -80,9 +99,12 @@ const normalizeAttributes = ($) => {
 // everywhere (gatsby-image default), while the new Astro site adds
 // meaningful alt from Contentful image descriptions per the M3 plan.
 // Alt text is a deliberate accessibility improvement, not content parity.
+// `srcset` is excluded: it is delivery optimization (width variants), not
+// content. M3 had no srcset on the collapsed gatsby-image fallback;
+// M4's <Picture /> emits srcset on the <img> fallback. Presence/absence
+// of srcset is a delivery difference, not a content difference.
 const KEEP_ATTRIBUTES = new Set([
   'src',
-  'srcset',
   'href',
   'colspan',
   'rowspan',
@@ -156,6 +178,24 @@ const unwrapAnchoredButtons = ($) => {
   })
 }
 
+// The Astro <Picture /> component wraps Contentful images in <picture>
+// with AVIF/WebP <source> elements for format negotiation. <source>
+// entries are delivery optimization, not content: the <img> fallback
+// carries the same asset and alt. Collapse each <picture> to its <img>
+// child so content parity compares the canonical image, not the
+// format-negotiation wrapper.
+const collapsePictureElements = ($) => {
+  $('picture').each((_, picture) => {
+    const $picture = $(picture)
+    const img = $picture.find('img').first()
+    if (img.length) {
+      $picture.replaceWith(img)
+    } else {
+      $picture.remove()
+    }
+  })
+}
+
 // Whitespace-only differences: collapse runs of whitespace and trim each line.
 const normalizeWhitespace = (html) =>
   html
@@ -168,6 +208,7 @@ const extractMainContent = (rawHtml) => {
   stripNoise($)
   collapseGatsbyImages($)
   unwrapAnchoredButtons($)
+  collapsePictureElements($)
   normalizeAttributes($)
   stripPresentationalAttributes($)
   // Both the live Gatsby fixture and the Astro build wrap the page
