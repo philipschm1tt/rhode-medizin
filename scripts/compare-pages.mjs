@@ -143,6 +143,19 @@ const collapseGatsbyImages = ($) => {
   $('div[style*="padding-bottom"]').remove()
 }
 
+// The legacy Gatsby site rendered the hero call-to-action as a styled
+// <button> nested inside an <a href>, which is invalid HTML (interactive
+// element nesting). The Astro port renders a single styled <a>. To compare
+// content parity we unwrap any <button> inside an <a>, leaving the anchor
+// and its text. This is the only <button>→<a> change introduced by the
+// HeroBlock CTA fix; it must not be used to mask other structural changes.
+const unwrapAnchoredButtons = ($) => {
+  $('a > button').each((_, btn) => {
+    const $btn = $(btn)
+    $btn.replaceWith($btn.html() ?? '')
+  })
+}
+
 // Whitespace-only differences: collapse runs of whitespace and trim each line.
 const normalizeWhitespace = (html) =>
   html
@@ -154,6 +167,7 @@ const extractMainContent = (rawHtml) => {
   const $ = cheerio.load(rawHtml)
   stripNoise($)
   collapseGatsbyImages($)
+  unwrapAnchoredButtons($)
   normalizeAttributes($)
   stripPresentationalAttributes($)
   // Both the live Gatsby fixture and the Astro build wrap the page
