@@ -19,7 +19,7 @@ The migration is a native Astro migration from the start. There is no React-isla
 - **Content:** Astro Content Collections populated by a custom content loader that fetches from Contentful at build time via the `contentful.js` SDK. A future, separate project may move content to local Markdown/JSON files — out of scope here.
 - **Styling:** Native `.astro` components with scoped CSS; CSS custom properties for the design tokens. No styled-components, no React runtime shipped to the browser.
 - **Fonts:** NeuzeitOffice (bold/medium/light) self-hosted as woff2 in `src/fonts/`, `@font-face` in `src/styles/global.css` with `font-display: swap`. License permitting self-hosting must be verified before committing the files. If self-hosting is not permitted, stop and choose an approved font substitution explicitly; do not silently accept visual drift.
-- **Images:** Plain `<img>` tags first, using Contentful CDN asset URLs and width/height attributes from Contentful metadata. Astro image optimization is deferred to a later milestone after page parity is proven.
+- **Images:** Astro's built-in image service (`astro:assets` `<Image />` and `<Picture />`) optimizes Contentful images at build time. The Contentful asset hosts are authorized in `astro.config.mjs`; the loader's normalized image data is passed directly to the Astro image components.
 - **Package manager:** pnpm.
 - **Cookies:** none. No cookie banner, no `Set-Cookie` headers, no client-side storage, no service worker.
 
@@ -267,12 +267,14 @@ This milestone is intentionally after the native Astro parity work. Do not combi
 
 ### Decision point
 
-Choose one image strategy and apply it consistently:
+Use Astro's built-in image service (`astro:assets` `<Image />` and `<Picture />`) as the sole image optimization provider. Authorize the Contentful asset hosts (`images.ctfassets.net`, `videos.ctfassets.net`) in `astro.config.mjs` so the image service downloads and transforms remote assets at build time.
 
-1. **Contentful CDN transforms with plain `<img>`/`<picture>`:** generate URLs with `w`, `h`, `q`, and `fm=webp`/`fm=avif` parameters, and add `srcset`/`sizes` manually.
-2. **Astro image service:** configure remote Contentful images explicitly, then replace selected `<img>` tags with Astro image components where the build/runtime behavior is understood.
+Component choice is mixed per-context:
 
-Do not claim Astro is optimizing remote Contentful images unless the implementation proves that it downloads/transforms them or delegates to a configured image service. Plain Contentful transform URLs are acceptable and simpler.
+- **Hero (LCP):** `<Picture />` with `formats={['avif', 'webp']}`, `fetchpriority="high"`, and `loading="eager"`.
+- **Below-the-fold (employee, product):** `<Image />` with `loading="lazy"`.
+
+The Contentful loader's `ContentfulImage` shape is unchanged; no Contentful-specific image transform helper is introduced. See `docs/superpowers/specs/2026-07-21-m4-astro-image-optimization-design.md` for the full design and `docs/adrs/adr_05_image_strategy.md` for the decision record.
 
 ### Verification gate
 
@@ -349,7 +351,7 @@ Called out explicitly so they are not regressions:
 2. **No service worker / PWA manifest.** The old site registered a service worker via `gatsby-plugin-offline` and had a manifest; the new site has neither.
 3. **No "Powered by Contentful" footer link.** The old footer linked to `contentful.com` with their badge; this is removed as a simplification.
 4. **Font pipeline simplified.** The licensed-font `subfont` inlining build step is gone; fonts are self-hosted woff2 with `font-display: swap` only if the license allows it.
-5. **Image optimization deferred.** The first Astro parity build uses plain `<img>` tags. Optimized responsive images are handled separately after parity is verified.
+5. **Image optimization via Astro image service.** M3 parity used plain `<img>` tags; M4 replaces them with Astro's `astro:assets` `<Image />` and `<Picture />` components, which transform Contentful assets at build time. No Contentful-specific image helper ships in the repo.
 
 ## Out of scope
 
