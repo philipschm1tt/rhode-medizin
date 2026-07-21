@@ -1,10 +1,15 @@
 ---
 import '../styles/global.css'
+import { SEO, type SEOProps } from 'astro-seo'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
-import MainContent from '../components/MainContent.astro'
 
-const { title = 'Rhode Medizintechnik' } = Astro.props
+interface Props {
+  title?: string
+  seo?: SEOProps
+}
+
+const { title = 'Rhode Medizintechnik', seo } = Astro.props
 ---
 
 <!doctype html>
@@ -12,7 +17,21 @@ const { title = 'Rhode Medizintechnik' } = Astro.props
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    {
+      seo ? (
+        <SEO
+          title={seo.title}
+          description={seo.description}
+          openGraph={seo.openGraph}
+          twitter={seo.twitter}
+          extend={{
+            link: [{ rel: 'icon', href: '/favicon.png' }],
+          }}
+        />
+      ) : (
+        <title>{title}</title>
+      )
+    }
   </head>
   <body>
     <div class="global-wrapper">

@@ -22,20 +22,65 @@ export async function getStaticPaths() {
 
 const { page } = Astro.props
 const slug = page.data.slug.replace(/^\/+/, '').replace(/\/+$/, '')
-const title =
-  slug === 'data-policy'
+const isHomepage = slug === ''
+const title = isHomepage
+  ? 'Rhode Medizintechnik – Heinrich Rhode GmbH'
+  : slug === 'data-policy'
     ? 'Datenschutzhinweis'
     : slug === 'imprint'
       ? 'Impressum'
       : 'Rhode Medizintechnik'
+
+// Homepage hero image absolute URL for OG/Twitter. The hero image
+// comes from Contentful; we read it from the first ContentfulHeroBlock
+// in the page's module tree.
 const modules = page.data.module as unknown as {
   __typename: string
   id: string
+  bild?: {
+    src: string
+    width: number
+    height: number
+    title?: string
+    description?: string
+  }
   [key: string]: unknown
 }[]
+const heroBlock = modules.find((m) => m.__typename === 'ContentfulHeroBlock')
+const heroImageSrc = heroBlock?.bild?.src
+const homepageOgImage = heroImageSrc
+  ? new URL(heroImageSrc, Astro.site).toString()
+  : undefined
+
+const seo = isHomepage
+  ? {
+      title: 'Rhode Medizintechnik – Heinrich Rhode GmbH',
+      description:
+        'Heinrich Rhode GmbH – Medizintechnik für Praxen und Kliniken. Beratung, Service und Produkte aus einer Hand.',
+      openGraph: {
+        basic: {
+          title: 'Rhode Medizintechnik – Heinrich Rhode GmbH',
+          type: 'website',
+          image: homepageOgImage ?? 'https://www.rhode-medizin.de/favicon.png',
+          url: 'https://www.rhode-medizin.de/',
+        },
+        optional: {
+          locale: 'de_DE',
+          siteName: 'Heinrich Rhode GmbH',
+        },
+      },
+      twitter: {
+        card: 'summary_large_image' as const,
+        title: 'Rhode Medizintechnik – Heinrich Rhode GmbH',
+        description:
+          'Heinrich Rhode GmbH – Medizintechnik für Praxen und Kliniken. Beratung, Service und Produkte aus einer Hand.',
+        image: homepageOgImage,
+      },
+    }
+  : undefined
 ---
 
-<Layout title={title}>
+<Layout title={title} seo={seo}>
   <MainContent gridRow="2">
     {modules.map((mod) => <ModuleRenderer module={mod} />)}
   </MainContent>

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 
 export default defineConfig({
   output: 'static',
+  site: 'https://www.rhode-medizin.de',
   vite: {
     resolve: {
       alias: {
