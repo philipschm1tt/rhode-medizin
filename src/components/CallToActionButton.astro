@@ -1,18 +1,17 @@
 ---
 // Native Astro port of src/components/callToActionButton.jsx.
 // The original was a styled <button> wrapped in a Gatsby <Link> by
-// heroBlock.jsx. We keep the same element structure: callers wrap this
-// <button> in an <a> for navigation.
+// heroBlock.jsx, which produced invalid HTML (<button> inside <a>).
+// We render a single styled <a> instead.
 interface Props {
   text: string
+  href: string
 }
 
-const { text } = Astro.props
+const { text, href } = Astro.props
 ---
 
-<button class="cta-button" type="button">
-  {text}
-</button>
+<a class="cta-button" href={href}>{text}</a>
 
 <style>
   .cta-button {
@@ -31,7 +30,7 @@ const { text } = Astro.props
     line-height: var(--line-height-l-small);
     font-weight: bold;
     justify-self: start;
-    cursor: pointer;
+    text-decoration: none;
   }
 
   @media (min-width: 800px) {
