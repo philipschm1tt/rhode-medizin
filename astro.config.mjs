@@ -6,6 +6,9 @@ export default defineConfig({
   output: 'static',
   site: 'https://www.rhode-medizin.de',
   integrations: [sitemap()],
+  image: {
+    domains: ['images.ctfassets.net', 'videos.ctfassets.net'],
+  },
   vite: {
     resolve: {
       alias: {
