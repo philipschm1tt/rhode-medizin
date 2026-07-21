@@ -1,3 +1,5 @@
+publicHoistPattern:
+  - sharp
 allowBuilds:
   core-js: false
   es5-ext: false
@@ -7,6 +9,5 @@ allowBuilds:
   gatsby-telemetry: false
   mozjpeg: false
   pngquant-bin: false
-  sharp: false
   styled-components: false
   styled-reset: false
