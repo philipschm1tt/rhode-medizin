@@ -66,6 +66,9 @@ NODE_VERSION: current LTS supported by Astro and Cloudflare Pages
 
 No `CONTENTFUL_PREVIEW_TOKEN` is set for production Cloudflare builds.
 
+For Cloudflare deploy pipelines that run `npx wrangler versions upload`, keep
+`wrangler.jsonc` in sync so Wrangler uploads `./dist` as static assets.
+
 ### Content rebuilds
 
 Content is fetched from Contentful at build time, so content edits do not
