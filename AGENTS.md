@@ -50,3 +50,5 @@ Run `lint` before considering work done. The build also runs `astro check` (Type
 ## Deploy
 
 Deployed to Cloudflare Pages as a fully static build (`astro build` → `dist/`), no SSR adapter — fully static, cookie-free, no service worker. Build command: `pnpm install --frozen-lockfile && pnpm build`. Production env vars: `CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`. Content is fetched from Contentful at build time, so content edits require a rebuild via git push, manual Cloudflare deploy, or a Contentful webhook to a Cloudflare Pages deploy hook.
+
+If the Cloudflare deployment pipeline uses `npx wrangler versions upload`, `wrangler.jsonc` must define `assets.directory` as `./dist`.
