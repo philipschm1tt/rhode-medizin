@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Superseded by `docs/adrs/adr_07_netlify.md` for the production-traffic
+decision. This ADR is retained as the historical record of the Cloudflare
+Pages setup, which remains configured as a dormant fallback.
 
 ## Context
 
