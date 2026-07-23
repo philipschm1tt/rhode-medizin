@@ -15,6 +15,9 @@ must be served from a host that provisions TLS for `rhode-medizin.de` and
 `www.rhode-medizin.de`, serves `dist/` directly, and supports a content
 rebuild trigger for Contentful-driven updates.
 
+Superseded for production traffic by ADR 07 (Netlify), which avoids
+transferring DNS off the registrar.
+
 ## Decision
 
 Host the Astro static build on Cloudflare Pages.
