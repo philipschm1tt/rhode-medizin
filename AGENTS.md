@@ -49,6 +49,8 @@ Run `lint` before considering work done. The build also runs `astro check` (Type
 
 ## Deploy
 
-Deployed to Cloudflare Pages as a fully static build (`astro build` → `dist/`), no SSR adapter — fully static, cookie-free, no service worker. Build command: `pnpm install --frozen-lockfile && pnpm build`. Production env vars: `CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`. Content is fetched from Contentful at build time, so content edits require a rebuild via git push, manual Cloudflare deploy, or a Contentful webhook to a Cloudflare Pages deploy hook.
+Deployed to Netlify as a fully static build (`astro build` → `dist/`), no SSR adapter — fully static, cookie-free, no service worker. Build config is committed in `netlify.toml`: build command `pnpm install --frozen-lockfile && pnpm build`, publish directory `dist`, `NODE_VERSION` `22`. Production env vars (`CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`) are set in the Netlify dashboard, not committed. Content is fetched from Contentful at build time, so content edits require a rebuild via git push, manual Netlify deploy, or a Contentful webhook to a Netlify build hook (`publish`/`unpublish` events). See `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md` for the operator runbook and `docs/adrs/adr_07_netlify.md` for the decision.
+
+Cloudflare Pages remains configured as a dormant fallback and builds on every git push with the same build command and env vars; the `*.pages.dev` URL stays functional for emergency reversion. See `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic), `docs/adrs/adr_07_netlify.md`, and `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md`.
 
 If the Cloudflare deployment pipeline uses `npx wrangler versions upload`, `wrangler.jsonc` must define `assets.directory` as `./dist`.
