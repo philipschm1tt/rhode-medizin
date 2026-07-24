@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by `adr_07_netlify.md`.
 
 ## Context
 
@@ -11,7 +11,11 @@ master spec requires a static, cookie-free, service-worker-free deploy with
 no SSR adapter. M5 is the deploy cutover milestone: the Astro static build
 must be served from a host that provisions TLS for `rhode-medizin.de` and
 `www.rhode-medizin.de`, serves `dist/` directly, and supports a content
-rebuild trigger for Contentful-driven updates.
+  rebuild trigger for Contentful-driven updates.
+
+ADR 07 supersedes this decision for production traffic because Cloudflare
+requires moving DNS to Cloudflare to provision the apex TLS certificate;
+Netlify allows the apex domain to remain at the existing registrar.
 
 ## Decision
 
