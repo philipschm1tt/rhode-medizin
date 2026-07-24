@@ -49,3 +49,5 @@ building on every git push as a dormant fallback.
 - Content edits trigger a Netlify rebuild automatically via the Contentful
   webhook; Cloudflare rebuilds remain on git push / manual deploy only.
 - The static build itself is unchanged and remains host-agnostic.
+
+Operator runbook: `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md`.
