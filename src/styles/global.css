@@ -124,8 +124,10 @@ li {
 
 ol,
 ul {
-  list-style: inside;
+  list-style-type: disc;
+  list-style-position: outside;
   margin: var(--half-base-line-height) 0;
+  padding-left: var(--base-line-height);
 }
 
 @media (min-width: 800px) {

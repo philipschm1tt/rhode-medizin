@@ -191,11 +191,16 @@ const normalizeCallToAction = (
 }
 
 const renderMarkdown = async (markdown: string): Promise<string> => {
+  const source = markdown.replace(
+    /^(\d{1,2})\.\s+(\p{L}+\s+\d{4})$/gmu,
+    '$1\\. $2'
+  )
+
   const file = await unified()
     .use(remarkParse)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
-    .process(markdown)
+    .process(source)
 
   return String(file)
 }
@@ -356,10 +361,12 @@ const normalizeModule = async (
         id,
         __typename: typename,
         name: asString(fields.name),
-        beschreibung: asString(
-          (fields.beschreibung as { beschreibung?: unknown } | undefined)
-            ?.beschreibung
-        ),
+        beschreibung:
+          asString(fields.beschreibung) ||
+          asString(
+            (fields.beschreibung as { beschreibung?: unknown } | undefined)
+              ?.beschreibung
+          ),
         beispiele: asStringArray(fields.beispiele),
         foto: normalizeImage(assets.get(getReferenceId(fields.foto) || '')),
       }
