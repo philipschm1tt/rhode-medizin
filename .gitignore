@@ -16,3 +16,6 @@ TODO
 
 # Playwright CLI session artifacts
 /.playwright-cli
+
+# Worktrees
+/.worktrees
