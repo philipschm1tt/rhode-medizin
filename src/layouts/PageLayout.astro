@@ -1,0 +1,54 @@
+---
+import '../styles/global.css'
+import { type SEOProps } from 'astro-seo'
+import { getImage } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import Layout from './Layout.astro'
+import MainContent from '../components/MainContent.astro'
+
+interface Props {
+  title: string
+  description?: string
+  socialImage?: ImageMetadata
+}
+
+const { title, description, socialImage } = Astro.props
+
+let seo: SEOProps | undefined
+if (description) {
+  const socialSrc = socialImage
+    ? (await getImage({ src: socialImage, format: 'jpeg' })).src
+    : undefined
+  const socialUrl = socialSrc
+    ? new URL(socialSrc, Astro.site).toString()
+    : undefined
+  seo = {
+    title,
+    description,
+    openGraph: {
+      basic: {
+        title,
+        type: 'website',
+        image: socialUrl ?? 'https://www.rhode-medizin.de/favicon.png',
+        url: new URL(Astro.url.pathname, Astro.site).toString(),
+      },
+      optional: {
+        locale: 'de_DE',
+        siteName: 'Heinrich Rhode GmbH',
+      },
+    },
+    twitter: {
+      card: 'summary_large_image' as const,
+      title,
+      description,
+      image: socialUrl,
+    },
+  }
+}
+---
+
+<Layout title={title} seo={seo}>
+  <MainContent gridRow="2">
+    <slot />
+  </MainContent>
+</Layout>
