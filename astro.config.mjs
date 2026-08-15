@@ -10,7 +10,7 @@ export default defineConfig({
   integrations: [sitemap(), mdx()],
   markdown: {
     processor: satteri({
-      features: { gfm: true, smartPunctuation: false, frontmatter: false },
+      features: { gfm: false, smartPunctuation: false, frontmatter: false },
     }),
   },
   image: {

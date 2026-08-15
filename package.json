@@ -26,14 +26,19 @@
     "compare:legal": "node scripts/compare-legal-pages.mjs",
     "compare:pages": "node scripts/compare-pages.mjs",
     "develop": "astro dev",
-    "format": "prettier --write \"**/*.{js,ts,astro,json,md,yml,css}\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "prettier --check \"**/*.{js,ts,astro,json,md,yml,css}\""
+    "format": "prettier --write \"**/*.{js,ts,astro,json,md,mdx,yml,yaml,css}\"",
+    "lint": "prettier --check \"**/*.{js,ts,astro,json,md,mdx,yml,yaml,css}\"",
+    "verify:content": "node scripts/verify-content.mjs",
+    "verify:assets": "node scripts/verify-assets.mjs",
+    "verify:dist": "node scripts/verify-dist.mjs",
+    "verify": "pnpm lint && pnpm verify:content && pnpm verify:assets && pnpm build && pnpm compare:legal && pnpm compare:pages && pnpm verify:dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@types/node": "^22.10.0",
     "cheerio": "^1.0.0",
+    "diff": "^9.0.0",
     "prettier": "^3.9.4",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"
