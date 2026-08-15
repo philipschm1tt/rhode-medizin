@@ -54,11 +54,10 @@ local-content design.
   matching the editing experience the local-content spec required.
 - Remove the `src/content/prose/` HTML store and the `set:html` prose
   injection.
-- Reproduce the frozen cutover fixtures byte-for-byte in the prose
-  regions, so the divergence and the masked nbsp-vs-`&nbsp;` regression
-  are both eliminated.
-- Add a byte-strict comparison mode so the nbsp-vs-`&nbsp;` class of
-  regression cannot be masked again.
+- Reproduce the frozen cutover fixtures under the existing semantic
+  comparators (the same comparators that passed for the HTML detour).
+  No new build-time verification script; the editing-experience goal is
+  verified by reading the `.mdx` source.
 - Update `AGENTS.md` to reflect the actual editing model and stop
   blessing the divergence.
 - No new ADR; ADR 08 already documents the local-content intent. This
@@ -180,10 +179,30 @@ reflow long paragraphs in the legal pages. Block-level structure
 (`PageLayout`, `Section`, `Aside`, headings, lists) is preserved because
 Prettier treats JSX and block Markdown as untouchable boundaries. The
 semantic fixture comparators normalize whitespace (`\s+` → ` `), so
-reflowed prose still matches the frozen fixtures. The byte-strict
-comparator (below) operates per prose region after entity unescape and
-inter-element whitespace normalization, so Prettier's reflowing of
-spaces inside paragraphs is equivalent there too.
+reflowed prose still matches the frozen fixtures.
+
+### Satteri rendering notes
+
+Empirical testing during plan writing established two Satteri behaviors
+that affect how the inline Markdown renders, but do not affect parity
+under the semantic comparators:
+
+- Satteri escapes `>` to `&gt;` inside list items (e.g. `breites
+  Warensortiment > 50.000 Artikel` renders as `breites Warensortiment
+  &gt; 50.000 Artikel`). The frozen fixture (built by remark) uses a
+  literal `>`. Cheerio's `.html()` normalizes both forms to `&gt;`, so
+  the semantic comparators pass either way.
+- Satteri preserves literal U+00A0 (non-breaking space) characters in
+  the source Markdown as literal U+00A0 in the output HTML. The frozen
+  fixture also uses literal U+00A0. The HTML detour converted these to
+  `&nbsp;` entities; cheerio's `.html()` normalizes both forms to
+  `&nbsp;`, so the semantic comparators passed for the detour too.
+
+The inline-Markdown approach reproduces the frozen fixtures under the
+semantic comparators' normalization, which is the same normalization
+that made the as-built HTML detour pass. The prose SOURCE is the
+improvement: Markdown with literal characters instead of HTML with
+entities.
 
 ## Page Structure
 
@@ -248,61 +267,53 @@ their current `\s+` → ` ` whitespace normalization. They continue to
 catch structural regressions (missing elements, attribute changes, link
 `href` drift) and pass when Prettier reflows prose.
 
-### New byte-strict comparator — `scripts/compare-prose-bytes.mjs`
+### No new byte-strict comparator
 
-A new script that verifies the built output's prose regions match the
-frozen fixtures byte-for-byte after unescaping HTML entities and
-trimming per-element whitespace. It runs alongside the semantic
-comparators; it does not replace them.
+An earlier draft of this design proposed a new
+`scripts/compare-prose-bytes.mjs` to catch the nbsp-vs-`&nbsp;` byte
+regression the HTML detour introduced. Empirical testing during plan
+writing showed that design cannot work:
 
-Behavior:
+- The frozen `dist/` fixtures were built by the old remark-parse/remark-rehype
+  pipeline, which emits literal `>` and literal U+00A0 in the output HTML.
+- Satteri (the current processor) escapes `>` to `&gt;` in list items but
+  preserves literal U+00A0.
+- Cheerio's `.html()` re-serializes both literal `>` and `&gt;` to `&gt;`,
+  and both literal nbsp and `&nbsp;` to `&nbsp;` entities, masking every
+  difference in the semantic comparators.
+- A raw-byte `dist/` comparator (no cheerio re-serialization) would fail
+  on Satteri's `&gt;` even with correct inline Markdown, because the frozen
+  fixture has literal `>` — and the spec forbids regenerating the frozen
+  fixtures.
 
-1. Load the three built pages from `dist/`.
-2. For each prose-bearing region — the imprint `<section>`, the
-   data-policy `<section>`, and the three homepage prose regions inside
-   their `<Section>`/`<Aside>` wrappers — extract the rendered HTML.
-   The region selectors are derived from the existing `Section`/`Aside`
-   component markup so they remain stable.
-3. Unescape HTML entities in both the built region and the corresponding
-   frozen fixture region: `&nbsp;` → U+00A0, `&gt;` → `>`, `&amp;` →
-   `&`, `&quot;` → `"`, `&#39;` → `'`. Use a standard entity decode.
-4. Normalize only insignificant inter-element whitespace: collapse runs
-   of whitespace *between* tags to a single space; leave text-node
-   content alone except for trimming leading/trailing space per text
-   node. This is narrower than the semantic comparators' `\s+` → ` `:
-   it does not collapse whitespace inside text content, so nbsp-vs-space
-   differences inside a heading remain visible.
-5. Compare the resulting strings byte-for-byte. Any difference fails
-   with a unified diff showing the exact byte change.
+The actual regression the HTML detour introduced is a SOURCE-level
+problem (HTML files with `&nbsp;` entities instead of Markdown files with
+literal characters), not an output-level problem. The built `dist/`
+output is semantically equivalent under cheerio normalization, which is
+why the semantic comparators pass for both the HTML detour and the
+inline-Markdown approach. A `dist/`-level byte-strict comparator cannot
+catch the source regression without also flagging Satteri's standard
+HTML escaping, which would make it impossible to pass with inline
+Markdown.
 
-Why this works: the frozen fixture contains literal U+00A0 in
-`a)  personenbezogene Daten`. The current as-built HTML contains
-`&nbsp;&nbsp;&nbsp; ` there. After unescaping, the as-built becomes
-three U+00A0 + space, while the frozen fixture is two U+00A0 + space
-— a real byte difference the byte-strict comparator catches and the
-semantic comparators mask. With the inline-Markdown approach, the built
-output contains the literal nbsp directly (no entities), so it matches
-the fixture by construction.
-
-What the byte-strict comparator does NOT do: it does not replace the
-semantic comparators, does not check metadata or sitemap (that is
-`verify:dist`), and does not validate images (that is `verify:assets`).
-It is narrowly scoped to the prose-regions byte regression.
+The inline-Markdown approach is therefore verified by the existing
+semantic comparators (which pass) and by code review of the `.mdx`
+files. No new verification script is added. The `verify` aggregate is
+unchanged.
 
 ### `package.json`
 
-- New script: `"verify:prose": "node scripts/compare-prose-bytes.mjs"`.
-- The `verify` aggregate becomes:
-  `pnpm lint && pnpm verify:content && pnpm verify:assets && pnpm build && pnpm compare:legal && pnpm compare:pages && pnpm verify:prose && pnpm verify:dist`.
-- PR CI (`.github/workflows/verify.yml`) runs `pnpm verify`, so the new
-  step is picked up without a workflow edit.
+No new `verify:prose` script. The `verify` aggregate is unchanged:
+`pnpm lint && pnpm verify:content && pnpm verify:assets && pnpm build && pnpm compare:legal && pnpm compare:pages && pnpm verify:dist`.
 
 ### Expected outcome
 
 `pnpm verify` passes end-to-end. The inline Markdown reproduces the
-frozen fixtures (semantic comparators pass), and the byte-strict
-comparator confirms the prose regions match byte-for-byte after entity
-unescape.
+frozen fixtures under the semantic comparators' normalization, which is
+the same normalization that made the as-built HTML detour pass. The
+editing-experience goal — prose inlined as Markdown in the `.mdx` pages —
+is verified by reading the `.mdx` source, not by a new build-time
+check.
 
 ## Documentation
 
@@ -318,9 +329,8 @@ unescape.
 - Architecture section, block bullet: clarify that `Section` and
   `Aside` render MDX in their default slot; pages compose prose
   Markdown and block components as children.
-- Commands section: add `pnpm verify:prose` to the list of `verify:*`
-  commands and update the `verify` aggregate description to mention
-  the prose byte-strict check.
+- Commands section: unchanged. No new `verify:prose` script; the `verify`
+  aggregate is unchanged.
 
 No other `AGENTS.md` changes. The rest of the file (commands,
 environment, deploy, ADR policy) is already correct after the original
@@ -355,14 +365,11 @@ editing.
 - Delete: `src/content/prose/` and its five files (`imprint.html`,
   `data-policy.html`, `index-service.html`, `index-aside-iso.html`,
   `index-aside-history.html`).
-- Create: `scripts/compare-prose-bytes.mjs`.
-- Modify: `package.json` — add `verify:prose` script and extend the
-  `verify` aggregate.
 - Modify: `tests/fixtures/cutover/provenance.json` — add
-  `proseNormalization` field.
+  `proseNormalization` field; update the existing `reconciliation`
+  entry that blessed the HTML detour.
 - Modify: `AGENTS.md` — replace the `prose/` bullet and clarify the
-  `Section`/`Aside` slot contract; add `verify:prose` to the commands
-  list.
+  `Section`/`Aside` slot contract.
 
 ## Acceptance Criteria
 
@@ -377,19 +384,14 @@ The work is complete only when all of the following are true:
   `src/pages/index.mdx` and is the only raw-HTML-for-prose case in the
   page.
 - `tests/fixtures/cutover/provenance.json` records the one-time
-  Setext→ATX normalization in the `proseNormalization` field.
-- `AGENTS.md` no longer mentions `src/content/prose/` or `set:html` for
-  frozen prose; it describes the inline-Markdown editing model and
-  lists `pnpm verify:prose` among the `verify:*` commands.
-- `scripts/compare-prose-bytes.mjs` exists and verifies the prose
-  regions of the three built pages against the frozen cutover fixtures
-  byte-for-byte after entity unescape and inter-element whitespace
-  normalization.
-- `pnpm verify` passes, including the new `verify:prose` step in the
-  aggregate sequence.
-- The build's prose regions use literal U+00A0 (not `&nbsp;` entities)
-  where the frozen source used literal nbsp.
-- No new ADR is added; ADR 08 is unchanged.
+  Setext→ATX normalization in the `proseNormalization` field and the
+  `reconciliation` entry no longer blesses the HTML detour.
+- `AGENTS.md` no longer mentions `src/content/prose/` or `set:html`
+  for frozen prose; it describes the inline-Markdown editing model.
+- `pnpm verify` passes (unchanged aggregate: lint, content, assets,
+  build, legal parity, page parity, dist checks).
+- No new verification script is added. No new ADR is added; ADR 08 is
+  unchanged.
 
 ## Out of Scope (explicit)
 
