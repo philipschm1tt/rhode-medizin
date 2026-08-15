@@ -22,9 +22,5 @@ const { gridRow = '2' } = Astro.props
       grid-template-columns: var(--main-grid-columns);
       justify-items: stretch;
     }
-
-    .main-content > :global(*) {
-      grid-column: main-column-start / side-column-end;
-    }
   }
 </style>
