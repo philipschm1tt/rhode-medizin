@@ -1,13 +1,18 @@
 # AGENTS.md
 
-Astro marketing site for Heinrich Rhode GmbH. Content comes from Contentful at build time; the build is essentially a renderer for Contentful pages.
+Astro marketing site for Heinrich Rhode GmbH. Content is version-controlled
+as local MDX pages, YAML collections, and image assets — no CMS.
 
 ## Commands
 
-- `pnpm develop` — dev server (needs Contentful creds, see below)
-- `pnpm build` — production build to `dist/` (runs `astro check` then `astro build`)
-- `pnpm compare:legal` — compare built legal pages against captured fixtures
-- `pnpm compare:pages` — compare built homepage + legal pages against captured fixtures
+- `pnpm develop` — dev server
+- `pnpm build` — production build to `dist/` (runs `astro check` then `astro build`; no Contentful credentials needed)
+- `pnpm verify` — aggregate: lint + content + assets + build + parity + dist checks
+- `pnpm verify:content` — content integrity against frozen capture
+- `pnpm verify:assets` — asset checksums, dimensions, manifest
+- `pnpm verify:dist` — built output: routes, metadata, sitemap, no Contentful URLs
+- `pnpm compare:legal` — compare built legal pages against cutover fixtures
+- `pnpm compare:pages` — compare homepage + legal pages against cutover fixtures
 - `pnpm format` — prettier write
 - `pnpm lint` — prettier check (no eslint/stylelint after Astro migration)
 - `pnpm test` — no tests configured; do not assume a test runner exists
@@ -16,16 +21,19 @@ Run `lint` before considering work done. The build also runs `astro check` (Type
 
 ## Environment
 
-`.env` (gitignored) must define `CONTENTFUL_SPACE_ID` and `CONTENTFUL_DELIVERY_TOKEN`, loaded by `src/content/loaders/contentful.ts` via `dotenv`. Without these, the Contentful loader throws and the build fails. Do not commit `.env`.
-
-`CONTENTFUL_ACCESS_TOKEN` exists only for the legacy Gatsby build and is no longer used by the Astro stack. `CONTENTFUL_PREVIEW_TOKEN` is optional for preview builds (set `CONTENTFUL_USE_PREVIEW=true` to use it against `preview.contentful.com`).
+No environment variables are required. The build uses local content under
+`src/content/`, `src/pages/*.mdx`, and `src/assets/content/`. The gitignored
+`.env` file is no longer read.
 
 ## Architecture
 
-- `src/pages/[...slug].astro` reads the `pages` content collection and creates one page per `slug`. A Contentful slug of `/` or empty maps to the site root.
-- `src/components/ModuleRenderer.astro` is the central dispatcher: it switches on `module.__typename` (e.g. `ContentfulHeroBlock`, `ContentfulAbschnitt`, `ContentfulKartenLayout`) to render the matching `.astro` component. New Contentful content types must be added to both the Zod schema in `src/content.config.ts` and the dispatcher.
-- Contentful field names are German (`hauptueberschrift`, `unterueberschrift`, `volleBreite`, `seitenabschnitt`, `inhalte`). Preserve this convention when extending schemas.
-- `src/content/loaders/contentful.ts` is a custom Astro Content Loader that fetches from Contentful via the `contentful.js` SDK, resolves cross-references, renders Markdown to HTML, and normalizes image data to `{ src, width, height, title?, description? }`.
+- `src/pages/*.mdx` are file-routed pages (`index.mdx`, `imprint.mdx`, `data-policy.mdx`) that compose editor-facing blocks and load data via `getCollection`.
+- `src/content.config.ts` defines two `glob()` collections: `employees` and `productGroups`, backed by YAML files under `src/content/employees/` and `src/content/product-groups/` with `image()`-typed photos.
+- `src/layouts/PageLayout.astro` is the MDX page shell composing `Layout.astro` + `MainContent.astro`, with `getImage()` social image support.
+- `src/components/blocks/` holds editor-facing blocks: `Hero`, `Section`, `Aside`, `Quote`, `Tiles`, `EmployeeTile`, `ProductGroup`. `Tiles` validates `layout`/`items`/`itemComponent` and throws on misuse at build time.
+- `src/content/prose/` holds pre-rendered HTML fragments for frozen legal and homepage prose, injected via `set:html` so Prettier cannot reflow the text.
+- Images are local `ImageMetadata` objects under `src/assets/content/`, passed to `astro:assets` `<Image />` / `<Picture />` end to end.
+- The MDX integration uses the Satteri processor with `smartPunctuation: false` and `gfm: false`.
 - `src/layouts/Layout.astro` is the HTML shell with header, footer, and global grid.
 - Styling: native `.astro` scoped CSS with custom properties in `src/styles/tokens.css` and global element styles in `src/styles/global.css`. No styled-components, no React runtime.
 
@@ -49,8 +57,8 @@ Run `lint` before considering work done. The build also runs `astro check` (Type
 
 ## Deploy
 
-Deployed to Netlify as a fully static build (`astro build` → `dist/`), no SSR adapter — fully static, cookie-free, no service worker. Build config is committed in `netlify.toml`: build command `pnpm install --frozen-lockfile && pnpm build`, publish directory `dist`, `NODE_VERSION` `22`. Production env vars (`CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`) are set in the Netlify dashboard, not committed. Content is fetched from Contentful at build time, so content edits require a rebuild via git push, manual Netlify deploy, or a Contentful webhook to a Netlify build hook (`publish`/`unpublish` events). See `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md` for the operator runbook and `docs/adrs/adr_07_netlify.md` for the decision.
+Deployed to Netlify as a fully static build (`astro build` → `dist/`), no SSR adapter — fully static, cookie-free, no service worker. Build config is committed in `netlify.toml`: build command `pnpm install --frozen-lockfile && pnpm build`, publish directory `dist`, `NODE_VERSION` `22`. No Contentful credentials are set. Content edits are Git changes; pushing to `master` triggers a Netlify rebuild. See `docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md` for the cutover/retirement operator runbook and `docs/adrs/adr_08_local_content.md` for the decision.
 
-Cloudflare Pages remains configured as a dormant fallback and builds on every git push with the same build command and env vars; the `*.pages.dev` URL stays functional for emergency reversion. See `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic), `docs/adrs/adr_07_netlify.md`, and `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md`.
+Cloudflare Pages remains configured as a dormant fallback and builds on every git push with the same build command; the `*.pages.dev` URL stays functional for emergency reversion. See `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic), `docs/adrs/adr_07_netlify.md`, and `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md`.
 
 If the Cloudflare deployment pipeline uses `npx wrangler versions upload`, `wrangler.jsonc` must define `assets.directory` as `./dist`.
