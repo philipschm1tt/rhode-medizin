@@ -1,0 +1,204 @@
+[
+  {
+    "contentfulAssetId": "1lu8eHwnZe2YeqCOAIwmyg",
+    "sourceUpdatedAt": "2018-12-27T12:53:30.143Z",
+    "sourceUrl": "https://images.ctfassets.net/0eod0832li65/1lu8eHwnZe2YeqCOAIwmyg/0d097d17916ead41d952203de1e8f5d3/hero-image_blue2.jpg",
+    "localPath": "src/assets/content/hero-image.jpg",
+    "sha256": "12af20a44add437a916ab78959da0f6c10fae04acf72ad012d1c08d12d142a56",
+    "byteSize": 2973789,
+    "width": 4820,
+    "height": 3619,
+    "contentfulTitle": "hero-image",
+    "contentfulDescription": "iStock-74179470",
+    "alt": "",
+    "decorativeEmptyAlt": true,
+    "usedBy": [
+      {
+        "entryId": "1y5BE5rNsoQaQSo2akUOai",
+        "typename": "ContentfulHeroBlock",
+        "field": "bild"
+      }
+    ],
+    "rights": {
+      "status": "approved-original",
+      "derivation": null,
+      "notes": "Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision."
+    }
+  },
+  {
+    "contentfulAssetId": "1tmgLOr7lSsYK6Qya8wgku",
+    "sourceUpdatedAt": "2021-06-16T13:02:13.852Z",
+    "sourceUrl": "https://images.ctfassets.net/0eod0832li65/1tmgLOr7lSsYK6Qya8wgku/274bf13ec1a05d92ac502b2a030a2476/mitarbeiter_icon.webp",
+    "localPath": "src/assets/content/mitarbeiter-icon.webp",
+    "sha256": "1bd0002bf0950f3750c3543cb8476953f6479fc9f9278a4ef46867c951a23212",
+    "byteSize": 818,
+    "width": 300,
+    "height": 182,
+    "contentfulTitle": "Mitarbeiter Platzhalter",
+    "contentfulDescription": "Platzhalter für Mitarbeiterfoto",
+    "alt": "",
+    "decorativeEmptyAlt": true,
+    "usedBy": [
+      {
+        "entryId": "4ksJSFO6XCgu2eCS08KcYW",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "6xNtgAjB84uk4mSgqSe4AW",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "HvwgYQPqAUWG4KiKCsigM",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "1VwVd5aOwAkAEWUMOiSSmq",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "1qotdnZVs8Q8wWY8IawMKS",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      }
+    ],
+    "rights": {
+      "status": "approved-original",
+      "derivation": null,
+      "notes": "Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision."
+    }
+  },
+  {
+    "contentfulAssetId": "21dLjtagm4K6mUsmQIi86i",
+    "sourceUpdatedAt": "2018-09-16T07:58:02.020Z",
+    "sourceUrl": "https://images.ctfassets.net/0eod0832li65/21dLjtagm4K6mUsmQIi86i/67ed37c8d746b22dc80221d6ed646356/iStock-637947976.jpg",
+    "localPath": "src/assets/content/chirurgische-instrumente.jpg",
+    "sha256": "3027feef9229fd116499c64856e9797d148f7e280e27b1a4271b2cef1416e6f9",
+    "byteSize": 1074051,
+    "width": 2121,
+    "height": 1414,
+    "contentfulTitle": "chirurgische-instrumente",
+    "contentfulDescription": "iStock-637947976",
+    "alt": "",
+    "decorativeEmptyAlt": true,
+    "usedBy": [
+      {
+        "entryId": "38KLzwLHiEMIw6O4QmG6QS",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ],
+    "rights": {
+      "status": "approved-original",
+      "derivation": null,
+      "notes": "Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision."
+    }
+  },
+  {
+    "contentfulAssetId": "14rbshKRiEKEKgC6ecyIUS",
+    "sourceUpdatedAt": "2018-09-15T13:34:10.275Z",
+    "sourceUrl": "https://images.ctfassets.net/0eod0832li65/14rbshKRiEKEKgC6ecyIUS/7557e89749a0cf2e808e703ad4e450cc/motorensysteme.jpg",
+    "localPath": "src/assets/content/motorensysteme.jpg",
+    "sha256": "6f54a596e7e8aa4562ba3bd1a7a1ef57b2f4d87b57042be35dfe7d772b5058fd",
+    "byteSize": 90124,
+    "width": 500,
+    "height": 500,
+    "contentfulTitle": "motorensysteme",
+    "contentfulDescription": null,
+    "alt": "",
+    "decorativeEmptyAlt": true,
+    "usedBy": [
+      {
+        "entryId": "4Yd5uSN3G8M4qgAS8ySawc",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ],
+    "rights": {
+      "status": "approved-original",
+      "derivation": null,
+      "notes": "Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision."
+    }
+  },
+  {
+    "contentfulAssetId": "2eumMwGJnOiiUQ4Syge28o",
+    "sourceUpdatedAt": "2018-09-16T07:57:46.954Z",
+    "sourceUrl": "https://images.ctfassets.net/0eod0832li65/2eumMwGJnOiiUQ4Syge28o/380a0b493289dd9aa9cad4e73f2def21/iStock-464182879.jpg",
+    "localPath": "src/assets/content/medizinisches-mobilar.jpg",
+    "sha256": "0cebe4cd3fab0825e6d12bd88ba4f595ffc9f35504ac78d6940d2bfce64b9d52",
+    "byteSize": 1269784,
+    "width": 2125,
+    "height": 1411,
+    "contentfulTitle": "medizinisches-mobilar",
+    "contentfulDescription": "iStock-464182879",
+    "alt": "",
+    "decorativeEmptyAlt": true,
+    "usedBy": [
+      {
+        "entryId": "54AhzatIK4CO6UQCWGaiGg",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ],
+    "rights": {
+      "status": "approved-original",
+      "derivation": null,
+      "notes": "Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision."
+    }
+  },
+  {
+    "contentfulAssetId": "3MUQkbkINaiS0W4s0emcya",
+    "sourceUpdatedAt": "2018-09-16T07:58:32.912Z",
+    "sourceUrl": "https://images.ctfassets.net/0eod0832li65/3MUQkbkINaiS0W4s0emcya/8b6aa25aee04b649fabe9bbc3edb0b66/iStock-476975672.jpg",
+    "localPath": "src/assets/content/medizinische-geraete.jpg",
+    "sha256": "c1be9aaf882c70929cbe97aa6300db89de6d156a5bb188c2a33c8af790c4fc07",
+    "byteSize": 3600666,
+    "width": 3392,
+    "height": 2768,
+    "contentfulTitle": "medizinische-geraete",
+    "contentfulDescription": "iStock-476975672",
+    "alt": "",
+    "decorativeEmptyAlt": true,
+    "usedBy": [
+      {
+        "entryId": "2HjFU8OUbmAomyi8msqs8q",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ],
+    "rights": {
+      "status": "approved-original",
+      "derivation": null,
+      "notes": "Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision."
+    }
+  },
+  {
+    "contentfulAssetId": "dKtpKbPyx2agO4OgGKasi",
+    "sourceUpdatedAt": "2018-09-16T07:58:46.628Z",
+    "sourceUrl": "https://images.ctfassets.net/0eod0832li65/dKtpKbPyx2agO4OgGKasi/234a2362b8a587d18f8e726272c41db3/iStock-460474039.jpg",
+    "localPath": "src/assets/content/rehabereich.jpg",
+    "sha256": "ac03282c0845be6fd99d1e848c45c9ee730d1c79e59558c15dbb8dc045e0dcc2",
+    "byteSize": 1224291,
+    "width": 2121,
+    "height": 1414,
+    "contentfulTitle": "rehabereich",
+    "contentfulDescription": "iStock-460474039",
+    "alt": "",
+    "decorativeEmptyAlt": true,
+    "usedBy": [
+      {
+        "entryId": "3ED0D8XhyoYuowy0YCAWma",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ],
+    "rights": {
+      "status": "approved-original",
+      "derivation": null,
+      "notes": "Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision."
+    }
+  }
+]
