@@ -101,31 +101,51 @@ const sanitizeAsset = (asset) => {
 
 const buildAssetInventory = (entries, assets) => {
   const usage = new Map()
-  for (const asset of assets) usage.set(asset.id, { asset, usedBy: [] })
+  for (const asset of assets) usage.set(asset.sys.id, { asset, usedBy: [] })
+  const entryById = new Map(entries.map((e) => [e.sys.id, e]))
   const typename = (e) =>
     contentTypeToTypename[e.sys.contentType.sys.id] ?? null
+  const visit = (value, owner, field) => {
+    if (Array.isArray(value)) {
+      for (const item of value) visit(item, owner, field)
+      return
+    }
+    if (isAsset(value)) {
+      const id = refId(value)
+      if (id && usage.has(id)) {
+        usage.get(id).usedBy.push({
+          entryId: owner.sys.id,
+          typename: typename(owner),
+          field,
+        })
+      }
+      return
+    }
+    if (isEntry(value)) {
+      const nested = entryById.get(refId(value)) ?? value
+      const tn = typename(nested)
+      if (!tn) return
+      for (const [f, v] of Object.entries(nested.fields)) visit(v, nested, f)
+    }
+  }
   for (const entry of entries) {
     const tn = typename(entry)
     if (!tn) continue
-    for (const [fieldName, value] of Object.entries(entry.fields)) {
-      const collect = (v) => {
-        const id = isAsset(v) ? refId(v) : null
-        if (id && usage.has(id)) {
-          usage.get(id).usedBy.push({
-            entryId: entry.sys.id,
-            typename: tn,
-            field: fieldName,
-          })
-        }
-      }
-      if (Array.isArray(value)) value.forEach(collect)
-      else collect(value)
+    for (const [field, value] of Object.entries(entry.fields)) {
+      visit(value, entry, field)
     }
   }
-  return [...usage.values()].map(({ asset, usedBy }) => ({
-    ...asset,
-    usedBy,
-  }))
+  return [...usage.values()].map(({ asset, usedBy }) => {
+    const seen = new Set()
+    const deduped = []
+    for (const u of usedBy) {
+      const key = `${u.entryId}:${u.field}`
+      if (seen.has(key)) continue
+      seen.add(key)
+      deduped.push(u)
+    }
+    return { ...sanitizeAsset(asset), usedBy: deduped }
+  })
 }
 
 const guessLocalId = (entry) => {

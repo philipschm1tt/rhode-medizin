@@ -1,48 +1,148 @@
 [
   {
-    "metadata": {
-      "tags": [],
-      "concepts": []
-    },
-    "sys": {
-      "space": {
-        "sys": {
-          "type": "Link",
-          "linkType": "Space",
-          "id": "0eod0832li65"
-        }
-      },
-      "id": "dKtpKbPyx2agO4OgGKasi",
-      "type": "Asset",
-      "createdAt": "2018-09-16T07:58:46.628Z",
-      "updatedAt": "2018-09-16T07:58:46.628Z",
-      "environment": {
-        "sys": {
-          "id": "master",
-          "type": "Link",
-          "linkType": "Environment"
-        }
-      },
-      "publishedVersion": 5,
-      "revision": 1,
-      "locale": "de-DE"
-    },
-    "fields": {
-      "title": "rehabereich",
-      "description": "iStock-460474039",
-      "file": {
-        "url": "//images.ctfassets.net/0eod0832li65/dKtpKbPyx2agO4OgGKasi/234a2362b8a587d18f8e726272c41db3/iStock-460474039.jpg",
-        "details": {
-          "size": 1224291,
-          "image": {
-            "width": 2121,
-            "height": 1414
-          }
-        },
-        "fileName": "iStock-460474039.jpg",
-        "contentType": "image/jpeg"
+    "id": "1lu8eHwnZe2YeqCOAIwmyg",
+    "updatedAt": "2018-12-27T12:53:30.143Z",
+    "title": "hero-image",
+    "description": "iStock-74179470",
+    "url": "https://images.ctfassets.net/0eod0832li65/1lu8eHwnZe2YeqCOAIwmyg/0d097d17916ead41d952203de1e8f5d3/hero-image_blue2.jpg",
+    "mimeType": "image/jpeg",
+    "byteSize": 2973789,
+    "width": 4820,
+    "height": 3619,
+    "usedBy": [
+      {
+        "entryId": "1y5BE5rNsoQaQSo2akUOai",
+        "typename": "ContentfulHeroBlock",
+        "field": "bild"
       }
-    },
-    "usedBy": []
+    ]
+  },
+  {
+    "id": "1tmgLOr7lSsYK6Qya8wgku",
+    "updatedAt": "2021-06-16T13:02:13.852Z",
+    "title": "Mitarbeiter Platzhalter",
+    "description": "Platzhalter für Mitarbeiterfoto",
+    "url": "https://images.ctfassets.net/0eod0832li65/1tmgLOr7lSsYK6Qya8wgku/274bf13ec1a05d92ac502b2a030a2476/mitarbeiter_icon.webp",
+    "mimeType": "image/webp",
+    "byteSize": 818,
+    "width": 300,
+    "height": 182,
+    "usedBy": [
+      {
+        "entryId": "4ksJSFO6XCgu2eCS08KcYW",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "6xNtgAjB84uk4mSgqSe4AW",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "HvwgYQPqAUWG4KiKCsigM",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "1VwVd5aOwAkAEWUMOiSSmq",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      },
+      {
+        "entryId": "1qotdnZVs8Q8wWY8IawMKS",
+        "typename": "ContentfulMitarbeiter",
+        "field": "foto"
+      }
+    ]
+  },
+  {
+    "id": "21dLjtagm4K6mUsmQIi86i",
+    "updatedAt": "2018-09-16T07:58:02.020Z",
+    "title": "chirurgische-instrumente",
+    "description": "iStock-637947976",
+    "url": "https://images.ctfassets.net/0eod0832li65/21dLjtagm4K6mUsmQIi86i/67ed37c8d746b22dc80221d6ed646356/iStock-637947976.jpg",
+    "mimeType": "image/jpeg",
+    "byteSize": 1074051,
+    "width": 2121,
+    "height": 1414,
+    "usedBy": [
+      {
+        "entryId": "38KLzwLHiEMIw6O4QmG6QS",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ]
+  },
+  {
+    "id": "14rbshKRiEKEKgC6ecyIUS",
+    "updatedAt": "2018-09-15T13:34:10.275Z",
+    "title": "motorensysteme",
+    "description": null,
+    "url": "https://images.ctfassets.net/0eod0832li65/14rbshKRiEKEKgC6ecyIUS/7557e89749a0cf2e808e703ad4e450cc/motorensysteme.jpg",
+    "mimeType": "image/jpeg",
+    "byteSize": 90124,
+    "width": 500,
+    "height": 500,
+    "usedBy": [
+      {
+        "entryId": "4Yd5uSN3G8M4qgAS8ySawc",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ]
+  },
+  {
+    "id": "2eumMwGJnOiiUQ4Syge28o",
+    "updatedAt": "2018-09-16T07:57:46.954Z",
+    "title": "medizinisches-mobilar",
+    "description": "iStock-464182879",
+    "url": "https://images.ctfassets.net/0eod0832li65/2eumMwGJnOiiUQ4Syge28o/380a0b493289dd9aa9cad4e73f2def21/iStock-464182879.jpg",
+    "mimeType": "image/jpeg",
+    "byteSize": 1269784,
+    "width": 2125,
+    "height": 1411,
+    "usedBy": [
+      {
+        "entryId": "54AhzatIK4CO6UQCWGaiGg",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ]
+  },
+  {
+    "id": "3MUQkbkINaiS0W4s0emcya",
+    "updatedAt": "2018-09-16T07:58:32.912Z",
+    "title": "medizinische-geraete",
+    "description": "iStock-476975672",
+    "url": "https://images.ctfassets.net/0eod0832li65/3MUQkbkINaiS0W4s0emcya/8b6aa25aee04b649fabe9bbc3edb0b66/iStock-476975672.jpg",
+    "mimeType": "image/jpeg",
+    "byteSize": 3600666,
+    "width": 3392,
+    "height": 2768,
+    "usedBy": [
+      {
+        "entryId": "2HjFU8OUbmAomyi8msqs8q",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ]
+  },
+  {
+    "id": "dKtpKbPyx2agO4OgGKasi",
+    "updatedAt": "2018-09-16T07:58:46.628Z",
+    "title": "rehabereich",
+    "description": "iStock-460474039",
+    "url": "https://images.ctfassets.net/0eod0832li65/dKtpKbPyx2agO4OgGKasi/234a2362b8a587d18f8e726272c41db3/iStock-460474039.jpg",
+    "mimeType": "image/jpeg",
+    "byteSize": 1224291,
+    "width": 2121,
+    "height": 1414,
+    "usedBy": [
+      {
+        "entryId": "3ED0D8XhyoYuowy0YCAWma",
+        "typename": "ContentfulProduktgruppe",
+        "field": "foto"
+      }
+    ]
   }
 ]
