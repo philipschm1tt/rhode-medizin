@@ -20,6 +20,16 @@
       "check": "frozen-source vs production",
       "status": "not verified",
       "notes": "Local operator will reconcile against production before merge."
+    },
+    {
+      "check": "image alt text",
+      "status": "changed",
+      "notes": "All images changed to decorative empty alt per content owner decision. Parity comparator excludes alt from KEEP_ATTRIBUTES."
+    },
+    {
+      "check": "markdown processor",
+      "status": "changed",
+      "notes": "Satteri with gfm: false, smartPunctuation: false replaces the old remark-parse/remark-rehype pipeline. Legal prose is pre-rendered to HTML fragments under src/content/prose/ and injected via set:html to avoid Prettier reflowing frozen text."
     }
   ]
 }
