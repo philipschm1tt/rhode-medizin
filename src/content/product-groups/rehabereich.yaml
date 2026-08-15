@@ -1,0 +1,12 @@
+order: 5
+name: Rehabereich
+description: Unser Sortiment umfasst eine große Auswahl von Produkten für den Rehabereich.
+examples:
+  - Rollstühle
+  - Toilettenstühle
+  - Patientenlifter
+  - Badehilfen
+  - Gehhilfen
+  - u.v.m.
+photo: ../assets/content/rehabereich.jpg
+alt: ''

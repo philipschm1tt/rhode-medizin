@@ -1,0 +1,13 @@
+order: 3
+name: Medizinisches Mobiliar
+description: Wir liefern qualitativ hochwertiges medizinisches Mobiliar.
+examples:
+  - Einbauten
+  - Funktionswägen
+  - Liegen
+  - OP-Mobilar
+  - Patiententransport
+  - Behandlungsstühle
+  - u.v.m.
+photo: ../assets/content/medizinisches-mobilar.jpg
+alt: ''

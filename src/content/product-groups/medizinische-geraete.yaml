@@ -1,0 +1,13 @@
+order: 4
+name: Medizinische Geräte
+description: Unser Sortiment umfasst medizinische Geräte für unterschiedliche Anwendungsbereiche.
+examples:
+  - Absaugungen
+  - Blutdruckmessung
+  - Inhalation
+  - Diagnostikinstrumente
+  - Personenwaagen
+  - Untersuchungsleuchten
+  - u.v.m.
+photo: ../assets/content/medizinische-geraete.jpg
+alt: ''
