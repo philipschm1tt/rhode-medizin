@@ -1,0 +1,60 @@
+{
+  "pages": [
+    {
+      "sourceId": "1ECHXhrFnO0CeoWSIiGMSM",
+      "route": "src/pages/index.mdx"
+    },
+    {
+      "sourceId": "7gyWW1JKs8mm042syw2Q6M",
+      "route": "src/pages/data-policy.mdx"
+    },
+    {
+      "sourceId": "3Ig0GRO02QykOuE88eq0wA",
+      "route": "src/pages/imprint.mdx"
+    }
+  ],
+  "employees": [
+    {
+      "sourceId": "4ksJSFO6XCgu2eCS08KcYW",
+      "localId": "robert-renz"
+    },
+    {
+      "sourceId": "6xNtgAjB84uk4mSgqSe4AW",
+      "localId": "werner-schmitt"
+    },
+    {
+      "sourceId": "HvwgYQPqAUWG4KiKCsigM",
+      "localId": "michael-speckbacher"
+    },
+    {
+      "sourceId": "1VwVd5aOwAkAEWUMOiSSmq",
+      "localId": "michael-renz"
+    },
+    {
+      "sourceId": "1qotdnZVs8Q8wWY8IawMKS",
+      "localId": "gerhard-gruber"
+    }
+  ],
+  "productGroups": [
+    {
+      "sourceId": "38KLzwLHiEMIw6O4QmG6QS",
+      "localId": "chirurgische-instrumente"
+    },
+    {
+      "sourceId": "4Yd5uSN3G8M4qgAS8ySawc",
+      "localId": "motorensysteme"
+    },
+    {
+      "sourceId": "54AhzatIK4CO6UQCWGaiGg",
+      "localId": "medizinisches-mobiliar"
+    },
+    {
+      "sourceId": "2HjFU8OUbmAomyi8msqs8q",
+      "localId": "medizinische-geraete"
+    },
+    {
+      "sourceId": "3ED0D8XhyoYuowy0YCAWma",
+      "localId": "rehabereich"
+    }
+  ]
+}

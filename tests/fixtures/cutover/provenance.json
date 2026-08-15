@@ -1,0 +1,25 @@
+{
+  "captureTimestamp": "2026-08-15T17:22:00Z",
+  "sourceGitCommit": "24db8f72026b512d45d04b7201db4fd3b947e689",
+  "contentfulSpaceId": "0eod0832li65",
+  "contentfulEnvironment": "master",
+  "locale": "de",
+  "productionUrls": [
+    "https://www.rhode-medizin.de",
+    "https://rhode-medizin.de"
+  ],
+  "netlifyDeployId": "6a6f0a69b71cd50008b3d288",
+  "legalCopyApproval": {
+    "status": "approved",
+    "approvedBy": "Philip",
+    "approvedAt": "2026-08-15T17:30:26Z",
+    "notes": "Content owner confirmed frozen imprint and data-policy copy is intentional."
+  },
+  "reconciliation": [
+    {
+      "check": "frozen-source vs production",
+      "status": "not verified",
+      "notes": "Local operator will reconcile against production before merge."
+    }
+  ]
+}
