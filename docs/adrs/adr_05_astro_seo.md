@@ -1,5 +1,12 @@
 # ADR 5: Use astro-seo for SEO tag management
 
+## Status
+
+Accepted. The "homepage SEO description is hardcoded in code (not
+sourced from Contentful)" consequence is superseded by ADR 08: the
+description is now authored in `src/pages/index.mdx`. The `astro-seo`
+decision remains accepted.
+
 ## Context
 
 The M3 Astro port emitted only `<title>` in the `<head>`. The production-readiness milestone (M3.5) requires meta description, Open Graph, Twitter card, canonical, and favicon tags on the homepage. These could be hand-rolled as static meta tags in `Layout.astro`, or delegated to a component that structures the prop surface and emits tags according to the Open Graph and Twitter Card specifications.

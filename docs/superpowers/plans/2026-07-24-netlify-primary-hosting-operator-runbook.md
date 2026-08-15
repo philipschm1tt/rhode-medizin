@@ -1,10 +1,10 @@
 # Netlify Primary Hosting Operator Runbook
 
 > **For the human operator:** This is a manual runbook for the Netlify
-> dashboard, DNS/TLS cutover, Contentful webhook, and emergency Cloudflare
-> reversion steps that cannot be performed from the repository shell.
-> Execute it task-by-task, recording results as you go, then report back so
-> the completion summary can be finalized. Steps use checkbox (`- [ ]`)
+> dashboard, DNS/TLS cutover, and emergency Cloudflare reversion steps
+> that cannot be performed from the repository shell. Execute it
+> task-by-task, recording results as you go, then report back so the
+> completion summary can be finalized. Steps use checkbox (`- [ ]`)
 > syntax for tracking.
 
 **Goal:** Make Netlify the primary host for `rhode-medizin.de` and
@@ -19,7 +19,7 @@ host-agnostic. Only hosting and DNS configuration change; no code or build
 changes. DNS stays at the existing registrar.
 
 **Tech Stack:** Astro static build, Netlify (primary), Cloudflare Pages
-(fallback), Contentful (CMS), DNS at the registrar.
+(fallback), DNS at the registrar.
 
 ## Global Constraints
 
@@ -27,24 +27,24 @@ changes. DNS stays at the existing registrar.
   source.
 - Build command is identical on both platforms:
   `pnpm install --frozen-lockfile && pnpm build`; publish directory `dist`.
-- Production env vars are `CONTENTFUL_SPACE_ID` and
-  `CONTENTFUL_DELIVERY_TOKEN` only — no `CONTENTFUL_PREVIEW_TOKEN` in
-  production.
+- No Contentful credentials are required. Content is version-controlled
+  in the repository.
 - `NODE_VERSION` is `22`.
 - DNS stays at the registrar; do not transfer to Netlify DNS or Cloudflare
   DNS.
 - Secrets are set in the Netlify dashboard, never committed.
 
 See `docs/adrs/adr_07_netlify.md` for the decision and `netlify.toml` for the
-build configuration.
+build configuration. See
+`docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md`
+for the local-content cutover and Contentful retirement runbook.
 
 ## Prerequisites
 
 - Netlify account with access to the `rhode-medizin` site.
 - Registrar access for `rhode-medizin.de` (DNS stays here — do not transfer).
 - Cloudflare Pages project still configured (builds on git push).
-- Local checkout with `CONTENTFUL_SPACE_ID` and
-  `CONTENTFUL_DELIVERY_TOKEN` in `.env` for parity checks.
+- Local checkout for parity checks (`pnpm verify`).
 
 ## 1. Netlify site setup
 
@@ -53,9 +53,8 @@ build configuration.
 2. Confirm the build picks up `netlify.toml` (deploy log shows build command
    `pnpm install --frozen-lockfile && pnpm build`, publish directory `dist`,
    `NODE_VERSION` `22`).
-3. Netlify → Site → Settings → Environment variables: set
-   `CONTENTFUL_SPACE_ID` and `CONTENTFUL_DELIVERY_TOKEN`. Do not set
-   `CONTENTFUL_PREVIEW_TOKEN` for production.
+3. No environment variables are required for content. Do not set
+   Contentful credentials.
 4. Trigger a build (Netlify → Deploys → Trigger deploy). Confirm it succeeds
    and `dist/` is published.
 
@@ -79,20 +78,12 @@ Cloudflare.
    `dist/404.html` automatically — no redirects/headers block in
    `netlify.toml`).
 
-## 3. Contentful → Netlify build webhook
+## 3. Content rebuilds
 
-Content edits must trigger a Netlify rebuild automatically (Netlify is
-primary; Cloudflare rebuilds stay on git push / manual).
-
-1. Netlify → Site → Build & deploy → Continuous deployment → Build hooks →
-   create a hook named `contentful-content-published`. Copy the hook URL.
-2. Contentful → Settings → Webhooks → Add webhook:
-   - URL: the Netlify build hook URL.
-   - Triggers: `publish` and `unpublish` on Entry and Asset.
-   - Filters: target this space only.
-3. Publish or unpublish a test entry in Contentful.
-4. In Netlify → Deploys, confirm a new deploy appears with
-   "Triggered by webhook".
+Content edits are Git changes; pushing to `master` triggers a Netlify
+rebuild via git integration. No Contentful webhook is configured. If a
+manual rebuild is needed, trigger it from the Netlify dashboard or via
+git push.
 
 ## 4. Emergency revert to Cloudflare Pages
 

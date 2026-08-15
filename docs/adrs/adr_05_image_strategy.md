@@ -2,7 +2,11 @@
 
 ## Status
 
-Accepted
+Partially superseded by ADR 08. The remote-Contentful-source portions
+(`image.domains` for `images.ctfassets.net` / `videos.ctfassets.net`,
+and the remote-asset download path) no longer apply. The Astro
+image-optimization decision (`astro:assets` `<Image />` / `<Picture />`
+with local `ImageMetadata` sources) remains accepted.
 
 ## Context
 

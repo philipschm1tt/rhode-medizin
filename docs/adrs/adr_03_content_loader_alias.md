@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted
+Superseded by ADR 08 (`adr_08_local_content.md`). The `@content-loaders`
+alias no longer exists.
 
 ## Context
 

@@ -27,15 +27,12 @@ building on every git push as a dormant fallback.
 - Build config lives in `netlify.toml` at the repo root.
 - Build command: `pnpm install --frozen-lockfile && pnpm build`; publish
   directory `dist`; `NODE_VERSION` `22`.
-- Production env vars (set in the Netlify dashboard, not committed):
-  `CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`. No preview token in
-  production.
+- Production env vars: none required for content. No Contentful
+  credentials are set.
 - DNS stays at the registrar: apex `rhode-medizin.de` as ALIAS/ANAME →
   `apex-loadbalancer.netlify.com`; `www.rhode-medizin.de` as CNAME →
   `<site-slug>.netlify.app`.
 - Netlify auto-provisions the TLS certificate via DCV.
-- Content rebuilds via a Contentful webhook to a Netlify build hook
-  (`publish`/`unpublish` events on Entry and Asset).
 - Cloudflare Pages keeps building on git push; the `*.pages.dev` URL remains
   available as an emergency fallback. To revert traffic, repoint DNS at the
   Cloudflare Pages target.
@@ -46,8 +43,11 @@ building on every git push as a dormant fallback.
 - Cloudflare Pages is a dormant safety net: it builds but is not actively
   verified against the real domain. If Cloudflare is ever needed, run a fresh
   build and a parity check (`pnpm compare:pages`) before repointing DNS.
-- Content edits trigger a Netlify rebuild automatically via the Contentful
-  webhook; Cloudflare rebuilds remain on git push / manual deploy only.
+- Content edits are Git changes; a push triggers a Netlify rebuild via git
+  integration. No Contentful webhook is configured.
 - The static build itself is unchanged and remains host-agnostic.
+- See ADR 08 for the local-content decision and
+  `docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md`
+  for the retirement steps.
 
 Operator runbook: `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md`.
