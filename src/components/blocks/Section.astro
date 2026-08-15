@@ -1,0 +1,30 @@
+---
+import MainSection from '../MainSection.astro'
+import MainGrid from '../MainGrid.astro'
+import ContentBox from '../ContentBox.astro'
+
+interface Props {
+  fullWidth?: boolean
+  dark?: boolean
+}
+
+const { fullWidth = false, dark = false } = Astro.props
+---
+
+{
+  fullWidth ? (
+    <MainSection fullWidth darkBackground={dark}>
+      <MainGrid>
+        <ContentBox>
+          <slot />
+        </ContentBox>
+      </MainGrid>
+    </MainSection>
+  ) : (
+    <MainSection darkBackground={dark}>
+      <ContentBox>
+        <slot />
+      </ContentBox>
+    </MainSection>
+  )
+}

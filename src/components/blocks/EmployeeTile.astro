@@ -1,27 +1,15 @@
 ---
-// Native Astro port of src/components/employeeTile.jsx.
-// Renders a Mitarbeiter tile: a fixed 300x182 photo with a caption
-// overlay (name + department). The original used gatsby-image fixed
-// (300x182); the Astro port uses an optimized <Image> with
-// object-fit: cover to preserve the layout box.
+import type { ImageMetadata } from 'astro'
 import { Image } from 'astro:assets'
-
-interface Image {
-  src: string
-  width: number
-  height: number
-  title?: string
-  description?: string
-}
 
 interface Props {
   name: string
   department?: string
-  photo?: Image
+  photo?: ImageMetadata
+  alt?: string
 }
 
-const { name, department, photo } = Astro.props
-const alt = photo?.description || photo?.title || ''
+const { name, department, photo, alt = '' } = Astro.props
 ---
 
 <div class="employee-tile">
@@ -29,9 +17,7 @@ const alt = photo?.description || photo?.title || ''
     photo && (
       <Image
         class="photo"
-        src={photo.src}
-        width={photo.width}
-        height={photo.height}
+        src={photo}
         alt={alt}
         layout="fixed"
         loading="lazy"

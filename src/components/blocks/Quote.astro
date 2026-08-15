@@ -1,0 +1,11 @@
+---
+import Quote from '../Quote.astro'
+
+interface Props {
+  text: string
+}
+
+const { text } = Astro.props
+---
+
+<Quote text={text} />
