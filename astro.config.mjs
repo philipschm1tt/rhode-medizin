@@ -2,7 +2,6 @@ import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 import mdx from '@astrojs/mdx'
 import { satteri } from '@astrojs/markdown-satteri'
-import { fileURLToPath } from 'node:url'
 
 export default defineConfig({
   output: 'static',
@@ -12,17 +11,5 @@ export default defineConfig({
     processor: satteri({
       features: { gfm: false, smartPunctuation: false, frontmatter: false },
     }),
-  },
-  image: {
-    domains: ['images.ctfassets.net', 'videos.ctfassets.net'],
-  },
-  vite: {
-    resolve: {
-      alias: {
-        '@content-loaders': fileURLToPath(
-          new URL('./src/content/loaders', import.meta.url),
-        ),
-      },
-    },
   },
 })

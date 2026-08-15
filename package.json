@@ -9,13 +9,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.1.0",
     "astro-seo": "^1.1.0",
-    "contentful": "^11.12.6",
-    "dotenv": "^17.0.0",
-    "rehype-stringify": "^10.0.1",
-    "remark-parse": "^11.0.0",
-    "remark-rehype": "^11.1.2",
-    "sharp": "^0.35.3",
-    "unified": "^11.0.5"
+    "sharp": "^0.35.3"
   },
   "keywords": [
     "astro"
