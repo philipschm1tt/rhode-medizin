@@ -1,0 +1,15 @@
+order: 1
+name: Chirurgische Instrumente
+description: Als Vertragspartner der Fa. Aesculap stellen wir ein vielfältiges Leistungsspektrum  hochwertiger Produkte bereit.
+examples:
+  - Scheren
+  - Pinzetten
+  - Klemmen
+  - Nadelhalter
+  - Skalpelle
+  - Wundhaken
+  - Zangen
+  - Spekulas
+  - u.v.m.
+photo: ../assets/content/chirurgische-instrumente.jpg
+alt: ''
