@@ -1,0 +1,48 @@
+[
+  {
+    "metadata": {
+      "tags": [],
+      "concepts": []
+    },
+    "sys": {
+      "space": {
+        "sys": {
+          "type": "Link",
+          "linkType": "Space",
+          "id": "0eod0832li65"
+        }
+      },
+      "id": "dKtpKbPyx2agO4OgGKasi",
+      "type": "Asset",
+      "createdAt": "2018-09-16T07:58:46.628Z",
+      "updatedAt": "2018-09-16T07:58:46.628Z",
+      "environment": {
+        "sys": {
+          "id": "master",
+          "type": "Link",
+          "linkType": "Environment"
+        }
+      },
+      "publishedVersion": 5,
+      "revision": 1,
+      "locale": "de-DE"
+    },
+    "fields": {
+      "title": "rehabereich",
+      "description": "iStock-460474039",
+      "file": {
+        "url": "//images.ctfassets.net/0eod0832li65/dKtpKbPyx2agO4OgGKasi/234a2362b8a587d18f8e726272c41db3/iStock-460474039.jpg",
+        "details": {
+          "size": 1224291,
+          "image": {
+            "width": 2121,
+            "height": 1414
+          }
+        },
+        "fileName": "iStock-460474039.jpg",
+        "contentType": "image/jpeg"
+      }
+    },
+    "usedBy": []
+  }
+]
