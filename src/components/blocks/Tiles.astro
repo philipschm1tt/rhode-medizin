@@ -1,0 +1,75 @@
+---
+interface Props {
+  layout: 'grid' | 'list'
+  items: Record<string, unknown>[]
+  itemComponent: unknown
+}
+
+const { layout, items, itemComponent } = Astro.props
+
+if (layout !== 'grid' && layout !== 'list') {
+  throw new Error(
+    `Tiles: "layout" must be "grid" or "list", got: ${String(layout)}`
+  )
+}
+if (!itemComponent) {
+  throw new Error('Tiles: "itemComponent" is required')
+}
+if (!Array.isArray(items)) {
+  throw new Error(`Tiles: "items" must be an array, got: ${typeof items}`)
+}
+
+const Item = itemComponent as unknown as (props: Record<string, unknown>) => any
+const listClass = layout === 'grid' ? 'tile-grid' : 'tile-list'
+---
+
+<ul class={listClass}>
+  {
+    items.map((item) => (
+      <li>
+        <Item {...item} />
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .tile-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tile-grid > :global(*) {
+    list-style: none;
+    max-width: 100%;
+    margin-bottom: var(--base-line-height);
+    margin-right: var(--base-line-height);
+  }
+
+  @supports (display: grid) {
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(141px, 1fr));
+      grid-gap: var(--base-line-height);
+    }
+
+    .tile-grid > :global(*) {
+      width: auto;
+      margin: 0;
+    }
+  }
+
+  .tile-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  .tile-list > :global(*) {
+    list-style: none;
+    max-width: 100%;
+    margin-bottom: var(--base-line-height);
+  }
+</style>

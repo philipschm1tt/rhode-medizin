@@ -1,0 +1,22 @@
+---
+import type { ImageMetadata } from 'astro'
+import HeroBlock from '../HeroBlock.astro'
+
+interface Props {
+  headline: string
+  subhead?: string
+  cta?: string
+  image: ImageMetadata
+  alt: string
+}
+
+const { headline, subhead, cta, image, alt } = Astro.props
+---
+
+<HeroBlock
+  mainHeadline={headline}
+  subHeadline={subhead}
+  callToAction={cta}
+  image={image}
+  alt={alt}
+/>

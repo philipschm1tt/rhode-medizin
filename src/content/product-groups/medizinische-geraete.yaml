@@ -9,5 +9,5 @@ examples:
   - Personenwaagen
   - Untersuchungsleuchten
   - u.v.m.
-photo: ../assets/content/medizinische-geraete.jpg
+photo: ../../assets/content/medizinische-geraete.jpg
 alt: ''
