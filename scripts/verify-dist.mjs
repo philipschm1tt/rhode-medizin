@@ -1,17 +1,19 @@
 import { existsSync, readFileSync } from 'node:fs'
-import { basename, extname, isAbsolute, relative, resolve, sep } from 'node:path'
+import { isAbsolute, relative, resolve, sep } from 'node:path'
 import * as cheerioNS from 'cheerio'
 import sharp from 'sharp'
 import {
   isDirectExecution,
   listFiles,
   readYaml,
+  resolveContentImage,
   runCli,
   sha256,
   toPosix,
 } from './lib/verification.mjs'
 
 const cheerio = cheerioNS.default ?? cheerioNS
+const expectedImageDigests = new Map()
 const origin = 'https://www.rhode-medizin.de'
 const homepageTitle = 'Rhode Medizintechnik – Heinrich Rhode GmbH'
 const homepageDescription =
@@ -85,8 +87,6 @@ const sourceRecords = (root, dir, errors) =>
     .filter(({ record }) => record && typeof record === 'object')
     .sort((a, b) => a.record.order - b.record.order)
 
-const imageStem = (path) => basename(path, extname(path))
-
 const checkImageFile = (root, errors, label, url) => {
   if (url && localPath(url) && hasUnsafeEncoding(url)) {
     errors.push(`${label} has unsafe local URL: ${url}`)
@@ -123,37 +123,92 @@ const checkResponsiveFiles = (root, errors, $, pageLabel) => {
   })
 }
 
-const checkOrderedImages = (
+const transformedImageDigest = async (source, output, quality) => {
+  const metadata = await sharp(output).metadata()
+  const sourceBuffer = readFileSync(source)
+  const key = [
+    sha256(sourceBuffer),
+    metadata.format,
+    metadata.width,
+    metadata.height,
+    quality ?? '',
+  ].join(':')
+  if (expectedImageDigests.has(key)) return expectedImageDigests.get(key)
+  let transform = sharp(source, { failOn: 'none', pages: -1 }).rotate().resize({
+    width: metadata.width,
+    height: metadata.height,
+    withoutEnlargement: true,
+    kernel: 'lanczos3',
+  })
+  transform = quality
+    ? transform.toFormat(metadata.format, { quality })
+    : transform.toFormat(metadata.format)
+  const digest = sha256(await transform.toBuffer())
+  expectedImageDigests.set(key, digest)
+  return digest
+}
+
+const checkDeclaredImage = async (
+  root,
+  errors,
+  label,
+  url,
+  source,
+  quality
+) => {
+  const output = builtPath(root, url)
+  if (!output || !existsSync(output)) return
+  try {
+    const expected = await transformedImageDigest(
+      resolve(root, source),
+      output,
+      quality
+    )
+    if (sha256(readFileSync(output)) !== expected)
+      errors.push(`${label} bytes do not match its declared source`)
+  } catch (error) {
+    errors.push(`${label} source identity cannot be checked: ${error.message}`)
+  }
+}
+
+const checkOrderedImages = async (
+  root,
   errors,
   $,
   selector,
   label,
-  records,
-  expectedCount
+  records
 ) => {
   const images = $(selector).toArray()
-  if (images.length !== expectedCount) {
+  if (images.length !== records.length) {
     errors.push(
-      `${label} image count expected ${expectedCount}, got ${images.length}`
+      `${label} image count expected ${records.length}, got ${images.length}`
     )
   }
 
-  records.forEach(({ record }, index) => {
-    const image = images[index] ? $(images[index]) : null
-    if (!image) return
-    const expectedAlt = record.alt
-    if (image.attr('alt') !== expectedAlt)
-      errors.push(
-        `${label} image ${index + 1} alt expected "${expectedAlt}", got "${image.attr('alt') ?? '<missing>'}"`
+  await Promise.all(
+    records.map(async ({ path, record }, index) => {
+      const image = images[index] ? $(images[index]) : null
+      if (!image) return
+      const expectedAlt = record.alt
+      if (image.attr('alt') !== expectedAlt)
+        errors.push(
+          `${label} image ${index + 1} alt expected "${expectedAlt}", got "${image.attr('alt') ?? '<missing>'}"`
+        )
+      const source = resolveContentImage(path, record.photo)
+      await checkDeclaredImage(
+        root,
+        errors,
+        `${label} image ${index + 1}`,
+        image.attr('src'),
+        source
       )
-    const source = record.photo
-    if (!image.attr('src')?.includes(imageStem(source)))
-      errors.push(`${label} image ${index + 1} source does not match ${source}`)
-    if (image.attr('loading') !== 'lazy')
-      errors.push(
-        `${label} image ${index + 1} loading expected lazy, got ${image.attr('loading') ?? '<missing>'}`
-      )
-  })
+      if (image.attr('loading') !== 'lazy')
+        errors.push(
+          `${label} image ${index + 1} loading expected lazy, got ${image.attr('loading') ?? '<missing>'}`
+        )
+    })
+  )
 }
 
 const checkLinks = (root, errors, $, pageLabel, pageUrl) => {
@@ -295,7 +350,7 @@ const checkSitemap = (root, errors) => {
 
 const scanContentful = (root, errors) => {
   const pattern =
-    /ctfassets\.net|ctfapps\.net|cdn\.contentful\.com|preview\.contentful\.com/i
+    /ctfassets\.net|ctfapps\.net|(?:[a-z0-9-]+\.)*contentful\.com/i
   for (const path of listFiles(root, 'dist')) {
     if (!/\.(?:html|xml|css|js|mjs|json|txt)$/i.test(path)) continue
     if (pattern.test(readFileSync(resolve(root, path), 'utf8')))
@@ -394,25 +449,34 @@ export const verifyDist = async (root = process.cwd()) => {
         `homepage hero fetchpriority expected high, got ${hero.attr('fetchpriority') ?? '<missing>'}`
       )
 
-    if (!hero.attr('src')?.includes(imageStem(heroRecord?.image ?? 'missing')))
-      errors.push('homepage hero source does not match source record')
     checkImageFile(root, errors, 'homepage hero src', hero.attr('src'))
+    if (heroRecord?.image)
+      await checkDeclaredImage(
+        root,
+        errors,
+        'homepage hero image',
+        hero.attr('src'),
+        resolveContentImage('src/content/homepage/hero.yaml', heroRecord.image),
+        70
+      )
 
-    checkOrderedImages(
+    const employees = sourceRecords(root, 'src/content/employees', errors)
+    const products = sourceRecords(root, 'src/content/product-groups', errors)
+    await checkOrderedImages(
+      root,
       errors,
       homepage,
       '.employee-tile img',
       'homepage employee',
-      sourceRecords(root, 'src/content/employees', errors),
-      5
+      employees
     )
-    checkOrderedImages(
+    await checkOrderedImages(
+      root,
       errors,
       homepage,
       '.product-group img',
       'homepage product',
-      sourceRecords(root, 'src/content/product-groups', errors),
-      5
+      products
     )
     await checkSocialImage(root, errors, homepage)
   }
@@ -457,7 +521,11 @@ export const verifyDist = async (root = process.cwd()) => {
 
   return {
     errors,
-    summary: '3 routes, 404, sitemap, metadata, links, 11 content images',
+    summary: `3 routes, 404, sitemap, metadata, links, ${
+      sourceRecords(root, 'src/content/employees', []).length +
+      sourceRecords(root, 'src/content/product-groups', []).length +
+      1
+    } content images`,
   }
 }
 

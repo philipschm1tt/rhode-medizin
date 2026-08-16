@@ -28,7 +28,7 @@ const FORBIDDEN = [
   ['set:html', /\bset:html\s*=/],
   ['raw import', /\?raw(?:['"]|$)/],
   ['removed prose store', /content\/prose/],
-  ['Contentful API', /(?:cdn|preview)\.contentful\.com/i],
+  ['Contentful API', /(?:[a-z0-9-]+\.)*contentful\.com/i],
   ['Contentful asset host', /(?:images|videos)\.ctfassets\.net/i],
 ]
 
