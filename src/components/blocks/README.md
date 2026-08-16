@@ -1,85 +1,161 @@
-# Editor-facing blocks
+# Editor-Facing Blocks
 
-Blocks consumed by `src/pages/*.mdx` to compose pages without the
-`ModuleRenderer` dispatcher. Each block maps to a frozen Contentful
-module type and composes the existing technical layout components.
+Use these components in `src/pages/*.mdx` to compose local page content. See the
+[content authoring guide](../../../docs/content-authoring.md) for editing,
+preview, image, and verification workflows.
 
 ## Hero
 
-Renders the hero area. Wraps `HeroBlock.astro`.
+`Hero` renders the page hero. It has no slot.
 
-Props:
+```mdx
+<Hero
+  headline="Medizintechnik mit Tradition"
+  subhead="Medizinische Geräte, Instrumente und Mobilar für Ärzte und Krankenhäuser."
+  cta="Jetzt Kontakt aufnehmen"
+  image={hero.image}
+  alt={hero.alt}
+/>
+```
 
-- `headline: string` — `ContentfulHeroBlock.hauptueberschrift`
-- `subhead?: string` — `ContentfulHeroBlock.unterueberschrift`
-- `cta?: string` — `ContentfulHeroBlock.callToAction.text`
-- `image: ImageMetadata` — local hero asset
-- `alt: string` — explicit alt
+```ts
+interface Props {
+  headline: string
+  subhead?: string
+  cta?: string
+  image: ImageMetadata
+  alt: string
+}
+```
+
+`image` must be a local `ImageMetadata` value, such as an image loaded through
+an Astro content collection. The hero picture is loaded eagerly with high fetch
+priority because it is the page's primary image.
 
 ## Section
 
-Renders a `ContentfulAbschnitt`. Composes `MainSection.astro`,
-`MainGrid.astro` (full-width only), and `ContentBox.astro`.
+`Section` renders its MDX children through the default slot. `fullWidth` and
+`dark` both default to `false`.
 
-Props:
+```mdx
+<Section>## Heading
 
-- `fullWidth?: boolean` — maps to `volleBreite`
-- `dark?: boolean` — maps to the dark background variant
+Paragraph.</Section>
+```
 
-Slot receives the section's main content.
+```ts
+interface Props {
+  fullWidth?: boolean
+  dark?: boolean
+}
+```
+
+Use `<Section fullWidth dark>` to enable both variants.
 
 ## Aside
 
-Renders a `ContentfulAbschnitt.seitenabschnitt`. Composes
-`AsideSection.astro` and `ContentBox.astro`.
+`Aside` accepts no props and renders its MDX children through the default slot.
 
-Slot receives the aside content.
+```mdx
+<Aside>### Heading
+
+Paragraph.</Aside>
+```
 
 ## Quote
 
-Renders a `ContentfulZitat`. Wraps `Quote.astro`.
+`Quote` renders a standalone quotation and has no slot.
 
-Props:
+```mdx
+<Quote text="Wir nehmen uns Zeit für Sie – Service ist unsere Stärke." />
+```
 
-- `text: string` — `ContentfulZitat.zitat`
+```ts
+interface Props {
+  text: string
+}
+```
 
 ## Tiles
 
-Renders a `ContentfulKartenLayout` `<ul>`. Absorbs the scoped CSS from
-the deleted `TileGrid.astro` and `TileList.astro`. Throws at build time
-on misuse.
+`Tiles` renders an array as either a grid or a list. It has no slot; each item is
+spread as props onto `itemComponent`. Invalid layouts, missing item components,
+and non-array items fail the build.
 
-Props:
+```mdx
+<Tiles layout="grid" items={employees} itemComponent={EmployeeTile} />
+```
 
-- `layout: 'grid' | 'list'` — maps to `ContentfulKartenLayout.layout`
-  (`Gitter` → `grid`, `Liste` → `list`)
-- `items: unknown[]` — the tile data
-- `itemComponent: Component` — `EmployeeTile` or `ProductGroup`
+```ts
+interface Props {
+  layout: 'grid' | 'list'
+  items: Record<string, unknown>[]
+  itemComponent: unknown
+}
+```
+
+Use `EmployeeTile` with `layout="grid"` and `ProductGroup` with
+`layout="list"`. Every object in `items` must satisfy the selected component's
+prop interface.
 
 ## EmployeeTile
 
-Renders a `ContentfulMitarbeiter` tile. Updated to accept
-`ImageMetadata` + explicit `alt` instead of the old normalized image
-shape. Absorbs the scoped CSS from the deleted
-`src/components/EmployeeTile.astro`.
+`EmployeeTile` renders one employee card and has no slot.
 
-Props:
+```mdx
+<EmployeeTile
+  name="Jane Doe"
+  department="Kundenservice"
+  photo={employee.photo}
+  alt={employee.alt}
+/>
+```
 
-- `name: string`
-- `department?: string`
-- `photo?: ImageMetadata`
-- `alt?: string`
+```ts
+interface Props {
+  name: string
+  department?: string
+  photo: ImageMetadata
+  alt: string
+}
+```
+
+`photo` and `alt` are required. The local image is rendered at a fixed layout
+and loaded lazily.
 
 ## ProductGroup
 
-Renders a `ContentfulProduktgruppe` tile. Updated to accept
-`ImageMetadata` + explicit `alt`. Absorbs the scoped CSS from the
-deleted `src/components/ProductGroup.astro`.
+`ProductGroup` renders one product group and has no slot.
 
-Props:
+```mdx
+<ProductGroup
+  name="Diagnostik"
+  description="Geräte und Instrumente für die medizinische Diagnostik."
+  examples={['Stethoskope', 'Otoskope']}
+  photo={productGroup.photo}
+  alt={productGroup.alt}
+/>
+```
 
-- `name: string`
-- `description?: string`
-- `examples?: string[]`
-- `photo?: ImageMetadata`
-- `alt?: string`
+```ts
+interface Props {
+  name: string
+  description?: string
+  examples: string[]
+  photo: ImageMetadata
+  alt: string
+}
+```
+
+`examples`, `photo`, and `alt` are required. The local image uses a constrained,
+responsive layout and is loaded lazily.
+
+## Image Alt Policy
+
+All image props are strict local `ImageMetadata` values; URL strings are not
+accepted. Pass alt text from the same local content record as the image. Use an
+empty string only for an asset whose `src/content/assets.yaml` policy is
+`decorative`. Assets with a `semantic` policy require meaningful, non-empty alt
+text matching their content and manifest records. The content authoring guide
+describes how to keep the asset ID, image path, manifest entry, and alt policy
+aligned.
