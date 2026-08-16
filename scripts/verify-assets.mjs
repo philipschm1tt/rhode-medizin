@@ -180,7 +180,11 @@ export const verifyAssets = async (root = process.cwd()) => {
         continue
       }
 
-      const imagePath = isNonEmptyString(usage[imageField])
+      const validImage = isNonEmptyString(usage[imageField])
+      if (!validImage) {
+        errors.push(`${path}: ${imageField} must be a non-empty string`)
+      }
+      const imagePath = validImage
         ? resolveContentImage(path, usage[imageField])
         : null
       const idAsset = byId.get(usage.assetId)
