@@ -30,33 +30,40 @@ records in two Astro `glob()` content collections (`employees`,
 `productGroups`) as small YAML files, and used images as local binaries
 under `src/assets/content/`. Pages own their data loading explicitly via
 `getCollection` and compose editor-facing blocks from
-`src/components/blocks/`. The MDX integration uses the Satteri processor
-with `smartPunctuation: false` and `gfm: false` so frozen prose keeps
-straight quotes, dashes, and ellipses, and does not autolink emails or
-URLs (matching the old remark-parse output). Legal and homepage prose is
-pre-rendered to HTML fragments under `src/content/prose/` and injected
-via `set:html` so Prettier cannot reflow the frozen text. Social images
-use `getImage()` on a local `ImageMetadata` so OG/Twitter image URLs point
-at a site-origin `/_astro/` URL instead of a Contentful CDN URL.
+`src/components/blocks/`. Page-specific prose is authored as inline
+Markdown in those MDX pages. Explicit HTML is used only where Markdown
+would change the intended structure, such as the homepage service
+heading's `<br />`-separated lines. Active content does not use a separate
+prose store, `set:html`, or `?raw` imports. The MDX integration uses the
+Satteri processor with `smartPunctuation: false` and `gfm: false`. Social
+images use `getImage()` on a local `ImageMetadata` so OG/Twitter image
+URLs point at a site-origin `/_astro/` URL instead of a Contentful CDN
+URL.
 
 The Contentful loader, `ModuleRenderer` dispatcher, dynamic route,
 remote image domains, `@content-loaders` alias, and Contentful-only
-dependencies were removed. Integrity is enforced by `pnpm verify`
-(`verify:content`, `verify:assets`, `verify:dist`, plus fixture
-comparison against `tests/fixtures/cutover/pages/`), run in PR CI and on
-both Netlify and Cloudflare before publishing.
+dependencies were removed. Current integrity is enforced by the
+invariant-based `pnpm verify` aggregate, run locally, in PR CI, and on
+both Netlify and Cloudflare before publishing. The historical
+`compare:pages` and `compare:legal` commands remain optional diagnostics
+outside that gate.
 
 ## Consequences
 
 - A clean checkout builds without `.env`, Contentful credentials, or
   network access to Contentful or its asset CDN after dependencies are
   installed.
-- Future content changes are reviewed Git changes that must update the
-  applicable regression expectations in the same pull request.
-  Generated output never regenerates its own expected fixture silently.
-- The frozen capture under `tests/fixtures/cutover/` is migration
-  provenance and the cutover integrity oracle; `tests/fixtures/live/`
-  remains a labeled historical Gatsby fixture.
+- Future content changes are reviewed Git changes. Objective source,
+  asset, build, test, and distribution invariants are automated; wording,
+  legal accuracy, image choice, and visual results require human review.
+- The frozen capture under `tests/fixtures/cutover/` is immutable
+  migration history, not the steady-state integrity oracle.
+  `tests/fixtures/live/` remains labeled historical Gatsby output.
+  Historical comparators may diagnose differences but do not gate
+  intentional content changes.
+- The cutover provenance still records `frozen-source vs production` as
+  `not verified`. This ADR does not claim that unresolved reconciliation
+  was performed.
 - ADR 02 and ADR 03 are superseded (no Contentful loader, no loader
   alias). The remote-Contentful-source portion of ADR 05
   (image_strategy) is superseded; its Astro image-optimization decision

@@ -5,6 +5,16 @@
 > after the migration PR (Tasks 1–11) is merged. Steps use checkbox
 > (`- [ ]`) syntax for tracking.
 
+## Historical status
+
+This runbook is a historical cutover record. Its original commands and
+checklists are preserved below; steps without contemporaneous evidence must
+not be marked complete retroactively. The immutable cutover provenance still
+records `frozen-source vs production` reconciliation as `not verified`.
+
+For current procedures, follow `docs/content-authoring.md` and ADR 09
+(`docs/adrs/adr_09_steady_state_content_verification.md`).
+
 **Goal:** Cut production traffic from the Contentful-backed build to the
 local-content build, verify it, retain rollback capability for 14 days,
 then retire Contentful.
