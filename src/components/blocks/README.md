@@ -38,9 +38,13 @@ priority because it is the page's primary image.
 `dark` both default to `false`.
 
 ```mdx
-<Section>## Heading
+<Section>
 
-Paragraph.</Section>
+## Heading
+
+Paragraph.
+
+</Section>
 ```
 
 ```ts
@@ -57,9 +61,13 @@ Use `<Section fullWidth dark>` to enable both variants.
 `Aside` accepts no props and renders its MDX children through the default slot.
 
 ```mdx
-<Aside>### Heading
+<Aside>
 
-Paragraph.</Aside>
+### Heading
+
+Paragraph.
+
+</Aside>
 ```
 
 ## Quote
