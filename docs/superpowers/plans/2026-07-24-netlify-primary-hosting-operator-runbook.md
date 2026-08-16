@@ -11,8 +11,8 @@
 `www.rhode-medizin.de`, with Cloudflare Pages retained as a dormant fallback.
 
 **Prerequisite:** `netlify.toml` and `docs/adrs/adr_07_netlify.md` are
-committed. The Astro static build is verified locally (`pnpm build` succeeds,
-`dist/` produced).
+committed. The Astro static build is verified locally (`pnpm verify` succeeds
+and produces `dist/`).
 
 **Architecture:** The Astro static build (`astro build` → `dist/`) is
 host-agnostic. Only hosting and DNS configuration change; no code or build
@@ -26,13 +26,19 @@ changes. DNS stays at the existing registrar.
 - No changes to `astro.config.mjs`, `package.json`, or any `.astro`/`.ts`
   source.
 - Build command is identical on both platforms:
-  `pnpm install --frozen-lockfile && pnpm build`; publish directory `dist`.
-- No Contentful credentials are required. Content is version-controlled
-  in the repository.
-- `NODE_VERSION` is `22`.
+  `pnpm install --frozen-lockfile && pnpm verify`; publish directory `dist`.
+  The aggregate performs the production build and produces `dist/`; do not
+  configure a second build step.
+- No environment variables are required. Content is version-controlled in the
+  repository.
+- Node version is `22` on both hosts.
+- GitHub Actions runs `pnpm verify` for pull requests targeting `master` and
+  pushes to `master`.
 - DNS stays at the registrar; do not transfer to Netlify DNS or Cloudflare
   DNS.
-- Secrets are set in the Netlify dashboard, never committed.
+- Cloudflare's build command is a Pages dashboard setting. Do not add it to
+  `wrangler.jsonc`; Wrangler retains only the deployment output setting
+  `assets.directory: ./dist`.
 
 See `docs/adrs/adr_07_netlify.md` for the decision and `netlify.toml` for the
 build configuration. See
@@ -43,7 +49,7 @@ for the local-content cutover and Contentful retirement runbook.
 
 - Netlify account with access to the `rhode-medizin` site.
 - Registrar access for `rhode-medizin.de` (DNS stays here — do not transfer).
-- Cloudflare Pages project still configured (builds on git push).
+- Cloudflare Pages project still connected to GitHub as a fallback.
 - Local checkout for parity checks (`pnpm verify`).
 
 ## 1. Netlify site setup
@@ -51,12 +57,12 @@ for the local-content cutover and Contentful retirement runbook.
 1. Netlify → Sites → Add site → Import an existing project → connect the
    GitHub repo.
 2. Confirm the build picks up `netlify.toml` (deploy log shows build command
-   `pnpm install --frozen-lockfile && pnpm build`, publish directory `dist`,
+   `pnpm install --frozen-lockfile && pnpm verify`, publish directory `dist`,
    `NODE_VERSION` `22`).
-3. No environment variables are required for content. Do not set
-   Contentful credentials.
+3. Confirm no environment variables are configured.
 4. Trigger a build (Netlify → Deploys → Trigger deploy). Confirm it succeeds
-   and `dist/` is published.
+   and the `dist/` produced by `pnpm verify` is published without a second
+   build.
 
 ## 2. DNS and TLS cutover
 
@@ -81,18 +87,21 @@ Cloudflare.
 ## 3. Content rebuilds
 
 Content edits are Git changes; pushing to `master` triggers a Netlify
-rebuild via git integration. No Contentful webhook is configured. If a
-manual rebuild is needed, trigger it from the Netlify dashboard or via
-git push.
+deploy through its GitHub integration. GitHub Actions also runs the aggregate
+for pull requests targeting `master` and pushes to `master`. No Contentful
+webhook is configured. If a manual rebuild is needed, trigger it from the
+Netlify dashboard or via git push.
 
 ## 4. Emergency revert to Cloudflare Pages
 
-Cloudflare Pages keeps building on every git push; the `*.pages.dev` URL
-remains functional.
+Cloudflare Pages remains connected to GitHub; the `*.pages.dev` URL remains
+functional.
 
-1. Before repointing DNS, run a fresh Cloudflare build and confirm it
-   succeeds. Run `pnpm compare:pages` against the Cloudflare URL if parity
-   is in doubt.
+1. Confirm the Cloudflare Pages dashboard uses Node 22, no environment
+   variables, publish directory `dist`, and build command
+   `pnpm install --frozen-lockfile && pnpm verify`. Trigger a fresh build and
+   confirm it publishes the generated `dist/` without a second build. Run
+   `pnpm compare:pages` against the Cloudflare URL if parity is in doubt.
 2. At the registrar, repoint:
    - Apex `rhode-medizin.de`: ALIAS/ANAME → Cloudflare Pages apex target.
    - `www.rhode-medizin.de`: CNAME → Cloudflare Pages `www` target.
