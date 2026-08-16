@@ -29,9 +29,9 @@ changes. DNS stays at the existing registrar.
   `pnpm install --frozen-lockfile && pnpm verify`; publish directory `dist`.
   The aggregate performs the production build and produces `dist/`; do not
   configure a second build step.
-- No environment variables are required. Content is version-controlled in the
-  repository.
-- Node version is `22` on both hosts.
+- No application or content environment variables are required. Content is
+  version-controlled in the repository.
+- The required build-runtime setting is Node version `22` on both hosts.
 - GitHub Actions runs `pnpm verify` for pull requests targeting `master` and
   pushes to `master`.
 - DNS stays at the registrar; do not transfer to Netlify DNS or Cloudflare
@@ -59,7 +59,8 @@ for the local-content cutover and Contentful retirement runbook.
 2. Confirm the build picks up `netlify.toml` (deploy log shows build command
    `pnpm install --frozen-lockfile && pnpm verify`, publish directory `dist`,
    `NODE_VERSION` `22`).
-3. Confirm no environment variables are configured.
+3. Confirm `NODE_VERSION` is `22` and no application or content environment
+   variables are configured.
 4. Trigger a build (Netlify → Deploys → Trigger deploy). Confirm it succeeds
    and the `dist/` produced by `pnpm verify` is published without a second
    build.
@@ -97,8 +98,9 @@ Netlify dashboard or via git push.
 Cloudflare Pages remains connected to GitHub; the `*.pages.dev` URL remains
 functional.
 
-1. Confirm the Cloudflare Pages dashboard uses Node 22, no environment
-   variables, publish directory `dist`, and build command
+1. Confirm the Cloudflare Pages dashboard uses the required Node 22 build
+   runtime, no application or content environment variables, publish directory
+   `dist`, and build command
    `pnpm install --frozen-lockfile && pnpm verify`. Trigger a fresh build and
    confirm it publishes the generated `dist/` without a second build. Run
    `pnpm compare:pages` against the Cloudflare URL if parity is in doubt.

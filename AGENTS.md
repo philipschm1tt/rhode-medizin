@@ -21,9 +21,9 @@ Run `pnpm verify` before considering work done. The build also runs `astro check
 
 ## Environment
 
-No environment variables are required. The build uses local content under
-`src/content/`, `src/pages/*.mdx`, and `src/assets/content/`. The gitignored
-`.env` file is no longer read.
+No application or content environment variables are required. The build uses
+local content under `src/content/`, `src/pages/*.mdx`, and
+`src/assets/content/`. The gitignored `.env` file is no longer read.
 
 ## Content authoring
 
@@ -80,8 +80,8 @@ requirements.
 
 ## Deploy
 
-Deployed to Netlify as a fully static build (`astro build` → `dist/`), no SSR adapter — fully static, cookie-free, no service worker. Build config is committed in `netlify.toml`: build command `pnpm install --frozen-lockfile && pnpm verify`, publish directory `dist`, `NODE_VERSION` `22`, and no environment variables. The aggregate produces `dist/`, which Netlify publishes without a second build. Content edits are Git changes; pushing to `master` triggers a Netlify deploy through its GitHub integration. GitHub Actions runs `pnpm verify` for pull requests targeting `master` and pushes to `master`. See `docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md` for the cutover/retirement operator runbook and `docs/adrs/adr_08_local_content.md` for the decision.
+Deployed to Netlify as a fully static build (`astro build` → `dist/`), no SSR adapter — fully static, cookie-free, no service worker. Build config is committed in `netlify.toml`: build command `pnpm install --frozen-lockfile && pnpm verify`, publish directory `dist`, and required build-runtime setting `NODE_VERSION` `22`; no application or content environment variables are required. The aggregate produces `dist/`, which Netlify publishes without a second build. Content edits are Git changes; pushing to `master` triggers a Netlify deploy through its GitHub integration. GitHub Actions runs `pnpm verify` for pull requests targeting `master` and pushes to `master`. See `docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md` for the cutover/retirement operator runbook and `docs/adrs/adr_08_local_content.md` for the decision.
 
-Cloudflare Pages remains configured as a dormant fallback through its GitHub integration. Its Pages dashboard uses the same build command, Node 22, `dist` publish directory, and no environment variables; no second build runs. The `*.pages.dev` URL stays functional for emergency reversion. See `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic), `docs/adrs/adr_07_netlify.md`, and `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md`.
+Cloudflare Pages remains configured as a dormant fallback through its GitHub integration. Its Pages dashboard uses the same build command, required Node 22 build runtime, `dist` publish directory, and no application or content environment variables; no second build runs. The `*.pages.dev` URL stays functional for emergency reversion. See `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic), `docs/adrs/adr_07_netlify.md`, and `docs/superpowers/plans/2026-07-24-netlify-primary-hosting-operator-runbook.md`.
 
 Wrangler does not configure the Cloudflare Pages build command; `wrangler.jsonc` retains only the deployment output setting `assets.directory: ./dist`.
