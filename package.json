@@ -26,7 +26,7 @@
     "verify:assets": "node scripts/verify-assets.mjs",
     "verify:dist": "node scripts/verify-dist.mjs",
     "verify": "pnpm lint && pnpm verify:content && pnpm verify:assets && pnpm build && pnpm compare:legal && pnpm compare:pages && pnpm verify:dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test tests/verifiers/*.test.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -35,7 +35,8 @@
     "diff": "^9.0.0",
     "prettier": "^3.9.4",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "yaml": "^2.9.0"
   },
   "repository": {
     "type": "git",
