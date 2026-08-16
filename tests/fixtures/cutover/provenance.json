@@ -29,7 +29,15 @@
     {
       "check": "markdown processor",
       "status": "changed",
-      "notes": "Satteri with gfm: false, smartPunctuation: false replaces the old remark-parse/remark-rehype pipeline. Legal prose is pre-rendered to HTML fragments under src/content/prose/ and injected via set:html to avoid Prettier reflowing frozen text."
+      "notes": "Satteri with gfm: false, smartPunctuation: false replaces the old remark-parse/remark-rehype pipeline. Page-specific prose is inlined as Markdown in each .mdx page; explicit HTML is used only where Markdown would change the frozen DOM (the homepage service heading). The earlier implementation pre-rendered prose to HTML fragments under src/content/prose/ and injected via set:html to avoid Prettier reflowing frozen text; that detour was reverted because it violated the editing-experience intent of the local-content spec. Prettier reflows the inline Markdown; the fixture comparators confirm parity."
     }
-  ]
+  ],
+  "proseNormalization": {
+    "appliedAt": "<ISO 8601 UTC of Task 3 commit>",
+    "appliedInCommit": "<full SHA of Task 3 commit>",
+    "files": ["src/pages/imprint.mdx"],
+    "transformation": "Setext headings rewritten level-preserving to ATX",
+    "justification": "ATX is friendlier to edit; rendered DOM is identical to the frozen fixture.",
+    "notNormalized": ["src/pages/data-policy.mdx", "src/pages/index.mdx"]
+  }
 }
