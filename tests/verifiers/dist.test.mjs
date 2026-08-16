@@ -514,6 +514,22 @@ test('rejects a missing local srcset candidate', async () => {
   }, 'homepage source srcset candidate file is missing')
 })
 
+for (const type of ['image/avif', 'image/webp']) {
+  test(`rejects an existing wrong-width same-stem ${type} candidate`, async () => {
+    await assertDiagnostic((root) => {
+      const path = join(root, 'dist/index.html')
+      const $ = cheerio.load(readFileSync(path, 'utf8'))
+      const source = $(`.hero-area source[type="${type}"]`)
+      const candidates = source.attr('srcset').split(',')
+      const wrongUrl = candidates[1].trim().split(/\s+/)[0]
+      const descriptor = candidates[0].trim().split(/\s+/)[1]
+      candidates[0] = `${wrongUrl} ${descriptor}`
+      source.attr('srcset', candidates.join(','))
+      writeFileSync(path, $.html())
+    }, `homepage hero ${type} srcset candidate 1 width expected 480`)
+  })
+}
+
 test('rejects a social image whose bytes differ from the manifest hero', async () => {
   await assertDiagnostic((root) => {
     const html = readFileSync(join(root, 'dist/index.html'), 'utf8')

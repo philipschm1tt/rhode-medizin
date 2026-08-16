@@ -140,12 +140,112 @@ const transformedImageDigest = async (source, output, quality) => {
     withoutEnlargement: true,
     kernel: 'lanczos3',
   })
-  transform = quality
-    ? transform.toFormat(metadata.format, { quality })
-    : transform.toFormat(metadata.format)
+  if (metadata.format === 'heif' && metadata.compression === 'av1') {
+    transform = quality ? transform.avif({ quality }) : transform.avif()
+  } else {
+    transform = quality
+      ? transform.toFormat(metadata.format, { quality })
+      : transform.toFormat(metadata.format)
+  }
   const digest = sha256(await transform.toBuffer())
   expectedImageDigests.set(key, digest)
   return digest
+}
+
+const responsiveCandidates = ($, image) => {
+  const candidates = []
+  const elements = image.parent().is('picture')
+    ? image.parent().find('source[srcset], img[srcset]').toArray()
+    : image.is('[srcset]')
+      ? [image.get(0)]
+      : []
+
+  for (const element of elements) {
+    const candidateSet = $(element).attr('srcset') ?? ''
+    const type = element.tagName === 'source' ? $(element).attr('type') : null
+    for (const [index, candidate] of candidateSet.split(',').entries()) {
+      const [url, descriptor] = candidate.trim().split(/\s+/)
+      if (url) candidates.push({ url, descriptor, type, index: index + 1 })
+    }
+  }
+  return candidates
+}
+
+const checkDeclaredResponsiveImages = async (
+  root,
+  errors,
+  $,
+  image,
+  label,
+  source,
+  quality
+) => {
+  const sourcePath = resolve(root, source)
+  if (!existsSync(sourcePath)) return
+  let sourceMetadata
+  try {
+    sourceMetadata = await sharp(sourcePath).metadata()
+  } catch {
+    return
+  }
+  const sourceWidth = sourceMetadata.autoOrient?.width ?? sourceMetadata.width
+  const sourceHeight = sourceMetadata.autoOrient?.height ?? sourceMetadata.height
+  const fallback = builtPath(root, image.attr('src'))
+  let fallbackFormat = fallback && existsSync(fallback)
+    ? (await sharp(fallback).metadata()).mediaType
+    : null
+  if (!fallbackFormat) {
+    const fallbackCandidate = responsiveCandidates($, image).find(
+      (candidate) => !candidate.type
+    )
+    const candidatePath = builtPath(root, fallbackCandidate?.url)
+    if (candidatePath && existsSync(candidatePath))
+      fallbackFormat = (await sharp(candidatePath).metadata()).mediaType
+  }
+
+  await Promise.all(
+    responsiveCandidates($, image).map(async (candidate) => {
+      const candidateLabel = `${label} ${candidate.type ?? fallbackFormat} srcset candidate ${candidate.index}`
+      const output = builtPath(root, candidate.url)
+      if (!output || !existsSync(output)) return
+      const width = Number.parseInt(candidate.descriptor, 10)
+      if (!Number.isInteger(width) || !candidate.descriptor.endsWith('w')) {
+        errors.push(`${candidateLabel} must use a width descriptor`)
+        return
+      }
+      let metadata
+      try {
+        metadata = await sharp(output).metadata()
+      } catch (error) {
+        errors.push(`${candidateLabel} cannot be decoded: ${error.message}`)
+        return
+      }
+      if (metadata.width !== width)
+        errors.push(
+          `${candidateLabel} width expected ${width}, got ${metadata.width ?? '<missing>'}`
+        )
+      const expectedType = candidate.type ?? fallbackFormat
+      if (metadata.mediaType !== expectedType)
+        errors.push(
+          `${candidateLabel} format expected ${expectedType}, got ${metadata.mediaType ?? '<missing>'}`
+        )
+      const expectedHeight = Math.round(
+        sourceHeight * (Math.min(width, sourceWidth) / sourceWidth)
+      )
+      if (metadata.height !== expectedHeight)
+        errors.push(
+          `${candidateLabel} height expected ${expectedHeight}, got ${metadata.height ?? '<missing>'}`
+        )
+      await checkDeclaredImage(
+        root,
+        errors,
+        candidateLabel,
+        candidate.url,
+        source,
+        quality
+      )
+    })
+  )
 }
 
 const checkDeclaredImage = async (
@@ -201,6 +301,14 @@ const checkOrderedImages = async (
         errors,
         `${label} image ${index + 1}`,
         image.attr('src'),
+        source
+      )
+      await checkDeclaredResponsiveImages(
+        root,
+        errors,
+        $,
+        image,
+        `${label} image ${index + 1}`,
         source
       )
       if (image.attr('loading') !== 'lazy')
@@ -451,14 +559,31 @@ export const verifyDist = async (root = process.cwd()) => {
 
     checkImageFile(root, errors, 'homepage hero src', hero.attr('src'))
     if (heroRecord?.image)
-      await checkDeclaredImage(
-        root,
-        errors,
-        'homepage hero image',
-        hero.attr('src'),
-        resolveContentImage('src/content/homepage/hero.yaml', heroRecord.image),
-        70
-      )
+      await Promise.all([
+        checkDeclaredImage(
+          root,
+          errors,
+          'homepage hero image',
+          hero.attr('src'),
+          resolveContentImage(
+            'src/content/homepage/hero.yaml',
+            heroRecord.image
+          ),
+          70
+        ),
+        checkDeclaredResponsiveImages(
+          root,
+          errors,
+          homepage,
+          hero,
+          'homepage hero',
+          resolveContentImage(
+            'src/content/homepage/hero.yaml',
+            heroRecord.image
+          ),
+          70
+        ),
+      ])
 
     const employees = sourceRecords(root, 'src/content/employees', errors)
     const products = sourceRecords(root, 'src/content/product-groups', errors)
