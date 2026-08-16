@@ -115,6 +115,32 @@ test('rejects an asset ID changed independently of its photo', async () => {
   )
 })
 
+test('accumulates identity mismatch and alt-policy diagnostics', async () => {
+  const { errors } = await verifyCopy((root) => {
+    const path = 'src/content/product-groups/rehabereich.yaml'
+    replaceInFile(
+      root,
+      path,
+      'assetId: product-rehabereich',
+      'assetId: product-motorensysteme'
+    )
+    replaceInFile(root, path, "alt: ''", 'alt: Rehabilitation equipment')
+  })
+
+  assert.ok(
+    errors.some((error) =>
+      error.includes('assetId and photo identify different assets')
+    ),
+    errors.join('\n')
+  )
+  assert.ok(
+    errors.some((error) =>
+      error.includes('decorative asset requires empty alt')
+    ),
+    errors.join('\n')
+  )
+})
+
 test('rejects a photo changed independently of its asset ID', async () => {
   await assertDiagnostic(
     (root) =>

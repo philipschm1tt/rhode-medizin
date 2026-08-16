@@ -195,6 +195,8 @@ export const verifyAssets = async (root = process.cwd()) => {
       }
       if (idAsset && pathAsset && idAsset === pathAsset) {
         referenced.add(idAsset)
+      }
+      if (idAsset) {
         if (idAsset.alt?.policy === 'decorative' && usage.alt !== '') {
           errors.push(`${path}: decorative asset requires empty alt`)
         }
