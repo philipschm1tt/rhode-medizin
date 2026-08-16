@@ -76,9 +76,10 @@ may report expected differences after intentional content changes.
 
 ## Deploy
 
-The site is served by Netlify as a fully static build (no SSR adapter).
-Cloudflare Pages remains configured as a dormant fallback. GitHub Actions runs
-`pnpm verify` for pull requests targeting `master` and pushes to `master`. See
+The repository configures Netlify to serve a fully static build (no SSR adapter)
+and Cloudflare Pages as a dormant fallback. GitHub Actions is configured to run
+`pnpm verify` for pull requests targeting `master` and pushes to `master`.
+Remote workflow and hosting verification remains pending. See
 `docs/adrs/adr_07_netlify.md` for the decision and
 `docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md`
 for the cutover/retirement operator runbook.
@@ -95,9 +96,9 @@ Application/content environment variables: none required
 ```
 
 The verification aggregate performs the production build and produces `dist/`,
-which Netlify publishes without running a second build. Content edits are Git
-changes; pushing to `master` triggers a Netlify deploy through its GitHub
-integration.
+which Netlify is intended to publish without running a second build. Content
+edits are Git changes; the configured GitHub integration is intended to deploy
+pushes to `master`.
 
 DNS stays at the registrar (do not transfer to Netlify DNS):
 
@@ -108,13 +109,13 @@ Netlify auto-provisions the TLS certificate via DCV.
 
 ### Cloudflare Pages fallback
 
-The Cloudflare Pages project keeps building through its GitHub integration with
+The Cloudflare Pages project is intended to build through its GitHub integration with
 the same `pnpm install --frozen-lockfile && pnpm verify` command, Node 22,
 publish directory `dist`, and no application or content environment variables.
 Node 22 remains required build-runtime configuration. The command is a
 Cloudflare Pages dashboard setting; `pnpm verify` produces `dist/`, so no
-second build runs. The `*.pages.dev` URL remains functional as an emergency
-fallback. To revert traffic, repoint DNS at the Cloudflare Pages target. See
+second build is intended. Remote verification of the fallback URL remains
+pending. To revert traffic, repoint DNS at the Cloudflare Pages target. See
 `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic)
 and the operator runbook.
 
