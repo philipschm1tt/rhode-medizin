@@ -35,6 +35,13 @@ const mutateAttribute = (root, path, selector, attribute, value) => {
   writeFileSync(absolute, $.html())
 }
 
+const appendElement = (root, path, selector, html) => {
+  const absolute = join(root, path)
+  const $ = cheerio.load(readFileSync(absolute, 'utf8'))
+  $(selector).append(html)
+  writeFileSync(absolute, $.html())
+}
+
 test('accepts the complete built-output baseline', async () => {
   const result = await verifyCopy()
   assert.deepEqual(result.errors, [])
@@ -168,6 +175,19 @@ for (const [
       }
     }, diagnostic)
   })
+
+  test(`rejects a duplicate ${name}`, async () => {
+    await assertDiagnostic(
+      (root) => {
+        const absolute = join(root, path)
+        const $ = cheerio.load(readFileSync(absolute, 'utf8'))
+        const element = $(selector).first()
+        element.after(element.clone())
+        writeFileSync(absolute, $.html())
+      },
+      `${diagnostic.split(' expected')[0]} count expected 1`
+    )
+  })
 }
 
 for (const [route, path] of [
@@ -241,6 +261,25 @@ test('rejects a changed footer legal link', async () => {
   )
 })
 
+for (const [form, href] of [
+  ['root-relative', '/missing/'],
+  ['path-relative', '../missing/'],
+  ['same-origin absolute', 'https://www.rhode-medizin.de/missing/'],
+]) {
+  test(`rejects a broken ${form} internal link`, async () => {
+    await assertDiagnostic(
+      (root) =>
+        appendElement(
+          root,
+          'dist/imprint/index.html',
+          'body',
+          `<a href="${href}">Missing</a>`
+        ),
+      `imprint link ${href} does not resolve to a built file`
+    )
+  })
+}
+
 test('rejects lazy loading on the hero image', async () => {
   await assertDiagnostic(
     (root) =>
@@ -295,6 +334,40 @@ test('rejects the wrong rendered alt at its ordered position', async () => {
     'homepage employee image 1 alt expected ""'
   )
 })
+
+test('uses the source hero alt as the rendered contract', async () => {
+  const result = await verifyCopy((root) => {
+    replaceInFile(
+      root,
+      'src/content/homepage/hero.yaml',
+      "alt: ''",
+      'alt: Source hero alt'
+    )
+    mutateAttribute(
+      root,
+      'dist/index.html',
+      '.hero-area img',
+      'alt',
+      'Source hero alt'
+    )
+  })
+  assert.deepEqual(result.errors, [])
+})
+
+for (const [kind, selector, expected] of [
+  ['hero', '.hero-area img', 1],
+  ['employee', '.employee-tile img', 5],
+  ['product', '.product-group img', 5],
+]) {
+  test(`rejects an extra rendered ${kind} image`, async () => {
+    await assertDiagnostic((root) => {
+      const path = join(root, 'dist/index.html')
+      const $ = cheerio.load(readFileSync(path, 'utf8'))
+      $(selector).first().after($(selector).first().clone())
+      writeFileSync(path, $.html())
+    }, `homepage ${kind} image count expected ${expected}`)
+  })
+}
 
 test('rejects product images rendered out of source order', async () => {
   await assertDiagnostic((root) => {
@@ -362,6 +435,20 @@ test('rejects different Open Graph and Twitter image URLs', async () => {
   )
 })
 
+for (const [label, selector] of [
+  ['homepage og:image', 'meta[property="og:image"]'],
+  ['homepage twitter:image', 'meta[name="twitter:image"]'],
+]) {
+  test(`rejects a duplicate ${label}`, async () => {
+    await assertDiagnostic((root) => {
+      const path = join(root, 'dist/index.html')
+      const $ = cheerio.load(readFileSync(path, 'utf8'))
+      $(selector).first().after($(selector).first().clone())
+      writeFileSync(path, $.html())
+    }, `${label} count expected 1`)
+  })
+}
+
 test('rejects a missing 404 page', async () => {
   await assertDiagnostic(
     (root) => removePath(root, 'dist/404.html'),
@@ -378,7 +465,7 @@ test('rejects a sitemap missing imprint', async () => {
         '<url><loc>https://www.rhode-medizin.de/imprint/</loc></url>',
         ''
       ),
-    'sitemap routes expected exactly /, /data-policy/, /imprint/'
+    'sitemap URLs expected exactly https://www.rhode-medizin.de/'
   )
 })
 
@@ -391,9 +478,97 @@ test('rejects an extra sitemap route', async () => {
         '</urlset>',
         '<url><loc>https://www.rhode-medizin.de/extra/</loc></url></urlset>'
       ),
-    'sitemap routes expected exactly /, /data-policy/, /imprint/'
+    'sitemap URLs expected exactly https://www.rhode-medizin.de/'
   )
 })
+
+test('rejects sitemap routes with the wrong origin', async () => {
+  await assertDiagnostic(
+    (root) =>
+      replaceInFile(
+        root,
+        'dist/sitemap-0.xml',
+        'https://www.rhode-medizin.de/imprint/',
+        'https://example.com/imprint/'
+      ),
+    'sitemap URLs expected exactly https://www.rhode-medizin.de/'
+  )
+})
+
+test('checks routes across every sitemap URL file', async () => {
+  await assertDiagnostic((root) => {
+    replaceInFile(
+      root,
+      'dist/sitemap-0.xml',
+      '<url><loc>https://www.rhode-medizin.de/imprint/</loc></url>',
+      ''
+    )
+    writeFileSync(
+      join(root, 'dist/sitemap-1.xml'),
+      '<?xml version="1.0"?><urlset><url><loc>https://www.rhode-medizin.de/imprint/</loc></url><url><loc>https://www.rhode-medizin.de/404.html</loc></url></urlset>'
+    )
+  }, 'sitemap URLs expected exactly')
+})
+
+test('rejects 404 and extra routes in secondary sitemap files', async () => {
+  await assertDiagnostic((root) => {
+    writeFileSync(
+      join(root, 'dist/sitemap-1.xml'),
+      '<?xml version="1.0"?><urlset><url><loc>https://www.rhode-medizin.de/404.html</loc></url><url><loc>https://www.rhode-medizin.de/extra/</loc></url></urlset>'
+    )
+  }, 'sitemap URLs expected exactly')
+})
+
+test('accumulates malformed sitemap URLs instead of throwing', async () => {
+  const { errors } = await verifyCopy((root) => {
+    replaceInFile(
+      root,
+      'dist/sitemap-0.xml',
+      'https://www.rhode-medizin.de/imprint/',
+      'not a URL'
+    )
+    removePath(root, 'dist/404.html')
+  })
+  assert.ok(
+    errors.some((error) =>
+      error.includes('dist/sitemap-0.xml: invalid sitemap URL not a URL')
+    ),
+    errors.join('\n')
+  )
+  assert.ok(
+    errors.some((error) => error.includes('404 route missing')),
+    errors.join('\n')
+  )
+})
+
+for (const [state, mutateSource] of [
+  ['missing', (root) => removePath(root, 'src/assets/content/hero-image.jpg')],
+  [
+    'unreadable',
+    (root) =>
+      writeFileSync(
+        join(root, 'src/assets/content/hero-image.jpg'),
+        'invalid image'
+      ),
+  ],
+]) {
+  test(`accumulates an ${state} hero source diagnostic instead of throwing`, async () => {
+    const { errors } = await verifyCopy((root) => {
+      mutateSource(root)
+      removePath(root, 'dist/404.html')
+    })
+    assert.ok(
+      errors.some((error) =>
+        error.includes('homepage hero source cannot be read')
+      ),
+      errors.join('\n')
+    )
+    assert.ok(
+      errors.some((error) => error.includes('404 route missing')),
+      errors.join('\n')
+    )
+  })
+}
 
 test('rejects Contentful hosts in textual built output', async () => {
   await assertDiagnostic(
@@ -423,7 +598,7 @@ test('accumulates independent built-output diagnostics', async () => {
     errors.join('\n')
   )
   assert.ok(
-    errors.some((error) => error.includes('sitemap routes expected')),
+    errors.some((error) => error.includes('sitemap URLs expected')),
     errors.join('\n')
   )
 })

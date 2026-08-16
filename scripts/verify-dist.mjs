@@ -43,6 +43,9 @@ const value = ($, selector, attribute) =>
   attribute ? $(selector).attr(attribute) : $(selector).text().trim()
 
 const expectValue = (errors, $, label, selector, attribute, expected) => {
+  const elements = $(selector)
+  if (elements.length !== 1)
+    errors.push(`${label} count expected 1, got ${elements.length}`)
   const actual = value($, selector, attribute)
   if (actual !== expected)
     errors.push(`${label} expected ${expected}, got ${actual ?? '<missing>'}`)
@@ -105,11 +108,18 @@ const checkResponsiveFiles = (root, errors, $, pageLabel) => {
   })
 }
 
-const checkOrderedImages = (errors, $, selector, label, records) => {
+const checkOrderedImages = (
+  errors,
+  $,
+  selector,
+  label,
+  records,
+  expectedCount
+) => {
   const images = $(selector).toArray()
-  if (images.length !== records.length) {
+  if (images.length !== expectedCount) {
     errors.push(
-      `${label} image count expected ${records.length}, got ${images.length}`
+      `${label} image count expected ${expectedCount}, got ${images.length}`
     )
   }
 
@@ -131,8 +141,15 @@ const checkOrderedImages = (errors, $, selector, label, records) => {
   })
 }
 
-const checkLinks = (root, errors, $, pageLabel) => {
-  expectValue(errors, $, `${pageLabel} header link`, 'header a', 'href', '/')
+const checkLinks = (root, errors, $, pageLabel, pageUrl) => {
+  expectValue(
+    errors,
+    $,
+    `${pageLabel} header link`,
+    'header.header a',
+    'href',
+    '/'
+  )
   expectValue(
     errors,
     $,
@@ -152,8 +169,15 @@ const checkLinks = (root, errors, $, pageLabel) => {
 
   $('a[href]').each((_, element) => {
     const href = $(element).attr('href')
-    if (!href?.startsWith('/')) return
-    const path = builtPath(root, href)
+    if (!href || href.startsWith('#')) return
+    let resolved
+    try {
+      resolved = new URL(href, pageUrl)
+    } catch {
+      return
+    }
+    if (resolved.origin !== origin) return
+    const path = builtPath(root, resolved.href)
     if (!path || !existsSync(path))
       errors.push(`${pageLabel} link ${href} does not resolve to a built file`)
   })
@@ -174,6 +198,13 @@ const checkExactLink = (errors, $, label, expected) => {
 }
 
 const checkSocialImage = async (root, errors, $) => {
+  for (const [label, selector] of [
+    ['homepage og:image', 'meta[property="og:image"]'],
+    ['homepage twitter:image', 'meta[name="twitter:image"]'],
+  ]) {
+    const count = $(selector).length
+    if (count !== 1) errors.push(`${label} count expected 1, got ${count}`)
+  }
   const ogImage = value($, 'meta[property="og:image"]', 'content')
   const twitterImage = value($, 'meta[name="twitter:image"]', 'content')
   if (twitterImage !== ogImage)
@@ -193,9 +224,15 @@ const checkSocialImage = async (root, errors, $) => {
     return
   }
 
-  const expected = await sharp(resolve(root, asset.path))
-    .jpeg({ quality: 80 })
-    .toBuffer()
+  let expected
+  try {
+    expected = await sharp(resolve(root, asset.path))
+      .jpeg({ quality: 80 })
+      .toBuffer()
+  } catch (error) {
+    errors.push(`homepage hero source cannot be read: ${error.message}`)
+    return
+  }
   const actual = readFileSync(socialPath)
   if (sha256(actual) !== sha256(expected))
     errors.push(
@@ -204,20 +241,36 @@ const checkSocialImage = async (root, errors, $) => {
 }
 
 const checkSitemap = (root, errors) => {
-  const path = resolve(root, 'dist/sitemap-0.xml')
-  if (!existsSync(path)) {
-    errors.push('sitemap missing dist/sitemap-0.xml')
+  const paths = listFiles(root, 'dist').filter((path) =>
+    /^dist\/sitemap-\d+\.xml$/.test(path)
+  )
+  if (paths.length === 0) {
+    errors.push('sitemap missing dist/sitemap-N.xml')
     return
   }
-  const $ = cheerio.load(readFileSync(path, 'utf8'), { xmlMode: true })
-  const actual = $('loc')
-    .map((_, element) => new URL($(element).text()).pathname)
-    .get()
-    .sort()
-  const expected = ['/', '/data-policy/', '/imprint/']
+  const actual = []
+  for (const path of paths) {
+    const $ = cheerio.load(readFileSync(resolve(root, path), 'utf8'), {
+      xmlMode: true,
+    })
+    $('loc').each((_, element) => {
+      const text = $(element).text()
+      try {
+        actual.push(new URL(text).toString())
+      } catch {
+        errors.push(`${path}: invalid sitemap URL ${text}`)
+      }
+    })
+  }
+  actual.sort()
+  const expected = [
+    `${origin}/`,
+    `${origin}/data-policy/`,
+    `${origin}/imprint/`,
+  ]
   if (JSON.stringify(actual) !== JSON.stringify(expected))
     errors.push(
-      `sitemap routes expected exactly ${expected.join(', ')}, got ${actual.join(', ')}`
+      `sitemap URLs expected exactly ${expected.join(', ')}, got ${actual.join(', ')}`
     )
 }
 
@@ -253,7 +306,7 @@ export const verifyDist = async (root = process.cwd()) => {
       route.canonical
     )
     if (route.legal) checkLegalMetadataAbsence(errors, $, route.label)
-    checkLinks(root, errors, $, route.label)
+    checkLinks(root, errors, $, route.label, route.canonical)
     checkResponsiveFiles(root, errors, $, route.label)
   }
 
@@ -302,10 +355,16 @@ export const verifyDist = async (root = process.cwd()) => {
     ]
     for (const contract of metadata) expectValue(errors, homepage, ...contract)
 
-    const hero = homepage('.hero-area img').first()
-    if (hero.attr('alt') !== '')
+    const heroImages = homepage('.hero-area img')
+    if (heroImages.length !== 1)
       errors.push(
-        `homepage hero alt expected "", got "${hero.attr('alt') ?? '<missing>'}"`
+        `homepage hero image count expected 1, got ${heroImages.length}`
+      )
+    const hero = heroImages.first()
+    const heroRecord = readYaml(root, 'src/content/homepage/hero.yaml', errors)
+    if (hero.attr('alt') !== heroRecord?.alt)
+      errors.push(
+        `homepage hero alt expected "${heroRecord?.alt ?? '<missing>'}", got "${hero.attr('alt') ?? '<missing>'}"`
       )
     if (hero.attr('loading') !== 'eager')
       errors.push(
@@ -316,7 +375,6 @@ export const verifyDist = async (root = process.cwd()) => {
         `homepage hero fetchpriority expected high, got ${hero.attr('fetchpriority') ?? '<missing>'}`
       )
 
-    const heroRecord = readYaml(root, 'src/content/homepage/hero.yaml', errors)
     if (!hero.attr('src')?.includes(imageStem(heroRecord?.image ?? 'missing')))
       errors.push('homepage hero source does not match source record')
     checkImageFile(root, errors, 'homepage hero src', hero.attr('src'))
@@ -326,14 +384,16 @@ export const verifyDist = async (root = process.cwd()) => {
       homepage,
       '.employee-tile img',
       'homepage employee',
-      sourceRecords(root, 'src/content/employees', errors)
+      sourceRecords(root, 'src/content/employees', errors),
+      5
     )
     checkOrderedImages(
       errors,
       homepage,
       '.product-group img',
       'homepage product',
-      sourceRecords(root, 'src/content/product-groups', errors)
+      sourceRecords(root, 'src/content/product-groups', errors),
+      5
     )
     await checkSocialImage(root, errors, homepage)
   }
@@ -369,7 +429,7 @@ export const verifyDist = async (root = process.cwd()) => {
     const notFound = cheerio.load(readFileSync(notFoundPath, 'utf8'))
     if (notFound('link[rel="canonical"]').length)
       errors.push('404 canonical metadata must be absent')
-    checkLinks(root, errors, notFound, '404')
+    checkLinks(root, errors, notFound, '404', `${origin}/404.html`)
     checkResponsiveFiles(root, errors, notFound, '404')
   }
 
