@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdirSync, renameSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
 import { verifyContent } from '../../scripts/verify-content.mjs'
@@ -37,7 +37,7 @@ const cases = [
   [
     'empty example',
     'src/content/product-groups/motorensysteme.yaml',
-    '  - Elan 4',
+    '  - Elan 4 – elektrisches System für die Neuro- und Wirbelsäulenchirurgie',
     "  - ''",
     'examples[0] must be non-empty',
   ],
@@ -82,6 +82,28 @@ for (const [name, path, from, to, diagnostic] of cases) {
     )
   })
 }
+
+test('rejects a null collection record as a non-mapping', async () => {
+  const path = 'src/content/employees/werner-schmitt.yaml'
+  const { errors } = await verifyCopy((root) => {
+    writeFileSync(join(root, path), 'null\n')
+  })
+  assert.ok(
+    errors.some(
+      (error) =>
+        error.includes(path) && error.includes('record must be a mapping')
+    ),
+    errors.join('\n')
+  )
+})
+
+test('passes verifyContent directly to runCli', () => {
+  const source = readFileSync(
+    join(import.meta.dirname, '../../scripts/verify-content.mjs'),
+    'utf8'
+  )
+  assert.match(source, /runCli\('verify:content', verifyContent\)/)
+})
 
 test('reports a missing expected route', async () => {
   const { errors } = await verifyCopy((root) =>

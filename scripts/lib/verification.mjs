@@ -7,12 +7,14 @@ import yaml from 'yaml'
 export const readText = (root, path) =>
   readFileSync(resolve(root, path), 'utf8')
 
+export const READ_YAML_ERROR = Symbol('READ_YAML_ERROR')
+
 export const readYaml = (root, path, errors) => {
   try {
     return yaml.parse(readText(root, path))
   } catch (error) {
     errors.push(`${toPosix(path)}: invalid YAML: ${error.message}`)
-    return null
+    return READ_YAML_ERROR
   }
 }
 
@@ -54,21 +56,24 @@ export const scanActiveSources = (root) => {
   ]
 
   return paths.flatMap((path) =>
-    statSync(resolve(root, path)).isDirectory() ? listFiles(root, path) : path,
+    statSync(resolve(root, path)).isDirectory() ? listFiles(root, path) : path
   )
 }
 
 export const isDirectExecution = (url) =>
   Boolean(
-    process.argv[1] &&
-      pathToFileURL(resolve(process.argv[1])).href === url,
+    process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === url
   )
 
 export const runCli = async (label, verify) => {
   try {
-    const errors = await verify()
+    const { errors, summary } = await verify()
     for (const error of errors) console.error(error)
-    if (errors.length > 0) process.exitCode = 1
+    if (errors.length > 0) {
+      process.exitCode = 1
+    } else if (summary) {
+      console.log(`${label}: ok (${summary})`)
+    }
   } catch (error) {
     console.error(`${label}: ${error.message}`)
     process.exitCode = 1
