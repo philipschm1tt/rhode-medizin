@@ -154,6 +154,34 @@ test('rejects a photo changed independently of its asset ID', async () => {
   )
 })
 
+test('rejects a usage with a missing photo field', async () => {
+  const path = 'src/content/employees/gerhard-gruber.yaml'
+  await assertDiagnostic(
+    (root) =>
+      replaceInFile(
+        root,
+        path,
+        'photo: ../../assets/content/mitarbeiter-icon.webp\n',
+        ''
+      ),
+    `${path}: photo must be a non-empty string`
+  )
+})
+
+test('rejects a usage with a non-string image field', async () => {
+  const path = 'src/content/homepage/hero.yaml'
+  await assertDiagnostic(
+    (root) =>
+      replaceInFile(
+        root,
+        path,
+        'image: ../../assets/content/hero-image.jpg',
+        'image: [../../assets/content/hero-image.jpg]'
+      ),
+    `${path}: image must be a non-empty string`
+  )
+})
+
 test('rejects non-empty alt text for decorative usage', async () => {
   await assertDiagnostic(
     (root) =>
