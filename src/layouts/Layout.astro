@@ -7,9 +7,10 @@ import Footer from '../components/Footer.astro'
 interface Props {
   title?: string
   seo?: SEOProps
+  canonical?: string
 }
 
-const { title = 'Rhode Medizintechnik', seo } = Astro.props
+const { title = 'Rhode Medizintechnik', seo, canonical } = Astro.props
 ---
 
 <!doctype html>
@@ -17,6 +18,7 @@ const { title = 'Rhode Medizintechnik', seo } = Astro.props
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {canonical && <link rel="canonical" href={canonical} />}
     {
       seo ? (
         <SEO
