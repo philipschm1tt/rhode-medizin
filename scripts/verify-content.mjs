@@ -16,12 +16,12 @@ const COLLECTIONS = [
   {
     dir: 'src/content/employees',
     label: 'employees',
-    strings: ['name', 'photo'],
+    strings: ['name', 'photo', 'assetId'],
   },
   {
     dir: 'src/content/product-groups',
     label: 'product-groups',
-    strings: ['name', 'photo'],
+    strings: ['name', 'photo', 'assetId'],
   },
 ]
 const FORBIDDEN = [

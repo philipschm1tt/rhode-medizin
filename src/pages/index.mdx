@@ -1,6 +1,5 @@
-import { getCollection } from 'astro:content'
+import { getCollection, getEntry } from 'astro:content'
 import PageLayout from '../layouts/PageLayout.astro'
-import heroImage from '../assets/content/hero-image.jpg'
 import Hero from '../components/blocks/Hero.astro'
 import Section from '../components/blocks/Section.astro'
 import Aside from '../components/blocks/Aside.astro'
@@ -8,6 +7,12 @@ import Quote from '../components/blocks/Quote.astro'
 import Tiles from '../components/blocks/Tiles.astro'
 import EmployeeTile from '../components/blocks/EmployeeTile.astro'
 import ProductGroup from '../components/blocks/ProductGroup.astro'
+
+export const hero =
+  (await getEntry('homepageHero', 'hero'))?.data ??
+  (() => {
+    throw new Error('Homepage hero content is missing')
+  })()
 
 export const employees = (await getCollection('employees'))
   .sort((a, b) => a.data.order - b.data.order)
@@ -31,14 +36,14 @@ export const productGroups = (await getCollection('productGroups'))
 <PageLayout
   title="Rhode Medizintechnik – Heinrich Rhode GmbH"
   description="Heinrich Rhode GmbH – Medizintechnik für Praxen und Kliniken. Beratung, Service und Produkte aus einer Hand."
-  socialImage={heroImage}
+  socialImage={hero.image}
 >
   <Hero
     headline="Medizintechnik mit Tradition"
     subhead="Medizinische Geräte, Instrumente und Mobilar für Ärzte und Krankenhäuser mit Liefer- und Aufstellservice in Oberbayern."
     cta="Jetzt Kontakt aufnehmen"
-    image={heroImage}
-    alt=""
+    image={hero.image}
+    alt={hero.alt}
   />
 
   <Section>
