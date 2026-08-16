@@ -76,8 +76,9 @@ may report expected differences after intentional content changes.
 ## Deploy
 
 The site is served by Netlify as a fully static build (no SSR adapter).
-Cloudflare Pages remains configured and builds on every git push as a
-dormant fallback. See `docs/adrs/adr_07_netlify.md` for the decision and
+Cloudflare Pages remains configured as a dormant fallback. GitHub Actions runs
+`pnpm verify` for pull requests targeting `master` and pushes to `master`. See
+`docs/adrs/adr_07_netlify.md` for the decision and
 `docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md`
 for the cutover/retirement operator runbook.
 
@@ -86,14 +87,16 @@ for the cutover/retirement operator runbook.
 Build configuration is committed in `netlify.toml`:
 
 ```text
-Build command: pnpm install --frozen-lockfile && pnpm build
+Build command: pnpm install --frozen-lockfile && pnpm verify
 Publish directory: dist
 NODE_VERSION: 22
 Environment variables: none required
 ```
 
-Content edits are Git changes; pushing to `master` triggers a Netlify
-rebuild.
+The verification aggregate performs the production build and produces `dist/`,
+which Netlify publishes without running a second build. Content edits are Git
+changes; pushing to `master` triggers a Netlify deploy through its GitHub
+integration.
 
 DNS stays at the registrar (do not transfer to Netlify DNS):
 
@@ -104,12 +107,14 @@ Netlify auto-provisions the TLS certificate via DCV.
 
 ### Cloudflare Pages fallback
 
-The Cloudflare Pages project keeps building on every git push with the same
-build command; the `*.pages.dev` URL remains functional as an emergency
-fallback. Both hosts run `pnpm verify` before publishing. To revert
-traffic, repoint DNS at the Cloudflare Pages target. See
+The Cloudflare Pages project keeps building through its GitHub integration with
+the same `pnpm install --frozen-lockfile && pnpm verify` command, Node 22,
+publish directory `dist`, and no environment variables. That command is a
+Cloudflare Pages dashboard setting; `pnpm verify` produces `dist/`, so no second
+build runs. The `*.pages.dev` URL remains functional as an emergency fallback.
+To revert traffic, repoint DNS at the Cloudflare Pages target. See
 `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic)
 and the operator runbook.
 
-For Cloudflare deploy pipelines that run `npx wrangler versions upload`,
-`wrangler.jsonc` defines `assets.directory` as `./dist`.
+Wrangler does not configure the Pages build command; `wrangler.jsonc` retains
+only the deployment output setting `assets.directory: ./dist`.
