@@ -26,9 +26,10 @@ retaining Astro's static rendering and image optimization.
 ## Decision
 
 Store page content in file-routed MDX pages (`src/pages/*.mdx`), repeated
-records in two Astro `glob()` content collections (`employees`,
-`productGroups`) as small YAML files, and used images as local binaries
-under `src/assets/content/`. Pages own their data loading explicitly via
+records in two Astro `glob()` content collections (`employees` and
+`productGroups`) as small YAML files, the homepage hero in the single-entry
+`homepageHero` collection, and used images as local binaries under
+`src/assets/content/`. Pages own their data loading explicitly via
 `getCollection` and compose editor-facing blocks from
 `src/components/blocks/`. Page-specific prose is authored as inline
 Markdown in those MDX pages. Explicit HTML is used only where Markdown
