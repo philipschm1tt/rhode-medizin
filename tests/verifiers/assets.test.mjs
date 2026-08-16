@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, symlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import test from 'node:test'
-import { verifyAssets } from '../../scripts/verify-assets.mjs'
+import { sharpMimeType, verifyAssets } from '../../scripts/verify-assets.mjs'
 import { copyPaths, removePath, replaceInFile } from './helpers.mjs'
 
 const manifestPath = 'src/content/assets.yaml'
@@ -31,7 +31,12 @@ test('accepts the operational asset baseline', async () => {
 test('rejects a duplicate manifest ID', async () => {
   await assertDiagnostic(
     (root) =>
-      replaceInFile(root, manifestPath, '  - id: employee-placeholder', '  - id: homepage-hero'),
+      replaceInFile(
+        root,
+        manifestPath,
+        '  - id: employee-placeholder',
+        '  - id: homepage-hero'
+      ),
     'duplicate asset id homepage-hero'
   )
 })
@@ -52,13 +57,10 @@ test('rejects a duplicate manifest path', async () => {
 test('rejects a content image whose manifest record was deleted', async () => {
   await assertDiagnostic((root) => {
     const manifest = readFileSync(join(root, manifestPath), 'utf8')
-    const finalRecord = manifest.slice(manifest.indexOf('  - id: product-rehabereich'))
-    replaceInFile(
-      root,
-      manifestPath,
-      finalRecord,
-      ''
+    const finalRecord = manifest.slice(
+      manifest.indexOf('  - id: product-rehabereich')
     )
+    replaceInFile(root, manifestPath, finalRecord, '')
   }, 'unmanifested content image')
 })
 
@@ -67,6 +69,39 @@ test('rejects an asset file absent from the manifest', async () => {
     const image = readFileSync(join(root, 'src/assets/content/hero-image.jpg'))
     writeFileSync(join(root, 'src/assets/content/unlisted.jpg'), image)
   }, 'unmanifested asset file')
+})
+
+test('rejects a manifest path symlink that escapes the asset directory', async () => {
+  await assertDiagnostic((root) => {
+    const target = join(root, 'outside.jpg')
+    writeFileSync(
+      target,
+      readFileSync(join(root, 'src/assets/content/hero-image.jpg'))
+    )
+    const link = join(root, 'src/assets/content/escaped.jpg')
+    symlinkSync(target, link)
+    replaceInFile(
+      root,
+      manifestPath,
+      'path: src/assets/content/hero-image.jpg',
+      'path: src/assets/content/escaped.jpg'
+    )
+  }, 'path must resolve within src/assets/content')
+})
+
+test('maps common Sharp source formats to MIME types', () => {
+  assert.equal(sharpMimeType({ format: 'avif' }), 'image/avif')
+  assert.equal(
+    sharpMimeType({ format: 'heif', compression: 'av1' }),
+    'image/avif'
+  )
+  assert.equal(
+    sharpMimeType({ format: 'heif', compression: 'hevc' }),
+    'image/heif'
+  )
+  assert.equal(sharpMimeType({ format: 'tiff' }), 'image/tiff')
+  assert.equal(sharpMimeType({ format: 'gif' }), 'image/gif')
+  assert.equal(sharpMimeType({ format: 'svg' }), 'image/svg+xml')
 })
 
 test('rejects an unreferenced manifest asset', async () => {

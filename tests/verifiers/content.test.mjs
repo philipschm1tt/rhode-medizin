@@ -74,6 +74,27 @@ const cases = [
     'Contentful API is forbidden',
   ],
   [
+    'Contentful REST API',
+    'astro.config.mjs',
+    "site: 'https://www.rhode-medizin.de'",
+    "site: 'https://api.contentful.com'",
+    'Contentful API is forbidden',
+  ],
+  [
+    'Contentful GraphQL API',
+    'astro.config.mjs',
+    "site: 'https://www.rhode-medizin.de'",
+    "site: 'https://graphql.contentful.com'",
+    'Contentful API is forbidden',
+  ],
+  [
+    'arbitrary Contentful subdomain',
+    'astro.config.mjs',
+    "site: 'https://www.rhode-medizin.de'",
+    "site: 'https://custom.contentful.com'",
+    'Contentful API is forbidden',
+  ],
+  [
     'Contentful asset host',
     'src/layouts/Layout.astro',
     '<head>',
@@ -81,6 +102,15 @@ const cases = [
     'Contentful asset host is forbidden',
   ],
 ]
+
+test('does not scan frozen historical fixtures for Contentful hosts', async () => {
+  const { errors } = await verifyCopy((root) => {
+    const path = join(root, 'tests/fixtures/cutover/source.txt')
+    mkdirSync(dirname(path), { recursive: true })
+    writeFileSync(path, 'https://api.contentful.com')
+  })
+  assert.deepEqual(errors, [])
+})
 
 for (const [name, path, from, to, diagnostic] of cases) {
   test(`rejects ${name}`, async () => {

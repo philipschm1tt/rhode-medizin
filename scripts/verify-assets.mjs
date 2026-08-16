@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, realpathSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
 import sharp from 'sharp'
 import {
@@ -21,12 +21,20 @@ const CONTENT_SOURCES = [
   ['src/content/homepage', 'image'],
 ]
 const MIME_TYPES = {
+  avif: 'image/avif',
   gif: 'image/gif',
+  heif: 'image/heif',
   jpeg: 'image/jpeg',
   png: 'image/png',
   svg: 'image/svg+xml',
+  tiff: 'image/tiff',
   webp: 'image/webp',
 }
+
+export const sharpMimeType = (metadata) =>
+  metadata.format === 'heif' && metadata.compression === 'av1'
+    ? 'image/avif'
+    : MIME_TYPES[metadata.format]
 
 const isMapping = (value) =>
   value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -78,12 +86,10 @@ const inspectAsset = async (root, asset, index, errors) => {
   if (!isNonEmptyString(asset.path)) return
   const absolutePath = resolve(root, asset.path)
   const assetRoot = resolve(root, ASSET_DIR)
-  if (
-    !(
-      absolutePath.startsWith(`${assetRoot}${sep}`) &&
-      toPosix(relative(root, absolutePath)) === asset.path
-    )
-  ) {
+  if (!(
+    absolutePath.startsWith(`${assetRoot}${sep}`) &&
+    toPosix(relative(root, absolutePath)) === asset.path
+  )) {
     return
   }
   if (!existsSync(absolutePath)) {
@@ -95,19 +101,22 @@ const inspectAsset = async (root, asset, index, errors) => {
   try {
     buffer = readFileSync(absolutePath)
   } catch (error) {
-    errors.push(`${label}: cannot read asset file ${asset.path}: ${error.message}`)
+    errors.push(
+      `${label}: cannot read asset file ${asset.path}: ${error.message}`
+    )
     return
   }
 
   if (sha256(buffer) !== asset.sha256) errors.push(`${label}: sha256 mismatch`)
-  if (buffer.length !== asset.byteSize) errors.push(`${label}: byteSize mismatch`)
+  if (buffer.length !== asset.byteSize)
+    errors.push(`${label}: byteSize mismatch`)
 
   try {
     const metadata = await sharp(buffer).metadata()
     if (metadata.width !== asset.width || metadata.height !== asset.height) {
       errors.push(`${label}: dimensions mismatch`)
     }
-    if (MIME_TYPES[metadata.format] !== asset.mimeType) {
+    if (sharpMimeType(metadata) !== asset.mimeType) {
       errors.push(`${label}: MIME type mismatch`)
     }
   } catch (error) {
@@ -153,6 +162,14 @@ export const verifyAssets = async (root = process.cwd()) => {
             errors.push(
               `${describe(asset, index)}: path must be confined to ${ASSET_DIR}`
             )
+          } else if (existsSync(absolutePath)) {
+            const realAssetRoot = realpathSync(assetRoot)
+            const realAssetPath = realpathSync(absolutePath)
+            if (!realAssetPath.startsWith(`${realAssetRoot}${sep}`)) {
+              errors.push(
+                `${describe(asset, index)}: path must resolve within ${ASSET_DIR}`
+              )
+            }
           }
           if (byPath.has(asset.path)) {
             errors.push(`duplicate asset path ${asset.path}`)
@@ -195,7 +212,9 @@ export const verifyAssets = async (root = process.cwd()) => {
       if (!idAsset)
         errors.push(`${path}: unmanifested asset id ${String(usage.assetId)}`)
       if (idAsset && pathAsset && idAsset !== pathAsset) {
-        errors.push(`${path}: assetId and ${imageField} identify different assets`)
+        errors.push(
+          `${path}: assetId and ${imageField} identify different assets`
+        )
       }
       if (idAsset && pathAsset && idAsset === pathAsset) {
         referenced.add(idAsset)
@@ -216,7 +235,9 @@ export const verifyAssets = async (root = process.cwd()) => {
 
   for (const asset of records) {
     if (!referenced.has(asset))
-      errors.push(`${describe(asset, records.indexOf(asset))} is not referenced`)
+      errors.push(
+        `${describe(asset, records.indexOf(asset))} is not referenced`
+      )
   }
 
   for (const path of listFiles(root, ASSET_DIR)) {

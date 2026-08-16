@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import test from 'node:test'
 import * as cheerioNS from 'cheerio'
+import sharp from 'sharp'
 import { verifyDist } from '../../scripts/verify-dist.mjs'
 import { copyPaths, removePath, replaceInFile } from './helpers.mjs'
 
@@ -11,7 +12,7 @@ const sourcePaths = ['dist', 'src/content', 'src/assets/content']
 
 const verifyCopy = async (mutate) => {
   const root = copyPaths(sourcePaths)
-  mutate?.(root)
+  await mutate?.(root)
   return verifyDist(root)
 }
 
@@ -387,6 +388,55 @@ test('uses the source hero alt as the rendered contract', async () => {
   assert.deepEqual(result.errors, [])
 })
 
+for (const [kind, sourceDir, selector, recordName] of [
+  ['employee', 'employees', '.employee-tile', 'additional-employee'],
+  ['product', 'product-groups', '.product-group', 'additional-product'],
+]) {
+  test(`accepts a legitimate ${kind} source and rendered count increase`, async () => {
+    const result = await verifyCopy((root) => {
+      const sourcePath = join(
+        root,
+        `src/content/${sourceDir}/${recordName}.yaml`
+      )
+      const originalPath = join(
+        root,
+        `src/content/${sourceDir}/${kind === 'employee' ? 'gerhard-gruber' : 'rehabereich'}.yaml`
+      )
+      writeFileSync(
+        sourcePath,
+        readFileSync(originalPath, 'utf8')
+          .replace(/order: 5/, 'order: 6')
+          .replace(/name: .*/, `name: Additional ${kind}`)
+      )
+      const htmlPath = join(root, 'dist/index.html')
+      const $ = cheerio.load(readFileSync(htmlPath, 'utf8'))
+      $(selector).last().parent().after($(selector).last().parent().clone())
+      writeFileSync(htmlPath, $.html())
+    })
+    assert.deepEqual(result.errors, [])
+    assert.match(result.summary, /12 content images/)
+  })
+
+  test(`rejects a ${kind} source count increase missing from output`, async () => {
+    await assertDiagnostic((root) => {
+      const sourcePath = join(
+        root,
+        `src/content/${sourceDir}/${recordName}.yaml`
+      )
+      const originalPath = join(
+        root,
+        `src/content/${sourceDir}/${kind === 'employee' ? 'gerhard-gruber' : 'rehabereich'}.yaml`
+      )
+      writeFileSync(
+        sourcePath,
+        readFileSync(originalPath, 'utf8')
+          .replace(/order: 5/, 'order: 6')
+          .replace(/name: .*/, `name: Additional ${kind}`)
+      )
+    }, `homepage ${kind} image count expected 6, got 5`)
+  })
+}
+
 for (const [kind, selector, expected] of [
   ['hero', '.hero-area img', 1],
   ['employee', '.employee-tile img', 5],
@@ -417,7 +467,29 @@ test('rejects product images rendered out of source order', async () => {
         .replace(second, first)
         .replace('__FIRST__', second)
     )
-  }, 'homepage product image 1 source does not match')
+  }, 'homepage product image 1 bytes do not match its declared source')
+})
+
+test('rejects a same-stem rendered image generated from the wrong source', async () => {
+  await assertDiagnostic(async (root) => {
+    const html = readFileSync(join(root, 'dist/index.html'), 'utf8')
+    const $ = cheerio.load(html)
+    const url = $('.product-group img').first().attr('src')
+    const output = join(root, 'dist', url)
+    const metadata = await sharp(output).metadata()
+    const wrongSource = join(root, 'src/assets/content/motorensysteme.jpg')
+    const replacement = await sharp(wrongSource, { failOn: 'none', pages: -1 })
+      .rotate()
+      .resize({
+        width: metadata.width,
+        height: metadata.height,
+        withoutEnlargement: true,
+        kernel: 'lanczos3',
+      })
+      .toFormat(metadata.format)
+      .toBuffer()
+    writeFileSync(output, replacement)
+  }, 'homepage product image 1 bytes do not match its declared source')
 })
 
 test('rejects a missing local image selected from homepage src', async () => {
@@ -615,6 +687,25 @@ test('rejects Contentful hosts in textual built output', async () => {
     'dist/index.html: Contentful host found in built output'
   )
 })
+
+for (const host of [
+  'api.contentful.com',
+  'graphql.contentful.com',
+  'custom.contentful.com',
+]) {
+  test(`rejects ${host} in textual built output`, async () => {
+    await assertDiagnostic(
+      (root) =>
+        replaceInFile(
+          root,
+          'dist/index.html',
+          '</body>',
+          `<!-- ${host} --></body>`
+        ),
+      'dist/index.html: Contentful host found in built output'
+    )
+  })
+}
 
 test('accumulates independent built-output diagnostics', async () => {
   const { errors } = await verifyCopy((root) => {
