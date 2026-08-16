@@ -7,31 +7,27 @@ interface Props {
   mainHeadline: string
   subHeadline?: string
   callToAction?: string
-  image?: ImageMetadata
-  alt?: string
+  image: ImageMetadata
+  alt: string
 }
 
-const { mainHeadline, subHeadline, callToAction, image, alt = '' } = Astro.props
+const { mainHeadline, subHeadline, callToAction, image, alt } = Astro.props
 ---
 
 <header class="hero-area">
-  {
-    image && (
-      <Picture
-        class="hero-image"
-        src={image}
-        alt={alt}
-        formats={['avif', 'webp']}
-        fallbackFormat="jpeg"
-        widths={[480, 768, 1024, 1366, 1600, 1920]}
-        sizes="(max-width: 1920px) 100vw, 1920px"
-        quality={70}
-        layout="full-width"
-        loading="eager"
-        fetchpriority="high"
-      />
-    )
-  }
+  <Picture
+    class="hero-image"
+    src={image}
+    alt={alt}
+    formats={['avif', 'webp']}
+    fallbackFormat="jpeg"
+    widths={[480, 768, 1024, 1366, 1600, 1920]}
+    sizes="(max-width: 1920px) 100vw, 1920px"
+    quality={70}
+    layout="full-width"
+    loading="eager"
+    fetchpriority="high"
+  />
   <div class="hero-content">
     <div class="overlay">
       <h1>{mainHeadline}</h1>

@@ -6,41 +6,31 @@ import ContentBox from '../ContentBox.astro'
 interface Props {
   name: string
   description?: string
-  examples?: string[]
-  photo?: ImageMetadata
-  alt?: string
+  examples: string[]
+  photo: ImageMetadata
+  alt: string
 }
 
-const { name, description, examples = [], photo, alt = '' } = Astro.props
+const { name, description, examples, photo, alt } = Astro.props
 ---
 
 <section class="product-group">
-  {
-    photo && (
-      <Image
-        class="product-image"
-        src={photo}
-        alt={alt}
-        layout="constrained"
-        sizes="(min-width: 900px) 38vw, 100vw"
-        loading="lazy"
-      />
-    )
-  }
+  <Image
+    class="product-image"
+    src={photo}
+    alt={alt}
+    layout="constrained"
+    sizes="(min-width: 900px) 38vw, 100vw"
+    loading="lazy"
+  />
   <ContentBox class="product-text">
     <header class="product-header">
       <h3>{name}</h3>
     </header>
     {description && <p class="product-description">{description}</p>}
-    {
-      examples.length > 0 && (
-        <ul class="product-examples">
-          {examples.map((example) => (
-            <li>{example}</li>
-          ))}
-        </ul>
-      )
-    }
+    <ul class="product-examples">
+      {examples.map((example) => <li>{example}</li>)}
+    </ul>
   </ContentBox>
 </section>
 

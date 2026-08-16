@@ -5,25 +5,15 @@ import { Image } from 'astro:assets'
 interface Props {
   name: string
   department?: string
-  photo?: ImageMetadata
-  alt?: string
+  photo: ImageMetadata
+  alt: string
 }
 
-const { name, department, photo, alt = '' } = Astro.props
+const { name, department, photo, alt } = Astro.props
 ---
 
 <div class="employee-tile">
-  {
-    photo && (
-      <Image
-        class="photo"
-        src={photo}
-        alt={alt}
-        layout="fixed"
-        loading="lazy"
-      />
-    )
-  }
+  <Image class="photo" src={photo} alt={alt} layout="fixed" loading="lazy" />
   <div class="caption">
     {name}
     <br />
