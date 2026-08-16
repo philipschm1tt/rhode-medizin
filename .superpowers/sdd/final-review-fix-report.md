@@ -34,3 +34,40 @@ All commands used Node.js 22.23.2 through `PATH=/tmp/opencode/node-v22.23.2-linu
 - `astro check` reports 18 existing deprecation hints for `z` imported from `astro:content`; it reports zero errors and zero warnings.
 - Remote GitHub Actions, Netlify, and Cloudflare behavior was not externally verified; documentation now states that limitation.
 - No ADR was added. The fixes tighten the verifier contract already recorded by ADR 09 and correct its delivery wording without introducing a new architecture decision.
+
+## Remaining important findings
+
+Status: DONE
+
+### Finding mappings
+
+1. Responsive candidate identity: `verify-dist` now checks every declared-source `srcset` candidate, including `<picture><source>` and fallback `<img>` sets. Each candidate must have a width descriptor matching its decoded width, the expected source or fallback media type, the expected oriented aspect-ratio height, and bytes matching the declared source transformed at that width, height, format, and quality. AVIF is reconstructed through Sharp's AVIF encoder when metadata reports HEIF with AV1 compression.
+2. Honest delivery state: AGENTS and ADRs 07/08 preserve Netlify as the accepted production target and Cloudflare Pages as the accepted fallback, while describing committed workflow and Netlify gate configuration as requirements. Final remote GitHub Actions runs, host settings, deploy behavior, DNS, TLS, and fallback availability remain explicitly pending external verification.
+
+### TDD evidence
+
+- Red: `node --test --test-name-pattern="wrong-width same-stem" tests/verifiers/dist.test.mjs` failed 2/2 because existing wrong-width same-stem AVIF and WebP candidates were accepted.
+- Green: `node --test --test-name-pattern="complete built-output baseline|wrong-width same-stem|missing local srcset" tests/verifiers/dist.test.mjs` passed 4/4 after responsive identity enforcement.
+
+### Commits
+
+- `c631627` Verify responsive image identities
+- `4248dcd` Clarify pending delivery verification
+
+### Verification
+
+All commands used Node.js 22.23.2 through `PATH=/tmp/opencode/node-v22.23.2-linux-x64/bin:/home/philip/.local/share/pnpm:$PATH`.
+
+- `CI=true pnpm install --frozen-lockfile`: PASS, already up to date.
+- `node --test tests/verifiers/dist.test.mjs`: PASS, 81/81.
+- `pnpm verify`: PASS, including build, 122/122 tests, and built-output verification.
+- `pnpm lint`: PASS.
+- `pnpm compare:pages`: PASS, all three pages match frozen cutover fixtures.
+- `pnpm compare:legal`: PASS, both legal pages match frozen cutover fixtures.
+- `git diff --check`: PASS.
+
+### Concerns
+
+- `astro check` continues to report 18 existing deprecation hints for `z` imported from `astro:content`; it reports zero errors and zero warnings.
+- Remote GitHub Actions, Netlify, and Cloudflare verification remains pending by design and is now stated consistently.
+- No new ADR was added. Responsive identity extends ADR 09's existing verification contract, while ADRs 07/08 were corrected in place without changing their accepted architecture decisions.
