@@ -25,6 +25,29 @@ No environment variables are required. The build uses local content under
 pnpm develop
 ```
 
+## Author content
+
+Follow the [content authoring guide](docs/content-authoring.md) for the complete
+editing and review workflow. Page prose lives in `src/pages/*.mdx`; employee and
+product records live in `src/content/employees/` and
+`src/content/product-groups/`; homepage data lives in `src/content/homepage/`;
+and image files live in `src/assets/content/`.
+
+`src/content/assets.yaml` is the operational image manifest. Collection
+`order` values must remain contiguous from `1`, and every image usage must keep
+its manifest identity, local path, and alt text consistent. Confirm image usage
+rights and record specific provenance in the manifest rather than inferring
+approval from possession of a file.
+
+Preview every changed page at desktop and mobile widths, and obtain human
+review for wording, legal accuracy, image choice, crop, alt semantics, and
+responsive layout. Before opening a pull request, run the complete required
+gate:
+
+```sh
+pnpm verify
+```
+
 ## Build
 
 ```sh
@@ -34,19 +57,21 @@ pnpm build
 Output is written to `dist/`. The build runs `astro check` then
 `astro build` and does not need Contentful credentials or network access.
 
-## Parity checks
+## Verification
 
 ```sh
-pnpm verify              # lint + content + assets + build + parity + dist checks
-pnpm verify:content     # content integrity against frozen capture
-pnpm verify:assets      # asset checksums, dimensions, manifest
-pnpm verify:dist        # built output: routes, metadata, sitemap, no Contentful URLs
-pnpm compare:legal      # legal pages against cutover fixtures
-pnpm compare:pages      # homepage + legal pages against cutover fixtures
+pnpm verify              # lint + content + assets + build + tests + dist checks
+pnpm verify:content      # local source-content invariants
+pnpm verify:assets       # operational asset identity, usage, and policy
+pnpm verify:dist         # deployable output: routes, metadata, links, images, sitemap
+pnpm compare:legal       # optional historical legal-page diagnostic
+pnpm compare:pages       # optional historical homepage + legal-page diagnostic
 ```
 
-Cutover fixtures live under `tests/fixtures/cutover/pages/`. The frozen
-Contentful capture is the migration provenance and integrity oracle.
+The `pnpm verify` aggregate includes `pnpm test` and is snapshot-free. The
+`compare:*` commands compare built pages with frozen cutover fixtures only as
+optional historical diagnostics; they are not part of the required gate and
+may report expected differences after intentional content changes.
 
 ## Deploy
 

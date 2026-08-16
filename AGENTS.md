@@ -7,23 +7,46 @@ as local MDX pages, YAML collections, and image assets — no CMS.
 
 - `pnpm develop` — dev server
 - `pnpm build` — production build to `dist/` (runs `astro check` then `astro build`; no Contentful credentials needed)
-- `pnpm verify` — aggregate: lint + content + assets + build + parity + dist checks
-- `pnpm verify:content` — content integrity against frozen capture
-- `pnpm verify:assets` — asset checksums, dimensions, manifest
-- `pnpm verify:dist` — built output: routes, metadata, sitemap, no Contentful URLs
-- `pnpm compare:legal` — compare built legal pages against cutover fixtures
-- `pnpm compare:pages` — compare homepage + legal pages against cutover fixtures
+- `pnpm verify` — snapshot-free aggregate: lint + content + assets + build + tests + dist checks
+- `pnpm verify:content` — local source-content invariants
+- `pnpm verify:assets` — operational asset identity, usage, and policy
+- `pnpm verify:dist` — deployable output: routes, metadata, links, images, and sitemap
+- `pnpm compare:legal` — optional historical legal-page diagnostic against cutover fixtures
+- `pnpm compare:pages` — optional historical homepage and legal-page diagnostic against cutover fixtures
 - `pnpm format` — prettier write
 - `pnpm lint` — prettier check (no eslint/stylelint after Astro migration)
-- `pnpm test` — no tests configured; do not assume a test runner exists
+- `pnpm test` — Node test suite for verifier behavior; included in `pnpm verify`
 
-Run `lint` before considering work done. The build also runs `astro check` (TypeScript diagnostics for `.astro` and `.ts` files).
+Run `pnpm verify` before considering work done. The build also runs `astro check` (TypeScript diagnostics for `.astro` and `.ts` files). The optional `compare:*` commands are historical diagnostics, not part of the required aggregate, and may differ after intentional content edits.
 
 ## Environment
 
 No environment variables are required. The build uses local content under
 `src/content/`, `src/pages/*.mdx`, and `src/assets/content/`. The gitignored
 `.env` file is no longer read.
+
+## Content authoring
+
+Follow `docs/content-authoring.md` for active editing procedures and review
+requirements.
+
+- Edit page prose in `src/pages/*.mdx`, collection records in
+  `src/content/employees/` and `src/content/product-groups/`, homepage data in
+  `src/content/homepage/`, and image files in `src/assets/content/`.
+- Treat `src/content/assets.yaml` as the operational image manifest. Keep each
+  content image's manifest identity, local path, and alt text consistent with
+  its manifest record.
+- Keep each collection's `order` values contiguous from `1`, without gaps or
+  duplicates.
+- Confirm image usage rights and record a specific rights status and provenance
+  in the manifest; possession of a file is not approval.
+- Preview changed pages at desktop and mobile widths. Human review remains
+  required for wording, legal accuracy, image choice, crop, alt semantics, and
+  responsive layout.
+- Run the snapshot-free `pnpm verify` aggregate before opening a pull request.
+  Use `pnpm compare:pages` and `pnpm compare:legal` only to investigate
+  historical cutover differences; do not update fixtures for routine content
+  edits.
 
 ## Architecture
 
