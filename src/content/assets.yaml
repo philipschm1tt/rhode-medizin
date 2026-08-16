@@ -1,0 +1,92 @@
+assets:
+  - id: homepage-hero
+    path: src/assets/content/hero-image.jpg
+    sha256: 12af20a44add437a916ab78959da0f6c10fae04acf72ad012d1c08d12d142a56
+    mimeType: image/jpeg
+    byteSize: 2973789
+    width: 4820
+    height: 3619
+    alt:
+      policy: decorative
+      default: ''
+    rights:
+      status: approved-original
+      provenance: 'Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision.'
+  - id: employee-placeholder
+    path: src/assets/content/mitarbeiter-icon.webp
+    sha256: 1bd0002bf0950f3750c3543cb8476953f6479fc9f9278a4ef46867c951a23212
+    mimeType: image/webp
+    byteSize: 818
+    width: 300
+    height: 182
+    alt:
+      policy: decorative
+      default: ''
+    rights:
+      status: approved-original
+      provenance: 'Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision.'
+  - id: product-chirurgische-instrumente
+    path: src/assets/content/chirurgische-instrumente.jpg
+    sha256: 3027feef9229fd116499c64856e9797d148f7e280e27b1a4271b2cef1416e6f9
+    mimeType: image/jpeg
+    byteSize: 1074051
+    width: 2121
+    height: 1414
+    alt:
+      policy: decorative
+      default: ''
+    rights:
+      status: approved-original
+      provenance: 'Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision.'
+  - id: product-motorensysteme
+    path: src/assets/content/motorensysteme.jpg
+    sha256: 6f54a596e7e8aa4562ba3bd1a7a1ef57b2f4d87b57042be35dfe7d772b5058fd
+    mimeType: image/jpeg
+    byteSize: 90124
+    width: 500
+    height: 500
+    alt:
+      policy: decorative
+      default: ''
+    rights:
+      status: approved-original
+      provenance: 'Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision.'
+  - id: product-medizinisches-mobiliar
+    path: src/assets/content/medizinisches-mobilar.jpg
+    sha256: 0cebe4cd3fab0825e6d12bd88ba4f595ffc9f35504ac78d6940d2bfce64b9d52
+    mimeType: image/jpeg
+    byteSize: 1269784
+    width: 2125
+    height: 1411
+    alt:
+      policy: decorative
+      default: ''
+    rights:
+      status: approved-original
+      provenance: 'Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision.'
+  - id: product-medizinische-geraete
+    path: src/assets/content/medizinische-geraete.jpg
+    sha256: c1be9aaf882c70929cbe97aa6300db89de6d156a5bb188c2a33c8af790c4fc07
+    mimeType: image/jpeg
+    byteSize: 3600666
+    width: 3392
+    height: 2768
+    alt:
+      policy: decorative
+      default: ''
+    rights:
+      status: approved-original
+      provenance: 'Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision.'
+  - id: product-rehabereich
+    path: src/assets/content/rehabereich.jpg
+    sha256: ac03282c0845be6fd99d1e848c45c9ee730d1c79e59558c15dbb8dc045e0dcc2
+    mimeType: image/jpeg
+    byteSize: 1224291
+    width: 2121
+    height: 1414
+    alt:
+      policy: decorative
+      default: ''
+    rights:
+      status: approved-original
+      provenance: 'Committed binary is byte-identical to the untransformed Contentful original. Decorative: illustrative stock imagery with no informative content beyond ambiance; empty alt per content owner decision.'

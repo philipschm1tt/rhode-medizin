@@ -26,6 +26,17 @@ test('accepts the source content baseline', async () => {
   assert.equal(result.summary, '5 employees, 5 product groups, 3 pages')
 })
 
+test('rejects a collection record without an asset ID', async () => {
+  const path = 'src/content/employees/werner-schmitt.yaml'
+  const { errors } = await verifyCopy((root) =>
+    replaceInFile(root, path, 'assetId: employee-placeholder\n', '')
+  )
+  assert.ok(
+    errors.includes(`${path}: assetId must be non-empty`),
+    errors.join('\n')
+  )
+})
+
 const cases = [
   [
     'duplicate order',
