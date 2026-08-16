@@ -33,8 +33,8 @@
     }
   ],
   "proseNormalization": {
-    "appliedAt": "<ISO 8601 UTC of Task 3 commit>",
-    "appliedInCommit": "<full SHA of Task 3 commit>",
+    "appliedAt": "2026-08-16T08:05:24Z",
+    "appliedInCommit": "d10c0ceb01548c24bf64c2fb3fb71d945268e478",
     "files": ["src/pages/imprint.mdx"],
     "transformation": "Setext headings rewritten level-preserving to ATX",
     "justification": "ATX is friendlier to edit; rendered DOM is identical to the frozen fixture.",
