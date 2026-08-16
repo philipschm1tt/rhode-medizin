@@ -8,9 +8,6 @@ import Quote from '../components/blocks/Quote.astro'
 import Tiles from '../components/blocks/Tiles.astro'
 import EmployeeTile from '../components/blocks/EmployeeTile.astro'
 import ProductGroup from '../components/blocks/ProductGroup.astro'
-import serviceProse from '../content/prose/index-service.html?raw'
-import isoProse from '../content/prose/index-aside-iso.html?raw'
-import historyProse from '../content/prose/index-aside-history.html?raw'
 
 export const employees = (await getCollection('employees'))
   .sort((a, b) => a.data.order - b.data.order)
@@ -44,9 +41,41 @@ export const productGroups = (await getCollection('productGroups'))
     alt=""
   />
 
-<Section set:html={serviceProse} />
+  <Section>
+    <h2>Beratung,<br />Service,<br />Reparatur</h2>
 
-<Aside set:html={isoProse} />
+    - kostenlose Beratung
+    - kostenlose Erstellung von Angeboten
+    - Vor-Ort-Service
+    - Abholung und Verwaltung von Reparaturen
+    - schnelle Reaktionszeit durch kurze Bearbeitungswege
+    - breites Warensortiment > 50.000 Artikel aus über 1.500
+      Lieferanten
+
+  </Section>
+
+  <Aside>
+    ### DIN ISO 9001:2015
+
+    Die Heinrich Rhode GmbH ist nach DIN ISO 9001:2015 zertifiziert.
+
+    #### Zertifizierungsstelle
+
+    TÜV SÜD Management Service GmbH
+
+    #### Geltungsbereich
+
+    Vertrieb von chirurgischem Instrumentarium, medizinischen Geräten und Mobilar.
+
+    #### Zertifikat-Registrier-Nummer
+
+    12 100 11122 TMS
+
+    #### Gültig bis
+
+    09\. Dezember 2027
+
+  </Aside>
 
 <Quote text="Wir nehmen uns Zeit für Sie – Service ist unsere Stärke." />
 
@@ -61,7 +90,42 @@ export const productGroups = (await getCollection('productGroups'))
 
   </Section>
 
-<Aside set:html={historyProse} />
+  <Aside>
+    ### Qualität und Service seit 1927
+
+    #### vor 1927
+
+    Der Firmengründer Heinrich Rhode arbeitete mit dem damals führenden deutschen Chirurgen Ernst Ferdinand Sauerbruch an der Münchner Universität.
+
+    #### 1927
+
+    Nach dem Umzug von Ernst Ferdinand Sauerbruch nach Berlin gründete Heinrich Rhode den Gewerbebetrieb Rhode in München an der Pettenkoferstrasse.
+
+    #### 1957
+
+    Die Herren Fritz Schlumberger und Johann Schmitt führten den Betrieb als eingetragenes Unternehmen fort.
+
+    #### 1977
+
+    Umwandlung der Firma in eine GmbH. Bis 2002 lenkten die Brüder Gerd und Werner Schmitt die Geschicke der Heinrich Rhode GmbH, Medizintechnik.
+
+    #### 1993
+
+    Umzug des Unternehmens von der Münchner Innenstadt nach Kirchheim b. München
+
+    #### 1998
+
+    Zertifizierung des Unternehmens durch den TÜV Süddeutschland nach ISO 9002
+
+    #### 2002
+
+    Am zweiten Januar 2002 trat Herr Gerd Schmitt in den Ruhestand. Seither leiten Herr Robert Renz und Herr Werner Schmitt die Firma.
+
+    #### 2009
+
+    Zertifizierung des Unternehmens durch den TÜV Süddeutschland nach ISO 9001
+
+  </Aside>
 
 <Quote text="Über 90 Jahre Kompetenz im Gesundheitswesen." />
 
