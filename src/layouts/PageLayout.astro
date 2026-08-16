@@ -13,11 +13,12 @@ interface Props {
 }
 
 const { title, description, socialImage } = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site).toString()
 
 let seo: SEOProps | undefined
 if (description) {
   const socialSrc = socialImage
-    ? (await getImage({ src: socialImage, format: 'jpeg' })).src
+    ? (await getImage({ src: socialImage, format: 'jpeg', quality: 80 })).src
     : undefined
   const socialUrl = socialSrc
     ? new URL(socialSrc, Astro.site).toString()
@@ -47,7 +48,7 @@ if (description) {
 }
 ---
 
-<Layout title={title} seo={seo}>
+<Layout title={title} seo={seo} canonical={canonical}>
   <MainContent gridRow="2">
     <slot />
   </MainContent>

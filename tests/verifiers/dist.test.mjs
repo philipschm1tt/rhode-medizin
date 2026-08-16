@@ -1,0 +1,429 @@
+import assert from 'node:assert/strict'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import test from 'node:test'
+import * as cheerioNS from 'cheerio'
+import { verifyDist } from '../../scripts/verify-dist.mjs'
+import { copyPaths, removePath, replaceInFile } from './helpers.mjs'
+
+const cheerio = cheerioNS.default ?? cheerioNS
+const sourcePaths = ['dist', 'src/content', 'src/assets/content']
+
+const verifyCopy = async (mutate) => {
+  const root = copyPaths(sourcePaths)
+  mutate?.(root)
+  return verifyDist(root)
+}
+
+const assertDiagnostic = async (mutate, diagnostic) => {
+  const { errors } = await verifyCopy(mutate)
+  assert.ok(
+    errors.some((error) => error.includes(diagnostic)),
+    errors.join('\n')
+  )
+}
+
+const mutateAttribute = (root, path, selector, attribute, value) => {
+  const absolute = join(root, path)
+  const html = readFileSync(absolute, 'utf8')
+  const $ = cheerio.load(html)
+  const element = $(selector).first()
+  assert.equal(element.length, 1, `${path}: missing ${selector}`)
+  const current = element.attr(attribute)
+  assert.notEqual(current, undefined, `${path}: missing ${attribute}`)
+  element.attr(attribute, value)
+  writeFileSync(absolute, $.html())
+}
+
+test('accepts the complete built-output baseline', async () => {
+  const result = await verifyCopy()
+  assert.deepEqual(result.errors, [])
+  assert.equal(
+    result.summary,
+    '3 routes, 404, sitemap, metadata, links, 11 content images'
+  )
+})
+
+const metadataCases = [
+  [
+    'homepage title',
+    'dist/index.html',
+    'title',
+    null,
+    'Wrong',
+    'homepage title expected',
+  ],
+  [
+    'homepage description',
+    'dist/index.html',
+    'meta[name="description"]',
+    'content',
+    'Wrong',
+    'homepage description expected',
+  ],
+  [
+    'homepage canonical',
+    'dist/index.html',
+    'link[rel="canonical"]',
+    'href',
+    'https://www.rhode-medizin.de/wrong/',
+    'homepage canonical expected https://www.rhode-medizin.de/',
+  ],
+  [
+    'imprint canonical',
+    'dist/imprint/index.html',
+    'link[rel="canonical"]',
+    'href',
+    'https://www.rhode-medizin.de/wrong/',
+    'imprint canonical expected https://www.rhode-medizin.de/imprint/',
+  ],
+  [
+    'data-policy canonical',
+    'dist/data-policy/index.html',
+    'link[rel="canonical"]',
+    'href',
+    'https://www.rhode-medizin.de/wrong/',
+    'data-policy canonical expected https://www.rhode-medizin.de/data-policy/',
+  ],
+  [
+    'Open Graph title',
+    'dist/index.html',
+    'meta[property="og:title"]',
+    'content',
+    'Wrong',
+    'homepage og:title expected',
+  ],
+  [
+    'Open Graph type',
+    'dist/index.html',
+    'meta[property="og:type"]',
+    'content',
+    'article',
+    'homepage og:type expected website',
+  ],
+  [
+    'Open Graph URL',
+    'dist/index.html',
+    'meta[property="og:url"]',
+    'content',
+    'https://www.rhode-medizin.de/wrong/',
+    'homepage og:url expected https://www.rhode-medizin.de/',
+  ],
+  [
+    'Open Graph locale',
+    'dist/index.html',
+    'meta[property="og:locale"]',
+    'content',
+    'en_US',
+    'homepage og:locale expected de_DE',
+  ],
+  [
+    'Open Graph site name',
+    'dist/index.html',
+    'meta[property="og:site_name"]',
+    'content',
+    'Wrong',
+    'homepage og:site_name expected Heinrich Rhode GmbH',
+  ],
+  [
+    'Twitter card',
+    'dist/index.html',
+    'meta[name="twitter:card"]',
+    'content',
+    'summary',
+    'homepage twitter:card expected summary_large_image',
+  ],
+  [
+    'Twitter title',
+    'dist/index.html',
+    'meta[name="twitter:title"]',
+    'content',
+    'Wrong',
+    'homepage twitter:title expected',
+  ],
+  [
+    'Twitter description',
+    'dist/index.html',
+    'meta[name="twitter:description"]',
+    'content',
+    'Wrong',
+    'homepage twitter:description expected',
+  ],
+]
+
+for (const [
+  name,
+  path,
+  selector,
+  attribute,
+  value,
+  diagnostic,
+] of metadataCases) {
+  test(`rejects a changed ${name}`, async () => {
+    await assertDiagnostic((root) => {
+      if (selector === 'title') {
+        replaceInFile(root, path, '<title>', '<title>Wrong<!--')
+      } else {
+        mutateAttribute(root, path, selector, attribute, value)
+      }
+    }, diagnostic)
+  })
+}
+
+for (const [route, path] of [
+  ['imprint', 'dist/imprint/index.html'],
+  ['data-policy', 'dist/data-policy/index.html'],
+]) {
+  for (const [kind, tag, diagnostic] of [
+    [
+      'description',
+      '<meta name="description" content="Wrong">',
+      `${route} description metadata must be absent`,
+    ],
+    [
+      'Open Graph',
+      '<meta property="og:title" content="Wrong">',
+      `${route} Open Graph metadata must be absent`,
+    ],
+    [
+      'Twitter',
+      '<meta name="twitter:card" content="summary">',
+      `${route} Twitter metadata must be absent`,
+    ],
+  ]) {
+    test(`rejects ${kind} metadata on ${route}`, async () => {
+      await assertDiagnostic(
+        (root) => replaceInFile(root, path, '</head>', `${tag}</head>`),
+        diagnostic
+      )
+    })
+  }
+}
+
+const linkCases = [
+  ['imprint eRecht24', 'dist/imprint/index.html', 'https://www.e-recht24.de'],
+  [
+    'data-policy DGD',
+    'dist/data-policy/index.html',
+    'https://dg-datenschutz.de/datenschutz-dienstleistungen/externer-datenschutzbeauftragter/',
+  ],
+  ['data-policy WBS', 'dist/data-policy/index.html', 'https://www.wbs-law.de/'],
+]
+
+for (const [label, path, url] of linkCases) {
+  test(`rejects the wrong scheme for the ${label} link`, async () => {
+    await assertDiagnostic(
+      (root) => replaceInFile(root, path, url, url.replace('https:', 'http:')),
+      `${label} link expected ${url}`
+    )
+  })
+}
+
+test('rejects a changed header home link', async () => {
+  await assertDiagnostic(
+    (root) =>
+      replaceInFile(root, 'dist/index.html', 'href="/"', 'href="/wrong/"'),
+    'homepage header link expected /'
+  )
+})
+
+test('rejects a changed footer legal link', async () => {
+  await assertDiagnostic(
+    (root) =>
+      mutateAttribute(
+        root,
+        'dist/index.html',
+        'footer a[href="/imprint/"]',
+        'href',
+        '/wrong/'
+      ),
+    'homepage footer link expected /imprint/'
+  )
+})
+
+test('rejects lazy loading on the hero image', async () => {
+  await assertDiagnostic(
+    (root) =>
+      mutateAttribute(
+        root,
+        'dist/index.html',
+        '.hero-image',
+        'loading',
+        'lazy'
+      ),
+    'homepage hero loading expected eager'
+  )
+})
+
+test('rejects normal fetch priority on the hero image', async () => {
+  await assertDiagnostic(
+    (root) =>
+      mutateAttribute(
+        root,
+        'dist/index.html',
+        '.hero-image',
+        'fetchpriority',
+        'auto'
+      ),
+    'homepage hero fetchpriority expected high'
+  )
+})
+
+for (const [kind, selector] of [
+  ['employee', '.employee-tile img'],
+  ['product', '.product-group img'],
+]) {
+  test(`rejects eager loading on the first ${kind} image`, async () => {
+    await assertDiagnostic(
+      (root) =>
+        mutateAttribute(root, 'dist/index.html', selector, 'loading', 'eager'),
+      `homepage ${kind} image 1 loading expected lazy`
+    )
+  })
+}
+
+test('rejects the wrong rendered alt at its ordered position', async () => {
+  await assertDiagnostic(
+    (root) =>
+      mutateAttribute(
+        root,
+        'dist/index.html',
+        '.employee-tile img',
+        'alt',
+        'Wrong'
+      ),
+    'homepage employee image 1 alt expected ""'
+  )
+})
+
+test('rejects product images rendered out of source order', async () => {
+  await assertDiagnostic((root) => {
+    const path = join(root, 'dist/index.html')
+    const html = readFileSync(path, 'utf8')
+    const $ = cheerio.load(html)
+    const images = $('.product-group img')
+    const first = images.eq(0).attr('src')
+    const second = images.eq(1).attr('src')
+    writeFileSync(
+      path,
+      html
+        .replace(first, '__FIRST__')
+        .replace(second, first)
+        .replace('__FIRST__', second)
+    )
+  }, 'homepage product image 1 source does not match')
+})
+
+test('rejects a missing local image selected from homepage src', async () => {
+  await assertDiagnostic((root) => {
+    const html = readFileSync(join(root, 'dist/index.html'), 'utf8')
+    const $ = cheerio.load(html)
+    removePath(root, join('dist', $('.hero-image').attr('src')))
+  }, 'homepage hero src file is missing')
+})
+
+test('rejects a missing local srcset candidate', async () => {
+  await assertDiagnostic((root) => {
+    const html = readFileSync(join(root, 'dist/index.html'), 'utf8')
+    const $ = cheerio.load(html)
+    const candidate = $('.hero-area source')
+      .first()
+      .attr('srcset')
+      .split(',')[0]
+      .trim()
+      .split(/\s+/)[0]
+    removePath(root, join('dist', candidate))
+  }, 'homepage source srcset candidate file is missing')
+})
+
+test('rejects a social image whose bytes differ from the manifest hero', async () => {
+  await assertDiagnostic((root) => {
+    const html = readFileSync(join(root, 'dist/index.html'), 'utf8')
+    const $ = cheerio.load(html)
+    const url = $('meta[property="og:image"]').attr('content')
+    writeFileSync(
+      join(root, 'dist', new URL(url).pathname),
+      'not the expected jpeg'
+    )
+  }, 'homepage social image bytes do not match the manifest-declared hero source')
+})
+
+test('rejects different Open Graph and Twitter image URLs', async () => {
+  await assertDiagnostic(
+    (root) =>
+      mutateAttribute(
+        root,
+        'dist/index.html',
+        'meta[name="twitter:image"]',
+        'content',
+        'https://www.rhode-medizin.de/favicon.png'
+      ),
+    'homepage twitter:image expected the same URL as og:image'
+  )
+})
+
+test('rejects a missing 404 page', async () => {
+  await assertDiagnostic(
+    (root) => removePath(root, 'dist/404.html'),
+    '404 route missing dist/404.html'
+  )
+})
+
+test('rejects a sitemap missing imprint', async () => {
+  await assertDiagnostic(
+    (root) =>
+      replaceInFile(
+        root,
+        'dist/sitemap-0.xml',
+        '<url><loc>https://www.rhode-medizin.de/imprint/</loc></url>',
+        ''
+      ),
+    'sitemap routes expected exactly /, /data-policy/, /imprint/'
+  )
+})
+
+test('rejects an extra sitemap route', async () => {
+  await assertDiagnostic(
+    (root) =>
+      replaceInFile(
+        root,
+        'dist/sitemap-0.xml',
+        '</urlset>',
+        '<url><loc>https://www.rhode-medizin.de/extra/</loc></url></urlset>'
+      ),
+    'sitemap routes expected exactly /, /data-policy/, /imprint/'
+  )
+})
+
+test('rejects Contentful hosts in textual built output', async () => {
+  await assertDiagnostic(
+    (root) =>
+      replaceInFile(
+        root,
+        'dist/index.html',
+        '</body>',
+        '<!-- images.ctfassets.net --></body>'
+      ),
+    'dist/index.html: Contentful host found in built output'
+  )
+})
+
+test('accumulates independent built-output diagnostics', async () => {
+  const { errors } = await verifyCopy((root) => {
+    removePath(root, 'dist/404.html')
+    replaceInFile(
+      root,
+      'dist/sitemap-0.xml',
+      '<url><loc>https://www.rhode-medizin.de/imprint/</loc></url>',
+      ''
+    )
+  })
+  assert.ok(
+    errors.some((error) => error.includes('404 route missing')),
+    errors.join('\n')
+  )
+  assert.ok(
+    errors.some((error) => error.includes('sitemap routes expected')),
+    errors.join('\n')
+  )
+})

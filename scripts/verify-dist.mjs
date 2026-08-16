@@ -1,130 +1,385 @@
-import { readFileSync, existsSync, readdirSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { existsSync, readFileSync } from 'node:fs'
+import { basename, extname, resolve } from 'node:path'
 import * as cheerioNS from 'cheerio'
+import sharp from 'sharp'
+import {
+  isDirectExecution,
+  listFiles,
+  readYaml,
+  runCli,
+  sha256,
+  toPosix,
+} from './lib/verification.mjs'
 
 const cheerio = cheerioNS.default ?? cheerioNS
+const origin = 'https://www.rhode-medizin.de'
+const homepageTitle = 'Rhode Medizintechnik – Heinrich Rhode GmbH'
+const homepageDescription =
+  'Heinrich Rhode GmbH – Medizintechnik für Praxen und Kliniken. Beratung, Service und Produkte aus einer Hand.'
+const routes = [
+  {
+    label: 'homepage',
+    path: 'dist/index.html',
+    title: homepageTitle,
+    canonical: `${origin}/`,
+  },
+  {
+    label: 'imprint',
+    path: 'dist/imprint/index.html',
+    title: 'Impressum',
+    canonical: `${origin}/imprint/`,
+    legal: true,
+  },
+  {
+    label: 'data-policy',
+    path: 'dist/data-policy/index.html',
+    title: 'Datenschutzhinweis',
+    canonical: `${origin}/data-policy/`,
+    legal: true,
+  },
+]
 
-const errors = []
-const read = (p) => (existsSync(p) ? readFileSync(p, 'utf8') : null)
+const value = ($, selector, attribute) =>
+  attribute ? $(selector).attr(attribute) : $(selector).text().trim()
 
-const checkRoute = (file, label) => {
-  const html = read(resolve('dist', file))
-  if (!html) {
-    errors.push(`missing built route: dist/${file}`)
+const expectValue = (errors, $, label, selector, attribute, expected) => {
+  const actual = value($, selector, attribute)
+  if (actual !== expected)
+    errors.push(`${label} expected ${expected}, got ${actual ?? '<missing>'}`)
+}
+
+const localPath = (url) => {
+  try {
+    const parsed = new URL(url, origin)
+    return parsed.origin === origin ? decodeURIComponent(parsed.pathname) : null
+  } catch {
     return null
   }
-  return cheerio.load(html)
 }
 
-const homepage = checkRoute('index.html', 'homepage')
-const imprint = checkRoute('imprint/index.html', 'imprint')
-const dataPolicy = checkRoute('data-policy/index.html', 'data-policy')
-if (!homepage || !imprint || !dataPolicy) {
-  console.error(`verify:dist: ${errors.length} problem(s):`)
-  for (const e of errors) console.error(`  - ${e}`)
-  process.exit(1)
+const builtPath = (root, url) => {
+  const path = localPath(url)
+  if (!path) return null
+  if (path.endsWith('/'))
+    return resolve(root, 'dist', path.slice(1), 'index.html')
+  return resolve(root, 'dist', path.slice(1))
 }
 
-const expectTitle = ($, expected) => {
-  const t = $('title').text().trim()
-  if (t !== expected)
-    errors.push(`title mismatch: expected "${expected}", got "${t}"`)
-}
-expectTitle(homepage, 'Rhode Medizintechnik – Heinrich Rhode GmbH')
-expectTitle(imprint, 'Impressum')
-expectTitle(dataPolicy, 'Datenschutzhinweis')
+const sourceRecords = (root, dir, errors) =>
+  listFiles(root, dir, '.yaml')
+    .map((path) => ({ path, record: readYaml(root, path, errors) }))
+    .filter(({ record }) => record && typeof record === 'object')
+    .sort((a, b) => a.record.order - b.record.order)
 
-const desc = homepage('meta[name="description"]').attr('content')
-const expectedDesc =
-  'Heinrich Rhode GmbH – Medizintechnik für Praxen und Kliniken. Beratung, Service und Produkte aus einer Hand.'
-if (desc !== expectedDesc) errors.push(`homepage description mismatch: ${desc}`)
+const imageStem = (path) => basename(path, extname(path))
 
-const ogImage = homepage('meta[property="og:image"]').attr('content')
-const twitterImage = homepage('meta[name="twitter:image"]').attr('content')
-const siteOrigin = 'https://www.rhode-medizin.de'
-const isLocalAstro = (url) =>
-  url &&
-  url.startsWith(`${siteOrigin}/_astro/`) &&
-  /\.(jpe?g|png|webp|avif)$/i.test(url)
-if (!isLocalAstro(ogImage))
-  errors.push(`og:image must be a local /_astro/ URL, got: ${ogImage}`)
-if (!isLocalAstro(twitterImage))
-  errors.push(
-    `twitter:image must be a local /_astro/ URL, got: ${twitterImage}`
-  )
-for (const url of [ogImage, twitterImage].filter(Boolean)) {
-  const path = url.replace(siteOrigin, '')
-  if (!existsSync(resolve('dist', path.replace(/^\//, '')))) {
-    errors.push(`social image file missing in dist: ${path}`)
-  }
+const checkImageFile = (root, errors, label, url) => {
+  const path = builtPath(root, url)
+  if (!path || !existsSync(path))
+    errors.push(`${label} file is missing: ${url ?? '<missing>'}`)
 }
 
-for (const [$, label] of [
-  [imprint, 'imprint'],
-  [dataPolicy, 'data-policy'],
-]) {
-  if ($('meta[name="description"]').length)
-    errors.push(`${label} must not have a description meta tag`)
-  if ($('meta[property="og:title"]').length)
-    errors.push(`${label} must not have Open Graph metadata`)
-  if ($('meta[name="twitter:card"]').length)
-    errors.push(`${label} must not have Twitter card metadata`)
-}
-
-const sitemapIndex =
-  read('dist/sitemap-index.xml') || read('dist/sitemap-0.xml')
-const sitemap0 = read('dist/sitemap-0.xml')
-if (!sitemapIndex) {
-  errors.push('missing sitemap file')
-} else {
-  const allLocs = []
-  const $idx = cheerio.load(sitemapIndex, { xmlMode: true })
-  allLocs.push(
-    ...$idx('loc')
-      .map((_, el) => $idx(el).text())
-      .get()
-  )
-  if (sitemap0) {
-    const $0 = cheerio.load(sitemap0, { xmlMode: true })
-    allLocs.push(
-      ...$0('loc')
-        .map((_, el) => $0(el).text())
-        .get()
+const checkResponsiveFiles = (root, errors, $, pageLabel) => {
+  $('img[src]').each((index, element) => {
+    const image = $(element)
+    checkImageFile(
+      root,
+      errors,
+      `${pageLabel} image ${index + 1} src`,
+      image.attr('src')
     )
-  }
-  for (const expected of [
-    'https://www.rhode-medizin.de/',
-    'https://www.rhode-medizin.de/imprint/',
-    'https://www.rhode-medizin.de/data-policy/',
-  ]) {
-    if (!allLocs.includes(expected)) errors.push(`sitemap missing ${expected}`)
-  }
+  })
+
+  $('[srcset]').each((_, element) => {
+    const candidateSet = $(element).attr('srcset') ?? ''
+    for (const candidate of candidateSet.split(',')) {
+      const url = candidate.trim().split(/\s+/)[0]
+      if (url)
+        checkImageFile(
+          root,
+          errors,
+          `${pageLabel} ${element.tagName} srcset candidate`,
+          url
+        )
+    }
+  })
 }
 
-const builtFiles = []
-const walk = (dir) => {
-  for (const name of readdirSync(dir, { withFileTypes: true })) {
-    const full = resolve(dir, name.name)
-    if (name.isDirectory()) walk(full)
-    else if (/\.(html|xml|css|js|mjs|json)$/i.test(name.name))
-      builtFiles.push(full)
-  }
-}
-walk('dist')
-const ctfPattern =
-  /ctfassets\.net|ctfapps\.net|cdn\.contentful\.com|preview\.contentful\.com/i
-for (const f of builtFiles) {
-  const text = readFileSync(f, 'utf8')
-  if (ctfPattern.test(text)) {
+const checkOrderedImages = (errors, $, selector, label, records) => {
+  const images = $(selector).toArray()
+  if (images.length !== records.length) {
     errors.push(
-      `Contentful URL found in active output: ${f.replace(resolve('dist'), '.')}`
+      `${label} image count expected ${records.length}, got ${images.length}`
     )
+  }
+
+  records.forEach(({ record }, index) => {
+    const image = images[index] ? $(images[index]) : null
+    if (!image) return
+    const expectedAlt = record.alt
+    if (image.attr('alt') !== expectedAlt)
+      errors.push(
+        `${label} image ${index + 1} alt expected "${expectedAlt}", got "${image.attr('alt') ?? '<missing>'}"`
+      )
+    const source = record.photo
+    if (!image.attr('src')?.includes(imageStem(source)))
+      errors.push(`${label} image ${index + 1} source does not match ${source}`)
+    if (image.attr('loading') !== 'lazy')
+      errors.push(
+        `${label} image ${index + 1} loading expected lazy, got ${image.attr('loading') ?? '<missing>'}`
+      )
+  })
+}
+
+const checkLinks = (root, errors, $, pageLabel) => {
+  expectValue(errors, $, `${pageLabel} header link`, 'header a', 'href', '/')
+  expectValue(
+    errors,
+    $,
+    `${pageLabel} footer link`,
+    'footer a[href="/imprint/"]',
+    'href',
+    '/imprint/'
+  )
+  expectValue(
+    errors,
+    $,
+    `${pageLabel} footer link`,
+    'footer a[href="/data-policy/"]',
+    'href',
+    '/data-policy/'
+  )
+
+  $('a[href]').each((_, element) => {
+    const href = $(element).attr('href')
+    if (!href?.startsWith('/')) return
+    const path = builtPath(root, href)
+    if (!path || !existsSync(path))
+      errors.push(`${pageLabel} link ${href} does not resolve to a built file`)
+  })
+}
+
+const checkLegalMetadataAbsence = (errors, $, label) => {
+  if ($('meta[name="description"]').length)
+    errors.push(`${label} description metadata must be absent`)
+  if ($('meta[property^="og:"]').length)
+    errors.push(`${label} Open Graph metadata must be absent`)
+  if ($('meta[name^="twitter:"]').length)
+    errors.push(`${label} Twitter metadata must be absent`)
+}
+
+const checkExactLink = (errors, $, label, expected) => {
+  if ($(`a[href="${expected}"]`).length !== 1)
+    errors.push(`${label} link expected ${expected}`)
+}
+
+const checkSocialImage = async (root, errors, $) => {
+  const ogImage = value($, 'meta[property="og:image"]', 'content')
+  const twitterImage = value($, 'meta[name="twitter:image"]', 'content')
+  if (twitterImage !== ogImage)
+    errors.push('homepage twitter:image expected the same URL as og:image')
+
+  const socialPath = builtPath(root, ogImage)
+  if (!socialPath || !existsSync(socialPath)) {
+    errors.push(`homepage og:image file is missing: ${ogImage ?? '<missing>'}`)
+    return
+  }
+
+  const manifest = readYaml(root, 'src/content/assets.yaml', errors)
+  const hero = readYaml(root, 'src/content/homepage/hero.yaml', errors)
+  const asset = manifest?.assets?.find((entry) => entry.id === hero?.assetId)
+  if (!asset?.path) {
+    errors.push('homepage manifest-declared hero source is missing')
+    return
+  }
+
+  const expected = await sharp(resolve(root, asset.path))
+    .jpeg({ quality: 80 })
+    .toBuffer()
+  const actual = readFileSync(socialPath)
+  if (sha256(actual) !== sha256(expected))
+    errors.push(
+      'homepage social image bytes do not match the manifest-declared hero source'
+    )
+}
+
+const checkSitemap = (root, errors) => {
+  const path = resolve(root, 'dist/sitemap-0.xml')
+  if (!existsSync(path)) {
+    errors.push('sitemap missing dist/sitemap-0.xml')
+    return
+  }
+  const $ = cheerio.load(readFileSync(path, 'utf8'), { xmlMode: true })
+  const actual = $('loc')
+    .map((_, element) => new URL($(element).text()).pathname)
+    .get()
+    .sort()
+  const expected = ['/', '/data-policy/', '/imprint/']
+  if (JSON.stringify(actual) !== JSON.stringify(expected))
+    errors.push(
+      `sitemap routes expected exactly ${expected.join(', ')}, got ${actual.join(', ')}`
+    )
+}
+
+const scanContentful = (root, errors) => {
+  const pattern =
+    /ctfassets\.net|ctfapps\.net|cdn\.contentful\.com|preview\.contentful\.com/i
+  for (const path of listFiles(root, 'dist')) {
+    if (!/\.(?:html|xml|css|js|mjs|json|txt)$/i.test(path)) continue
+    if (pattern.test(readFileSync(resolve(root, path), 'utf8')))
+      errors.push(`${toPosix(path)}: Contentful host found in built output`)
   }
 }
 
-if (errors.length) {
-  console.error(`verify:dist: ${errors.length} problem(s):`)
-  for (const e of errors) console.error(`  - ${e}`)
-  process.exit(1)
+export const verifyDist = async (root = process.cwd()) => {
+  const errors = []
+  const pages = new Map()
+
+  for (const route of routes) {
+    const absolute = resolve(root, route.path)
+    if (!existsSync(absolute)) {
+      errors.push(`${route.label} route missing ${route.path}`)
+      continue
+    }
+    const $ = cheerio.load(readFileSync(absolute, 'utf8'))
+    pages.set(route.label, $)
+    expectValue(errors, $, `${route.label} title`, 'title', null, route.title)
+    expectValue(
+      errors,
+      $,
+      `${route.label} canonical`,
+      'link[rel="canonical"]',
+      'href',
+      route.canonical
+    )
+    if (route.legal) checkLegalMetadataAbsence(errors, $, route.label)
+    checkLinks(root, errors, $, route.label)
+    checkResponsiveFiles(root, errors, $, route.label)
+  }
+
+  const homepage = pages.get('homepage')
+  if (homepage) {
+    const metadata = [
+      [
+        'homepage description',
+        'meta[name="description"]',
+        'content',
+        homepageDescription,
+      ],
+      [
+        'homepage og:title',
+        'meta[property="og:title"]',
+        'content',
+        homepageTitle,
+      ],
+      ['homepage og:type', 'meta[property="og:type"]', 'content', 'website'],
+      ['homepage og:url', 'meta[property="og:url"]', 'content', `${origin}/`],
+      ['homepage og:locale', 'meta[property="og:locale"]', 'content', 'de_DE'],
+      [
+        'homepage og:site_name',
+        'meta[property="og:site_name"]',
+        'content',
+        'Heinrich Rhode GmbH',
+      ],
+      [
+        'homepage twitter:card',
+        'meta[name="twitter:card"]',
+        'content',
+        'summary_large_image',
+      ],
+      [
+        'homepage twitter:title',
+        'meta[name="twitter:title"]',
+        'content',
+        homepageTitle,
+      ],
+      [
+        'homepage twitter:description',
+        'meta[name="twitter:description"]',
+        'content',
+        homepageDescription,
+      ],
+    ]
+    for (const contract of metadata) expectValue(errors, homepage, ...contract)
+
+    const hero = homepage('.hero-area img').first()
+    if (hero.attr('alt') !== '')
+      errors.push(
+        `homepage hero alt expected "", got "${hero.attr('alt') ?? '<missing>'}"`
+      )
+    if (hero.attr('loading') !== 'eager')
+      errors.push(
+        `homepage hero loading expected eager, got ${hero.attr('loading') ?? '<missing>'}`
+      )
+    if (hero.attr('fetchpriority') !== 'high')
+      errors.push(
+        `homepage hero fetchpriority expected high, got ${hero.attr('fetchpriority') ?? '<missing>'}`
+      )
+
+    const heroRecord = readYaml(root, 'src/content/homepage/hero.yaml', errors)
+    if (!hero.attr('src')?.includes(imageStem(heroRecord?.image ?? 'missing')))
+      errors.push('homepage hero source does not match source record')
+    checkImageFile(root, errors, 'homepage hero src', hero.attr('src'))
+
+    checkOrderedImages(
+      errors,
+      homepage,
+      '.employee-tile img',
+      'homepage employee',
+      sourceRecords(root, 'src/content/employees', errors)
+    )
+    checkOrderedImages(
+      errors,
+      homepage,
+      '.product-group img',
+      'homepage product',
+      sourceRecords(root, 'src/content/product-groups', errors)
+    )
+    await checkSocialImage(root, errors, homepage)
+  }
+
+  const imprint = pages.get('imprint')
+  if (imprint)
+    checkExactLink(
+      errors,
+      imprint,
+      'imprint eRecht24',
+      'https://www.e-recht24.de'
+    )
+  const dataPolicy = pages.get('data-policy')
+  if (dataPolicy) {
+    checkExactLink(
+      errors,
+      dataPolicy,
+      'data-policy DGD',
+      'https://dg-datenschutz.de/datenschutz-dienstleistungen/externer-datenschutzbeauftragter/'
+    )
+    checkExactLink(
+      errors,
+      dataPolicy,
+      'data-policy WBS',
+      'https://www.wbs-law.de/'
+    )
+  }
+
+  const notFoundPath = resolve(root, 'dist/404.html')
+  if (!existsSync(notFoundPath)) {
+    errors.push('404 route missing dist/404.html')
+  } else {
+    const notFound = cheerio.load(readFileSync(notFoundPath, 'utf8'))
+    if (notFound('link[rel="canonical"]').length)
+      errors.push('404 canonical metadata must be absent')
+    checkLinks(root, errors, notFound, '404')
+    checkResponsiveFiles(root, errors, notFound, '404')
+  }
+
+  checkSitemap(root, errors)
+  scanContentful(root, errors)
+
+  return {
+    errors,
+    summary: '3 routes, 404, sitemap, metadata, links, 11 content images',
+  }
 }
-console.log('verify:dist: ok')
+
+if (isDirectExecution(import.meta.url)) runCli('verify:dist', verifyDist)
