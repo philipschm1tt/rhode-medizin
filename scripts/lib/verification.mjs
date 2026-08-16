@@ -2,14 +2,14 @@ import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, extname, join, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { parse } from 'yaml'
+import yaml from 'yaml'
 
 export const readText = (root, path) =>
   readFileSync(resolve(root, path), 'utf8')
 
 export const readYaml = (root, path, errors) => {
   try {
-    return parse(readText(root, path))
+    return yaml.parse(readText(root, path))
   } catch (error) {
     errors.push(`${toPosix(path)}: invalid YAML: ${error.message}`)
     return null
