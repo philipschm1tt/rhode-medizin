@@ -51,6 +51,16 @@ test('accepts the complete built-output baseline', async () => {
   )
 })
 
+test('passes the supplied homepage canonical to SEO exactly once', () => {
+  const layout = readFileSync('src/layouts/Layout.astro', 'utf8')
+  assert.match(layout, /<SEO[\s\S]*?canonical=\{canonical\}/)
+  assert.equal(
+    (layout.match(/canonical=\{canonical\}/g) ?? []).length,
+    1,
+    'Layout must pass the supplied canonical exactly once'
+  )
+})
+
 const metadataCases = [
   [
     'homepage title',
@@ -279,6 +289,29 @@ for (const [form, href] of [
     )
   })
 }
+
+test('rejects an encoded traversal link before resolving outside dist', async () => {
+  const href = '/inside%2F..%2F..%2Fsrc/content/assets.yaml'
+  await assertDiagnostic(
+    (root) =>
+      appendElement(
+        root,
+        'dist/imprint/index.html',
+        'body',
+        `<a href="${href}">Unsafe</a>`
+      ),
+    `imprint link has unsafe local URL: ${href}`
+  )
+})
+
+test('rejects an encoded traversal image before resolving outside dist', async () => {
+  const src = '/inside%2F..%2F..%2Fsrc/content/assets.yaml'
+  await assertDiagnostic(
+    (root) =>
+      mutateAttribute(root, 'dist/index.html', '.hero-image', 'src', src),
+    `homepage image 2 src has unsafe local URL: ${src}`
+  )
+})
 
 test('rejects lazy loading on the hero image', async () => {
   await assertDiagnostic(
