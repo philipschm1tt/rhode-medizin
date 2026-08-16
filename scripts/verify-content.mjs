@@ -3,6 +3,7 @@ import {
   isDirectExecution,
   isNonEmptyString,
   listFiles,
+  READ_YAML_ERROR,
   readText,
   readYaml,
   runCli,
@@ -59,14 +60,9 @@ const verifyCollection = (root, collection, errors) => {
     }
 
     const record = readYaml(root, path, errors)
+    if (record === READ_YAML_ERROR) continue
     if (!isMapping(record)) {
-      if (
-        collection.label === 'product-groups' &&
-        /^\s*-\s*''(?:\s|$)/m.test(readText(root, path))
-      ) {
-        errors.push(`${path}: examples[0] must be non-empty`)
-      }
-      if (record !== null) errors.push(`${path}: record must be a mapping`)
+      errors.push(`${path}: record must be a mapping`)
       continue
     }
 
@@ -141,11 +137,5 @@ export const verifyContent = async (root = process.cwd()) => {
 }
 
 if (isDirectExecution(import.meta.url)) {
-  runCli('verify:content', async () => {
-    const result = await verifyContent()
-    if (result.errors.length === 0) {
-      console.log(`verify:content: ok (${result.summary})`)
-    }
-    return result.errors
-  })
+  runCli('verify:content', verifyContent)
 }
