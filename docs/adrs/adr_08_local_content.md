@@ -44,10 +44,11 @@ URL.
 The Contentful loader, `ModuleRenderer` dispatcher, dynamic route,
 remote image domains, `@content-loaders` alias, and Contentful-only
 dependencies were removed. Current integrity is enforced by the
-invariant-based `pnpm verify` aggregate, run locally, in PR CI, and on
-both Netlify and Cloudflare before publishing. The historical
-`compare:pages` and `compare:legal` commands remain optional diagnostics
-outside that gate.
+invariant-based `pnpm verify` aggregate locally. Committed repository
+configuration requires the same aggregate in PR CI and Netlify; Cloudflare is
+required to use it as the dormant fallback. Final remote runs and host settings
+remain pending external verification. The historical `compare:pages` and
+`compare:legal` commands remain optional diagnostics outside that gate.
 
 ## Consequences
 
