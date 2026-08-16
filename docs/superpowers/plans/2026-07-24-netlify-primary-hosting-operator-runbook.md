@@ -12,7 +12,9 @@
 
 **Prerequisite:** `netlify.toml` and `docs/adrs/adr_07_netlify.md` are
 committed. The Astro static build is verified locally (`pnpm verify` succeeds
-and produces `dist/`).
+and produces `dist/`). Repository configuration is ready for operator
+verification; this runbook does not assume remote workflow, provider, DNS, or
+TLS state has already been confirmed.
 
 **Architecture:** The Astro static build (`astro build` → `dist/`) is
 host-agnostic. Only hosting and DNS configuration change; no code or build
@@ -32,8 +34,9 @@ changes. DNS stays at the existing registrar.
 - No application or content environment variables are required. Content is
   version-controlled in the repository.
 - The required build-runtime setting is Node version `22` on both hosts.
-- GitHub Actions runs `pnpm verify` for pull requests targeting `master` and
-  pushes to `master`.
+- The committed GitHub Actions workflow requires `pnpm verify` for pull
+  requests targeting `master` and pushes to `master`; confirm an actual remote
+  run before recording this setup as verified.
 - DNS stays at the registrar; do not transfer to Netlify DNS or Cloudflare
   DNS.
 - Cloudflare's build command is a Pages dashboard setting. Do not add it to
@@ -49,7 +52,8 @@ for the local-content cutover and Contentful retirement runbook.
 
 - Netlify account with access to the `rhode-medizin` site.
 - Registrar access for `rhode-medizin.de` (DNS stays here — do not transfer).
-- Cloudflare Pages project still connected to GitHub as a fallback.
+- Cloudflare account access sufficient to verify or restore the Pages project's
+  GitHub connection and fallback settings.
 - Local checkout for parity checks (`pnpm verify`).
 
 ## 1. Netlify site setup
@@ -81,22 +85,22 @@ Cloudflare.
    "Certificate verified"; typically minutes).
 4. Verify the site serves over `https://rhode-medizin.de` and
    `https://www.rhode-medizin.de` with a valid cert.
-5. Verify `dist/404.html` is served for an unknown path (Netlify serves
-   `dist/404.html` automatically — no redirects/headers block in
-   `netlify.toml`).
+5. Verify `dist/404.html` is served for an unknown path. No redirects/headers
+   block is committed in `netlify.toml`; record the observed Netlify behavior.
 
 ## 3. Content rebuilds
 
-Content edits are Git changes; pushing to `master` triggers a Netlify
-deploy through its GitHub integration. GitHub Actions also runs the aggregate
-for pull requests targeting `master` and pushes to `master`. No Contentful
-webhook is configured. If a manual rebuild is needed, trigger it from the
-Netlify dashboard or via git push.
+Content edits are Git changes. The intended remote behavior is that pushes to
+`master` trigger a Netlify deploy through its GitHub integration and the
+committed GitHub Actions workflow runs the aggregate for pull requests
+targeting `master` and pushes to `master`. Verify both behaviors from remote
+logs before marking them operational. No Contentful webhook is required. If a
+manual rebuild is needed, trigger it from the Netlify dashboard.
 
 ## 4. Emergency revert to Cloudflare Pages
 
-Cloudflare Pages remains connected to GitHub; the `*.pages.dev` URL remains
-functional.
+Do not assume the Cloudflare Pages GitHub connection or `*.pages.dev` URL is
+functional. Verify both before relying on the fallback.
 
 1. Confirm the Cloudflare Pages dashboard uses the required Node 22 build
    runtime, no application or content environment variables, publish directory

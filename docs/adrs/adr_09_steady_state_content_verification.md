@@ -19,12 +19,12 @@ image has a stable manifest ID and an Astro-resolvable local path so identity
 remains stable when generated asset URLs change.
 
 Use the deterministic, invariant-based `pnpm verify` aggregate as the required
-local command and the configured CI, Netlify, and Cloudflare verification
-command. It checks formatting,
-source content, assets, the production build, verifier behavior, and built
-output. Historical `compare:pages` and `compare:legal` commands remain
-available as optional diagnostics outside the required gate. Cutover fixtures
-remain immutable historical records.
+local command. Committed GitHub Actions and Netlify configuration require the
+same aggregate; Cloudflare Pages is also required to use it as the dormant
+fallback. It checks formatting, source content, assets, the production build,
+verifier behavior, and built output. Historical `compare:pages` and
+`compare:legal` commands remain available as optional diagnostics outside the
+required gate. Cutover fixtures remain immutable historical records.
 
 ## Consequences
 
@@ -33,6 +33,7 @@ remain immutable historical records.
 - Intentional content edits do not require rewriting historical snapshots.
 - Wording, legal accuracy, image choice, crop, alt semantics, and visual and
   responsive quality remain human review responsibilities.
-- Local verification uses the aggregate. GitHub Actions and both hosting
-  providers are configured to use the same aggregate, with remote verification
-  still pending.
+- Local verification uses the aggregate. Repository configuration establishes
+  the GitHub Actions and Netlify requirements; Cloudflare dashboard settings
+  must match them. Final remote workflow runs, provider settings, and deploy
+  behavior remain pending operator verification.

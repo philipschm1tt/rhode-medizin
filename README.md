@@ -105,7 +105,8 @@ DNS stays at the registrar (do not transfer to Netlify DNS):
 - Apex `rhode-medizin.de`: ALIAS/ANAME → `apex-loadbalancer.netlify.com`.
 - `www.rhode-medizin.de`: CNAME → `<site-slug>.netlify.app`.
 
-Netlify auto-provisions the TLS certificate via DCV.
+Netlify is intended to provision the TLS certificate via DCV after the DNS
+settings are applied; confirm issuance during operator verification.
 
 ### Cloudflare Pages fallback
 
