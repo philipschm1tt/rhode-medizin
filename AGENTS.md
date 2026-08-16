@@ -51,7 +51,7 @@ requirements.
 ## Architecture
 
 - `src/pages/*.mdx` are file-routed pages (`index.mdx`, `imprint.mdx`, `data-policy.mdx`) that compose editor-facing blocks and load data via `getCollection`.
-- `src/content.config.ts` defines two `glob()` collections: `employees` and `productGroups`, backed by YAML files under `src/content/employees/` and `src/content/product-groups/` with `image()`-typed photos.
+- `src/content.config.ts` defines two repeated `glob()` collections, `employees` and `productGroups`, plus the singleton `homepageHero` collection. Their YAML records use `image()`-typed local assets.
 - `src/layouts/PageLayout.astro` is the MDX page shell composing `Layout.astro` + `MainContent.astro`, with `getImage()` social image support.
 - `src/components/blocks/` holds editor-facing blocks: `Hero`, `Section`, `Aside`, `Quote`, `Tiles`, `EmployeeTile`, `ProductGroup`. `Section` and `Aside` render MDX in their default slot; pages compose prose Markdown and block components as children. `Tiles` validates `layout`/`items`/`itemComponent` and throws on misuse at build time.
 - Page-specific prose (legal copy, homepage sections, asides) is inlined as Markdown in each `.mdx` page. Explicit HTML is used only where Markdown would change the frozen DOM (e.g. the homepage service heading's `<br />`-separated lines). No separate prose store, no `set:html` for frozen prose. Prettier reflows the inline Markdown; the fixture comparators confirm parity.
