@@ -197,6 +197,10 @@ const printDiff = (result) => {
 }
 
 const main = () => {
+  console.log(
+    'Historical diagnostic only: compares current output with the frozen 2026 cutover capture; it is not a current-content validity or deployment gate.\n',
+  )
+
   const results = PAGES.map(comparePage)
   const failures = results.filter((r) => r.status === 'fail')
 

@@ -25,7 +25,7 @@
     "verify:content": "node scripts/verify-content.mjs",
     "verify:assets": "node scripts/verify-assets.mjs",
     "verify:dist": "node scripts/verify-dist.mjs",
-    "verify": "pnpm lint && pnpm verify:content && pnpm verify:assets && pnpm build && pnpm compare:legal && pnpm compare:pages && pnpm verify:dist",
+    "verify": "pnpm lint && pnpm verify:content && pnpm verify:assets && pnpm build && pnpm test && pnpm verify:dist",
     "test": "node --test tests/verifiers/*.test.mjs"
   },
   "devDependencies": {
