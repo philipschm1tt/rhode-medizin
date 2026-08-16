@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs'
-import { basename, extname, resolve } from 'node:path'
+import { basename, extname, isAbsolute, relative, resolve, sep } from 'node:path'
 import * as cheerioNS from 'cheerio'
 import sharp from 'sharp'
 import {
@@ -60,12 +60,23 @@ const localPath = (url) => {
   }
 }
 
+const hasUnsafeEncoding = (url) => /%(?:2e|2f|5c)/i.test(url)
+
 const builtPath = (root, url) => {
   const path = localPath(url)
   if (!path) return null
-  if (path.endsWith('/'))
-    return resolve(root, 'dist', path.slice(1), 'index.html')
-  return resolve(root, 'dist', path.slice(1))
+  const dist = resolve(root, 'dist')
+  const candidate = path.endsWith('/')
+    ? resolve(dist, path.slice(1), 'index.html')
+    : resolve(dist, path.slice(1))
+  const fromDist = relative(dist, candidate)
+  if (
+    fromDist === '..' ||
+    fromDist.startsWith(`..${sep}`) ||
+    isAbsolute(fromDist)
+  )
+    return null
+  return candidate
 }
 
 const sourceRecords = (root, dir, errors) =>
@@ -77,6 +88,10 @@ const sourceRecords = (root, dir, errors) =>
 const imageStem = (path) => basename(path, extname(path))
 
 const checkImageFile = (root, errors, label, url) => {
+  if (url && localPath(url) && hasUnsafeEncoding(url)) {
+    errors.push(`${label} has unsafe local URL: ${url}`)
+    return
+  }
   const path = builtPath(root, url)
   if (!path || !existsSync(path))
     errors.push(`${label} file is missing: ${url ?? '<missing>'}`)
@@ -177,6 +192,10 @@ const checkLinks = (root, errors, $, pageLabel, pageUrl) => {
       return
     }
     if (resolved.origin !== origin) return
+    if (hasUnsafeEncoding(href)) {
+      errors.push(`${pageLabel} link has unsafe local URL: ${href}`)
+      return
+    }
     const path = builtPath(root, resolved.href)
     if (!path || !existsSync(path))
       errors.push(`${pageLabel} link ${href} does not resolve to a built file`)
