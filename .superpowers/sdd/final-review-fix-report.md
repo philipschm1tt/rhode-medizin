@@ -71,3 +71,32 @@ All commands used Node.js 22.23.2 through `PATH=/tmp/opencode/node-v22.23.2-linu
 - `astro check` continues to report 18 existing deprecation hints for `z` imported from `astro:content`; it reports zero errors and zero warnings.
 - Remote GitHub Actions, Netlify, and Cloudflare verification remains pending by design and is now stated consistently.
 - No new ADR was added. Responsive identity extends ADR 09's existing verification contract, while ADRs 07/08 were corrected in place without changing their accepted architecture decisions.
+
+## Final documentation finding
+
+Status: DONE
+
+### Mapping
+
+- ADR 09 now distinguishes locally executed verification, committed GitHub Actions and Netlify requirements, required Cloudflare dashboard settings, and remote/provider behavior still pending operator verification.
+- The active Netlify operator runbook no longer assumes observed GitHub runs, push-triggered Netlify deploys, Cloudflare GitHub connectivity, fallback URL availability, or automatic 404 behavior. It retains exact build commands, Node version, publish directory, DNS targets, TLS steps, and fallback procedures as requirements to verify and record.
+- README's TLS statement now describes intended DCV provisioning and requires operator confirmation.
+- The audit covered README, AGENTS, accepted ADRs, and active operator runbooks. Historical specs, completed implementation plans, superseded ADR 06, the explicitly historical local-content cutover runbook, fixtures, and provenance were preserved as records.
+
+### Commit
+
+- `02f2218` Clarify operator verification state
+
+### Verification
+
+- `pnpm lint`: PASS.
+- Active-doc targeted phrase audit via the workspace's ripgrep-backed search: no unresolved observed-state claims; remaining matches are historical records or explicit pending-verification wording.
+- `pnpm verify`: PASS, including build, 122/122 tests, and built-output verification.
+- `git diff --check`: PASS.
+
+### Concerns
+
+- The shell `rg` executable was unavailable, so the equivalent audit used the workspace Grep tool, which is powered by ripgrep.
+- `astro check` continues to report 18 existing deprecation hints for `z` imported from `astro:content`; it reports zero errors and zero warnings.
+- Remote GitHub Actions, Netlify, Cloudflare, DNS, TLS, and fallback behavior remains pending operator verification.
+- No new ADR was added because this corrects the evidence language within ADR 09 and its operator guidance without changing an architecture decision.
