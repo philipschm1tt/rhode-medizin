@@ -16,8 +16,9 @@ pnpm install
 
 ## Environment
 
-No environment variables are required. The build uses local content under
-`src/content/`, `src/pages/*.mdx`, and `src/assets/content/`.
+No application or content environment variables are required. The build uses
+local content under `src/content/`, `src/pages/*.mdx`, and
+`src/assets/content/`.
 
 ## Develop
 
@@ -90,7 +91,7 @@ Build configuration is committed in `netlify.toml`:
 Build command: pnpm install --frozen-lockfile && pnpm verify
 Publish directory: dist
 NODE_VERSION: 22
-Environment variables: none required
+Application/content environment variables: none required
 ```
 
 The verification aggregate performs the production build and produces `dist/`,
@@ -109,10 +110,11 @@ Netlify auto-provisions the TLS certificate via DCV.
 
 The Cloudflare Pages project keeps building through its GitHub integration with
 the same `pnpm install --frozen-lockfile && pnpm verify` command, Node 22,
-publish directory `dist`, and no environment variables. That command is a
-Cloudflare Pages dashboard setting; `pnpm verify` produces `dist/`, so no second
-build runs. The `*.pages.dev` URL remains functional as an emergency fallback.
-To revert traffic, repoint DNS at the Cloudflare Pages target. See
+publish directory `dist`, and no application or content environment variables.
+Node 22 remains required build-runtime configuration. The command is a
+Cloudflare Pages dashboard setting; `pnpm verify` produces `dist/`, so no
+second build runs. The `*.pages.dev` URL remains functional as an emergency
+fallback. To revert traffic, repoint DNS at the Cloudflare Pages target. See
 `docs/adrs/adr_06_cloudflare_pages.md` (superseded for production traffic)
 and the operator runbook.
 

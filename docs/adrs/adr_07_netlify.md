@@ -27,8 +27,9 @@ building through its GitHub integration as a dormant fallback.
 - Build config lives in `netlify.toml` at the repo root.
 - Netlify and Cloudflare Pages use
   `pnpm install --frozen-lockfile && pnpm verify`, publish directory `dist`,
-  Node 22, and no environment variables. The aggregate performs the production
-  build and produces `dist/`; neither host runs a second build.
+  and the required Node 22 build runtime. No application or content environment
+  variables are required. The aggregate performs the production build and
+  produces `dist/`; neither host runs a second build.
 - Cloudflare's build command is configured in the Pages dashboard. Wrangler
   does not configure the Pages build and retains only
   `assets.directory: ./dist` as its deployment output setting.
@@ -54,7 +55,8 @@ building through its GitHub integration as a dormant fallback.
   through its GitHub integration. No Contentful webhook is configured.
 - Host deploys install from the frozen lockfile and run the full verification
   gate before publishing its generated `dist/`; there is no separate build
-  step or deployment environment configuration.
+  step. Host build configuration must set Node 22, but the application and
+  content require no environment variables of their own.
 - The static build itself is unchanged and remains host-agnostic.
 - See ADR 08 for the local-content decision and
   `docs/superpowers/plans/2026-08-13-local-content-cutover-operator-runbook.md`
